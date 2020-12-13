@@ -12,7 +12,8 @@ Vue.createApp({
       error: false,
       routesGenerated: {},
       currentlyOpenedIndex: [],
-      corsProxy: "https://cors-for-macau-bus.herokuapp.com/" };
+      corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
+	};
 
   },
   methods: {
@@ -32,13 +33,23 @@ Vue.createApp({
     },
     getArrivingBuses(index) {
       let stations = [];
-      let arrivingBus = {};
+      let arrivingBus = [];
       if (this.busRouteInfo) {
         let stationBefore = this.busRouteInfo.slice(0, index).reverse();
+		let count = -1;
         for (let i = 0; i < index; i++) {
           if (Object.keys(arrivingBus).length < 3) {
             for (let comingBus of stationBefore[i].busInfo) {
               if (Object.keys(arrivingBus).length < 3) {
+				count++;
+                arrivingBus[count] = {
+					'plate': comingBus.busPlate,
+					'speed': comingBus.speed,
+					'distanceToThis': i + 1,
+					'durationGet': false
+				};
+				console.log(arrivingBus);
+                this.arrivingBuses[index] = arrivingBus;
                 let url = `https://router.project-osrm.org/route/v1/driving/${
                 this.busInfoLocations.filter(
                 bus => bus.busPlate == comingBus.busPlate)[
@@ -56,31 +67,20 @@ Vue.createApp({
                 }
                 url += stations.join(";");
                 url += `?generate_hints=false&skip_waypoints=true`;
-                arrivingBus[comingBus.busPlate] = {
-					'plate': comingBus.busPlate,
-					'speed': comingBus.speed,
-					'distanceToThis': i + 1,
-					'duration': 'ETA 加載中',
-				};
-                this.arrivingBuses[index] = Object.assign([], arrivingBus).
-                reverse().
-                filter(item => item != undefined);
                 fetch(url).
                 then(response => response.json()).
                 then(data => {
-                  let time = data.routes[0].duration / 60 + i * 0.75;
-                  arrivingBus[comingBus.busPlate] = {
+                  let time = data.routes[0].duration / 60 + i * 0.75;-
+				  arrivingBus
+                  arrivingBus[count] = {
 					  'plate': comingBus.busPlate,
 				      'speed': comingBus.speed,
 					  'distanceToThis': i + 1,
-					  'duration': `>= ${Math.round(time)}分鐘`,
+					  'durationGet': true,
+					  'duration': Math.round(time)
 				  };
-                  this.arrivingBuses[index] = Object.assign(
-                  [],
-                  arrivingBus).
-
-                  reverse().
-                  filter(item => item != undefined);
+                  this.arrivingBuses[index] = arrivingBus;
+				  console.log(arrivingBus);
                 });
               } else {
                 break;
