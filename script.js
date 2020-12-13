@@ -13,8 +13,8 @@ Vue.createApp({
       error: false,
       routesGenerated: {},
       currentlyOpenedIndex: [],
-      // corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
-      corsProxy: "",
+      corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
+      // corsProxy: "",
 	  };
   },
   methods: {
