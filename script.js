@@ -57,10 +57,10 @@ Vue.createApp({
                 url += stations.join(";");
                 url += `?generate_hints=false&skip_waypoints=true`;
                 arrivingBus[plate] = {
-					plate: comingBus.busPlate,
-					speed: comingBus.speed,
-					distanceToThis: i + 1,
-					duration: 'ETA 加載中',
+					'plate': comingBus.busPlate,
+					'speed': comingBus.speed,
+					'distanceToThis': i + 1,
+					'duration': 'ETA 加載中',
 				};
                 this.arrivingBuses[index] = Object.assign([], arrivingBus).
                 reverse().
@@ -70,10 +70,10 @@ Vue.createApp({
                 then(data => {
                   let time = data.routes[0].duration / 60 + i * 0.75;
                   arrivingBus[plate] = {
-					  plate: comingBus.busPlate,
-				      speed: comingBus.speed,
-					  distanceToThis: i + 1,
-					  duration: `>= ${Math.round(time)}分鐘`,
+					  'plate': comingBus.busPlate,
+				      'speed': comingBus.speed,
+					  'distanceToThis': i + 1,
+					  'duration': `>= ${Math.round(time)}分鐘`,
 				  };
                   this.arrivingBuses[index] = Object.assign(
                   [],
