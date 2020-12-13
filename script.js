@@ -6,24 +6,48 @@ Vue.createApp({
       busAvailableDirection: "2",
       busRouteInfo: undefined,
       busRouteData: undefined,
+      busRouteTraffic: undefined,
       busInfoLocations: undefined,
       busStationLocations: undefined,
       arrivingBuses: [],
       error: false,
       routesGenerated: {},
       currentlyOpenedIndex: [],
-      corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
-	};
-
+      // corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
+      corsProxy: "",
+	  };
   },
   methods: {
+    calculateTime(nextStop,targetStop){
+      let totaldistance = 0;
+      for (let route of this.busRouteTraffic.slice(nextStop,targetStop)) {
+        for (let i = 0; i < route.routeCoordinates.split(";").length-2; i++) {
+          let lon1 = route.routeCoordinates.split(";")[i].split(",")[0]; let lat1 = route.routeCoordinates.split(";")[i].split(",")[1];
+          let lon2 = route.routeCoordinates.split(";")[i+1].split(",")[0]; let lat2 = route.routeCoordinates.split(";")[i+1].split(",")[1];
+          const R = 6371e3; // metres
+          const radlat1 = lat1 * Math.PI/180; // φ, λ in radians
+          const radlat2 = lat2 * Math.PI/180;
+          const latD = (lat2-lat1) * Math.PI/180;
+          const lonD = (lon2-lon1) * Math.PI/180;
+
+          const a = Math.sin(latD/2) * Math.sin(latD/2) +
+                    Math.cos(radlat1) * Math.cos(radlat2) *
+                    Math.sin(lonD/2) * Math.sin(lonD/2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+          const d = R * c; // in metres
+          totaldistance += d*parseInt(route.newRouteTraffic);
+        }
+      }
+      return Math.ceil(totaldistance / 750);
+    },
     toggleIndex(index) {
-	  if (this.currentlyOpenedIndex != index) {
-		this.currentlyOpenedIndex = index;
-		this.getArrivingBuses(index);
-	  } else {
-		this.currentlyOpenedIndex = undefined;
-	  }
+      if (this.currentlyOpenedIndex != index) {
+        this.currentlyOpenedIndex = index;
+        this.getArrivingBuses(index);
+      } else {
+        this.currentlyOpenedIndex = undefined;
+      }
     },
     changeDirection() {
       if (this.busDirection == 0) {
@@ -34,57 +58,36 @@ Vue.createApp({
       this.fetchData();
     },
     getArrivingBuses(index) {
-      let stations = [];
       let arrivingBus = [];
       let noTimeArrivingBus = [];
       if (this.busRouteInfo) {
         let stationBefore = this.busRouteInfo.slice(0, index).reverse();
-		let count = -1;
-        for (let i = 0; i < index; i++) {
-          if (Object.keys(arrivingBus).length < 3) {
-            for (let comingBus of stationBefore[i].busInfo) {
+            for (let i = 0; i < index; i++) {
               if (Object.keys(arrivingBus).length < 3) {
-				count++;
-                noTimeArrivingBus.push({
-					'plate': comingBus.busPlate,
-					'speed': comingBus.speed,
-					'distanceToThis': i + 1,
-					'durationGet': false
-				});
-				console.log(arrivingBus);
-                this.arrivingBuses[index] = noTimeArrivingBus.slice(0,3);
-                let url = `https://router.project-osrm.org/route/v1/driving/${
-                this.busInfoLocations.filter(
-                bus => bus.busPlate == comingBus.busPlate)[
-                0].longitude
-                },${
-                this.busInfoLocations.filter(
-                bus => bus.busPlate == comingBus.busPlate)[
-                0].latitude
-                };`;
-                for (let station of this.busStationLocations.slice(
-                index - i,
-                parseInt(index) + 1))
-                {
-                  stations.push(`${station.longitude},${station.latitude}`);
-                }
-                url += stations.join(";");
-                url += `?generate_hints=false&skip_waypoints=true`;
-                fetch(url).
-                then(response => response.json()).
-                then(data => {
-                  let time = data.routes[0].duration / 60 + i * 0.75;-
-				  arrivingBus
-                  arrivingBus.push({
-					  'plate': comingBus.busPlate,
-				      'speed': comingBus.speed,
-					  'distanceToThis': i + 1,
-					  'durationGet': true,
-					  'duration': Math.round(time)
-				  });
-                  this.arrivingBuses[index] = arrivingBus.slice(0,3);
-				  console.log(arrivingBus);
-                });
+                for (let comingBus of stationBefore[i].busInfo) {
+                  if (Object.keys(arrivingBus).length < 3) {
+                    noTimeArrivingBus.push({
+                      'plate': comingBus.busPlate,
+                      'speed': comingBus.speed,
+                      'distanceToThis': i + 1,
+                      'durationGet': false
+                    });
+                    this.arrivingBuses[index] = noTimeArrivingBus.slice(0,3);
+                    let url = `https://router.project-osrm.org/route/v1/driving/${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude},${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude};${this.busStationLocations[index].longitude},${this.busStationLocations[index].latitude}`;
+                    url += `?generate_hints=false&skip_waypoints=true`;
+                    fetch(url).
+                    then(response => response.json()).
+                    then(data => {
+                    let time = Math.round(data.routes[0].distance / 600);
+                      arrivingBus.push({
+                        'plate': comingBus.busPlate,
+                        'speed': comingBus.speed,
+                        'distanceToThis': i + 1,
+                        'durationGet': true,
+                        'duration': time + this.calculateTime(index-i,index)+i,
+                      });
+                      this.arrivingBuses[index] = arrivingBus.slice(0,3);
+                    });
               } else {
                 break;
               }
@@ -103,6 +106,18 @@ Vue.createApp({
         staName;
       }
     },
+    fetchTraffic(){
+      if (this.busRoute != "") {
+        let url = `${this.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${"0".repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
+        fetch(url).then(response => response.json()).then(data => {
+          this.busRouteTraffic = data.data;
+          this.error = false;
+        }).catch(() => {
+          this.error = true;
+          this.busRouteTraffic = undefined;
+        });
+      }
+    },
     fetchData() {
       if (this.busRoute != "") {
         fetch(
@@ -113,7 +128,7 @@ Vue.createApp({
           this.busRouteData = data.data.routeInfo;
           this.busAvailableDirection = data.data.direction;
         }).
-        catch(error => {
+        catch(() => {
           this.busRouteData = undefined;
           this.error = true;
         });
@@ -125,7 +140,7 @@ Vue.createApp({
           this.busRouteInfo = data.data.routeInfo;
           this.error = false;
         }).
-        catch(error => {
+        catch(() => {
           this.error = true;
           this.busRouteInfo = undefined;
         });
@@ -138,7 +153,7 @@ Vue.createApp({
           this.busStationLocations = data.data.stationInfoList;
           this.error = false;
         }).
-        catch(error => {
+        catch(() => {
           this.error = true;
         });
       } else {
@@ -158,6 +173,7 @@ Vue.createApp({
       });
 
       this.fetchData();
+      this.fetchTraffic();
     } },
   updated() {
 	this.currentlyOpenedIndex = undefined;
@@ -178,8 +194,12 @@ Vue.createApp({
     setInterval(() => {
       this.fetchData();
     }, 15000);
-	setInterval(() => {
-	  this.getArrivingBuses(this.currentlyOpenedIndex);
-	},30000)
-  } }).
+    setInterval(() => {
+      this.getArrivingBuses(this.currentlyOpenedIndex);
+    },30000);
+    setInterval(() => {
+      this.fetchTraffic();
+    },60000)
+  }
+}).
 mount("#app");

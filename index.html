@@ -17,7 +17,7 @@
   <button @click="routeChanged" id="#fetchbutton">Get Route Info</button>
   <template v-if="busRouteInfo != null && busRouteData != null">
     <button @click="changeDirection" v-if="busAvailableDirection == '0'">Change Direction</button>
-    <details v-for="(station,index) in busRouteInfo" @toggle="toggleIndex(index)" @change="indexChanged()">
+    <details v-for="(station,index) in busRouteInfo" @toggle="toggleIndex(index)">
       <summary>{{ station.staCode }} {{ getName(station.staCode) }}</summary>
       <ul>
         <li v-for="arrivingBus in arrivingBuses[index]">
@@ -25,7 +25,7 @@
         </li>
         <template v-for="bus in station.busInfo.filter((bus) => bus.status == '1')">
           <li>
-            {{ bus.busPlate }} {{ bus.speed }}km/h <span v-if="index > 0">己進站</span><span v-else>即將發車</span>
+            {{ bus.busPlate }} <span v-if="index > 0">己進站</span><span v-else>即將發車</span>
           </li>
         </template>
         <template v-for="bus in station.busInfo.filter((bus) => bus.status == '0')">
@@ -33,9 +33,9 @@
             {{ bus.busPlate }} {{ bus.speed }}km/h 前往下一站中
           </li>
         </template>
-          <!-- <li v-if="station.busInfo.filter((bus) => bus.status == '1').length==0 && Object.keys(arrivingBuses[index]).length == 0"> -->
-			<!-- 尚未發車 -->
-		  <!-- </li> -->
+          <li v-if="station.busInfo.filter((bus) => bus.status == '1').length==0 && !arrivingBuses[index]">
+			      尚未發車
+		      </li>
       </ul>
     </details>
   </template>
@@ -44,9 +44,10 @@
   </p>
 </div>
 
-<script src="https://unpkg.com/vue@next"></script>
+<script src="https://unpkg.com/vue@3.0.4/dist/vue.global.js"></script>
+<!-- <script src="https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js"></script> -->
 <!-- partial -->
-  <script  src="./script.js"></script>
+<script  src="./script.js"></script>
 
 </body>
 </html>
