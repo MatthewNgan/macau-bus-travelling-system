@@ -20,7 +20,7 @@
     <details v-for="(station,index) in busRouteInfo" @toggle="toggleIndex(index)">
       <summary>{{ station.staCode }} {{ getName(station.staCode) }}</summary>
       <ul>
-        <li v-for="arrivingBus in arrivingBuses[index]">
+        <li v-for="arrivingBus in arrivingBuses[Object.keys(arrivingBuses)[index]]">
           {{ arrivingBus.plate }} {{ arrivingBus.speed }}km/h 距離呢個站仲有 {{ arrivingBus.distanceToThis }} {{ arrivingBus.duration }}
         </li>
         <template v-for="bus in station.busInfo.filter((bus) => bus.status == '1')">
