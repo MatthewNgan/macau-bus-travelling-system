@@ -12,7 +12,7 @@ Vue.createApp({
       error: false,
       routesGenerated: {},
       currentlyOpenedIndex: [],
-      corsProxy: "",
+      corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
 	};
 
   },
