@@ -33,9 +33,9 @@
             {{ bus.busPlate }} {{ bus.speed }}km/h 前往下一站中
           </li>
         </template>
-          <li v-if="station.busInfo.filter((bus) => bus.status == '1').length==0 && Object.keys(arrivingBuses[index]).length == 0">
-			尚未發車
-		  </li>
+          <!-- <li v-if="station.busInfo.filter((bus) => bus.status == '1').length==0 && Object.keys(arrivingBuses[index]).length == 0"> -->
+			<!-- 尚未發車 -->
+		  <!-- </li> -->
       </ul>
     </details>
   </template>
