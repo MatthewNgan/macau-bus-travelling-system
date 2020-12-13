@@ -42,12 +42,7 @@ Vue.createApp({
       return Math.ceil(totaldistance / 750);
     },
     toggleIndex(index) {
-      if (this.currentlyOpenedIndex != index) {
-        this.currentlyOpenedIndex = index;
-        this.getArrivingBuses(index);
-      } else {
-        this.currentlyOpenedIndex = undefined;
-      }
+      this.getArrivingBuses(index);
     },
     changeDirection() {
       if (this.busDirection == 0) {
@@ -60,37 +55,36 @@ Vue.createApp({
     getArrivingBuses(index) {
       let arrivingBus = [];
       let noTimeArrivingBus = [];
+      this.arrivingBuses[index] = [];
       if (this.busRouteInfo) {
         let stationBefore = this.busRouteInfo.slice(0, index).reverse();
-            for (let i = 0; i < index; i++) {
-              if (Object.keys(arrivingBus).length < 3) {
-                for (let comingBus of stationBefore[i].busInfo) {
-                  if (Object.keys(arrivingBus).length < 3) {
-                    noTimeArrivingBus.push({
-                      'plate': comingBus.busPlate,
-                      'speed': comingBus.speed,
-                      'distanceToThis': i + 1,
-                      'durationGet': false
-                    });
-                    this.arrivingBuses[index] = noTimeArrivingBus.slice(0,3);
-                    let url = `https://router.project-osrm.org/route/v1/driving/${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude},${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude};${this.busStationLocations[index].longitude},${this.busStationLocations[index].latitude}`;
-                    url += `?generate_hints=false&skip_waypoints=true`;
-                    fetch(url).
-                    then(response => response.json()).
-                    then(data => {
-                    let time = Math.round(data.routes[0].distance / 600);
-                      arrivingBus.push({
-                        'plate': comingBus.busPlate,
-                        'speed': comingBus.speed,
-                        'distanceToThis': i + 1,
-                        'durationGet': true,
-                        'duration': time + this.calculateTime(index-i,index)+i,
-                      });
-                      this.arrivingBuses[index] = arrivingBus.slice(0,3);
-                    });
-              } else {
-                break;
-              }
+        for (let i = 0; i < index; i++) {
+          var count=0;
+          for (let comingBus of stationBefore[i].busInfo) {
+            if (count < 3) {
+              noTimeArrivingBus.push({
+                'plate': comingBus.busPlate,
+                'speed': comingBus.speed,
+                'distanceToThis': i + 1,
+                'durationGet': false
+              });
+              this.arrivingBuses[index] = noTimeArrivingBus.slice(0,3);
+              let url = `https://router.project-osrm.org/route/v1/driving/${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude},${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude};${this.busStationLocations[index-i].longitude},${this.busStationLocations[index-i].latitude}`;
+              url += `?generate_hints=false&skip_waypoints=true`;
+              fetch(url).
+              then(response => response.json()).
+              then(data => {
+                let time = Math.ceil(data.routes[0].distance / 600);
+                arrivingBus.push({
+                  'plate': comingBus.busPlate,
+                  'speed': comingBus.speed,
+                  'distanceToThis': i + 1,
+                  'durationGet': true,
+                  'duration': time * parseInt(this.busRouteTraffic[index-i-1].newRouteTraffic) + this.calculateTime(index-i,index)+i,
+                });
+                if (count < 3) this.arrivingBuses[index][count] = arrivingBus[count];
+                count++;
+              });
             }
           }
         }
@@ -176,25 +170,25 @@ Vue.createApp({
       this.fetchTraffic();
     } },
   updated() {
-	this.currentlyOpenedIndex = undefined;
-	const details = document.querySelectorAll("details");
-	// Add the onclick listeners.
-	details.forEach((targetDetail) => {
-	  targetDetail.addEventListener("click", () => {
-		// Close all the details that are not targetDetail.
-		details.forEach((detail) => {
-		  if (detail !== targetDetail) {
-			detail.removeAttribute("open");
-		  }
-		});
+    const details = document.querySelectorAll("details");
+    // Add the onclick listeners.
+    details.forEach((targetDetail) => {
+      targetDetail.addEventListener("click", () => {
+        // Close all the details that are not targetDetail.
+        details.forEach((detail) => {
+          if (detail !== targetDetail) {
+          detail.removeAttribute("open");
+          }
+        });
+	    });
 	  });
-	});
   },
   mounted() {
     setInterval(() => {
       this.fetchData();
     }, 15000);
     setInterval(() => {
+      console.log(this.currentlyOpenedIndex);
       this.getArrivingBuses(this.currentlyOpenedIndex);
     },30000);
     setInterval(() => {
