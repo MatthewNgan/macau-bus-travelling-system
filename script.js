@@ -12,16 +12,18 @@ Vue.createApp({
       error: false,
       routesGenerated: {},
       currentlyOpenedIndex: [],
-      corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
+      corsProxy: "",
 	};
 
   },
   methods: {
     toggleIndex(index) {
-      this.currentlyOpenedIndex[index] = !this.currentlyOpenedIndex[index];
-      if (this.currentlyOpenedIndex[index]) {
-        this.getArrivingBuses(index);
-      }
+	  if (this.currentlyOpenedIndex != index) {
+		this.currentlyOpenedIndex = index;
+		this.getArrivingBuses(index);
+	  } else {
+		this.currentlyOpenedIndex = undefined;
+	  }
     },
     changeDirection() {
       if (this.busDirection == 0) {
@@ -145,7 +147,7 @@ Vue.createApp({
       }
     },
     routeChanged() {
-      this.currentlyOpenedIndex = [];
+      this.currentlyOpenedIndex = undefined;
       this.busRoute = this.busRoute.toUpperCase();
       this.busDirection = 0;
       this.routesGenerated = {};
@@ -157,17 +159,27 @@ Vue.createApp({
 
       this.fetchData();
     } },
-
+  updated() {
+	this.currentlyOpenedIndex = undefined;
+	const details = document.querySelectorAll("details");
+	// Add the onclick listeners.
+	details.forEach((targetDetail) => {
+	  targetDetail.addEventListener("click", () => {
+		// Close all the details that are not targetDetail.
+		details.forEach((detail) => {
+		  if (detail !== targetDetail) {
+			detail.removeAttribute("open");
+		  }
+		});
+	  });
+	});
+  },
   mounted() {
     setInterval(() => {
       this.fetchData();
     }, 15000);
 	setInterval(() => {
-		for (let i in this.currentlyOpenedIndex) {
-		  if (this.currentlyOpenedIndex[i]) {
-			this.getArrivingBuses(i);
-		  }
-		}
+	  this.getArrivingBuses(this.currentlyOpenedIndex);
 	},30000)
   } }).
 mount("#app");

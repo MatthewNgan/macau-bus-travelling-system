@@ -17,7 +17,7 @@
   <button @click="routeChanged" id="#fetchbutton">Get Route Info</button>
   <template v-if="busRouteInfo != null && busRouteData != null">
     <button @click="changeDirection" v-if="busAvailableDirection == '0'">Change Direction</button>
-    <details v-for="(station,index) in busRouteInfo" @toggle="toggleIndex(index)">
+    <details v-for="(station,index) in busRouteInfo" @toggle="toggleIndex(index)" @change="indexChanged()">
       <summary>{{ station.staCode }} {{ getName(station.staCode) }}</summary>
       <ul>
         <li v-for="arrivingBus in arrivingBuses[index]">
