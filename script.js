@@ -56,7 +56,7 @@ Vue.createApp({
                 }
                 url += stations.join(";");
                 url += `?generate_hints=false&skip_waypoints=true`;
-                arrivingBus[plate] = {
+                arrivingBus[comingBus.busPlate] = {
 					'plate': comingBus.busPlate,
 					'speed': comingBus.speed,
 					'distanceToThis': i + 1,
@@ -69,7 +69,7 @@ Vue.createApp({
                 then(response => response.json()).
                 then(data => {
                   let time = data.routes[0].duration / 60 + i * 0.75;
-                  arrivingBus[plate] = {
+                  arrivingBus[comingBus.busPlate] = {
 					  'plate': comingBus.busPlate,
 				      'speed': comingBus.speed,
 					  'distanceToThis': i + 1,
