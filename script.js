@@ -34,6 +34,7 @@ Vue.createApp({
     getArrivingBuses(index) {
       let stations = [];
       let arrivingBus = [];
+      let noTimeArrivingBus = [];
       if (this.busRouteInfo) {
         let stationBefore = this.busRouteInfo.slice(0, index).reverse();
 		let count = -1;
@@ -42,14 +43,14 @@ Vue.createApp({
             for (let comingBus of stationBefore[i].busInfo) {
               if (Object.keys(arrivingBus).length < 3) {
 				count++;
-                arrivingBus[count] = {
+                noTimeArrivingBus.push({
 					'plate': comingBus.busPlate,
 					'speed': comingBus.speed,
 					'distanceToThis': i + 1,
 					'durationGet': false
-				};
+				});
 				console.log(arrivingBus);
-                this.arrivingBuses[index] = arrivingBus;
+                this.arrivingBuses[index] = noTimeArrivingBus.slice(0,3);
                 let url = `https://router.project-osrm.org/route/v1/driving/${
                 this.busInfoLocations.filter(
                 bus => bus.busPlate == comingBus.busPlate)[
@@ -72,14 +73,14 @@ Vue.createApp({
                 then(data => {
                   let time = data.routes[0].duration / 60 + i * 0.75;-
 				  arrivingBus
-                  arrivingBus[count] = {
+                  arrivingBus.push({
 					  'plate': comingBus.busPlate,
 				      'speed': comingBus.speed,
 					  'distanceToThis': i + 1,
 					  'durationGet': true,
 					  'duration': Math.round(time)
-				  };
-                  this.arrivingBuses[index] = arrivingBus;
+				  });
+                  this.arrivingBuses[index] = arrivingBus.slice(0,3);
 				  console.log(arrivingBus);
                 });
               } else {
