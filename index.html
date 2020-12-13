@@ -21,7 +21,7 @@
       <summary>{{ station.staCode }} {{ getName(station.staCode) }}</summary>
       <ul>
         <li v-for="arrivingBus in arrivingBuses[index]">
-          {{ arrivingBus }}
+          {{ arrivingBus.plate }} {{ arrivingBus.speed }}km/h 距離呢個站仲有 {{ arrivingBus.distanceToThis }} {{ arrivingBus.duration }}
         </li>
         <template v-for="bus in station.busInfo.filter((bus) => bus.status == '1')">
           <li>
@@ -33,7 +33,9 @@
             {{ bus.busPlate }} {{ bus.speed }}km/h 前往下一站中
           </li>
         </template>
-        <!--         <li v-if="station.busInfo.filter((bus) => bus.status == '1').length==0 && getArrivingBuses(index).length == 0">尚未發車</span> -->
+          <li v-if="station.busInfo.filter((bus) => bus.status == '1').length==0 && getArrivingBuses(index).length == 0">
+			尚未發車
+		  </li>
       </ul>
     </details>
   </template>

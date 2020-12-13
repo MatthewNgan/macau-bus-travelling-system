@@ -32,13 +32,13 @@ Vue.createApp({
     },
     getArrivingBuses(index) {
       let stations = [];
-      let arrivingBusString = {};
+      let arrivingBus = {};
       if (this.busRouteInfo) {
         let stationBefore = this.busRouteInfo.slice(0, index).reverse();
         for (let i = 0; i < index; i++) {
-          if (Object.keys(arrivingBusString).length < 3) {
+          if (Object.keys(arrivingBus).length < 3) {
             for (let comingBus of stationBefore[i].busInfo) {
-              if (Object.keys(arrivingBusString).length < 3) {
+              if (Object.keys(arrivingBus).length < 3) {
                 let url = `https://router.project-osrm.org/route/v1/driving/${
                 this.busInfoLocations.filter(
                 bus => bus.busPlate == comingBus.busPlate)[
@@ -56,22 +56,28 @@ Vue.createApp({
                 }
                 url += stations.join(";");
                 url += `?generate_hints=false&skip_waypoints=true`;
-                arrivingBusString[i] = `${comingBus.busPlate} ${
-                comingBus.speed
-                }km/h 距離本站還有 ${i + 1} 站`;
-                this.arrivingBuses[index] = Object.assign([], arrivingBusString).
+                arrivingBus[plate] = {
+					plate: comingBus.busPlate,
+					speed: comingBus.speed,
+					distanceToThis: i + 1,
+					duration: 'ETA 加載中',
+				};
+                this.arrivingBuses[index] = Object.assign([], arrivingBus).
                 reverse().
                 filter(item => item != undefined);
                 fetch(url).
                 then(response => response.json()).
                 then(data => {
                   let time = data.routes[0].duration / 60 + i * 0.75;
-                  arrivingBusString[i] = `${comingBus.busPlate} ${
-                  comingBus.speed
-                  }km/h 距離本站還有 ${i + 1} 站 約${Math.round(time)}分鐘`;
+                  arrivingBus[plate] = {
+					  plate: comingBus.busPlate,
+				      speed: comingBus.speed
+					  distanceToThis: i + 1,
+					  duration: `>= ${Math.round(time)}分鐘`,
+				  };
                   this.arrivingBuses[index] = Object.assign(
                   [],
-                  arrivingBusString).
+                  arrivingBus).
 
                   reverse().
                   filter(item => item != undefined);
@@ -154,12 +160,13 @@ Vue.createApp({
   mounted() {
     setInterval(() => {
       this.fetchData();
-
-      for (let i in this.currentlyOpenedIndex) {
-        if (this.currentlyOpenedIndex[i]) {
-          this.getArrivingBuses(i);
-        }
-      }
     }, 15000);
+	setInterval(() => {
+		for (let i in this.currentlyOpenedIndex) {
+		  if (this.currentlyOpenedIndex[i]) {
+			this.getArrivingBuses(i);
+		  }
+		}
+	},30000)
   } }).
 mount("#app");
