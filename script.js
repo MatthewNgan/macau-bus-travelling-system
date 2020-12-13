@@ -11,8 +11,6 @@ Vue.createApp({
       arrivingBuses: [],
       error: false,
       routesGenerated: {},
-      fastBuses: ["51", "59"],
-      slowBuses: ["32", "28C"],
       currentlyOpenedIndex: [],
       corsProxy: "https://cors-for-macau-bus.herokuapp.com/" };
 
@@ -144,12 +142,11 @@ Vue.createApp({
       this.busRoute = this.busRoute.toUpperCase();
       this.busDirection = 0;
       this.routesGenerated = {};
-      // Fetch all the details element.
+	  
       const details = document.querySelectorAll("details");
       details.forEach(detail => {
         detail.removeAttribute("open");
       });
-      // Add the onclick listeners.
 
       this.fetchData();
     } },
@@ -160,7 +157,6 @@ Vue.createApp({
 
       for (let i in this.currentlyOpenedIndex) {
         if (this.currentlyOpenedIndex[i]) {
-          console.log(i);
           this.getArrivingBuses(i);
         }
       }
