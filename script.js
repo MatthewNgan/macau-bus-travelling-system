@@ -71,7 +71,7 @@ Vue.createApp({
                   let time = data.routes[0].duration / 60 + i * 0.75;
                   arrivingBus[plate] = {
 					  plate: comingBus.busPlate,
-				      speed: comingBus.speed
+				      speed: comingBus.speed,
 					  distanceToThis: i + 1,
 					  duration: `>= ${Math.round(time)}分鐘`,
 				  };
