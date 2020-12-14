@@ -13,36 +13,53 @@ Vue.createApp({
       error: false,
       routesGenerated: {},
       currentlyOpenedIndex: [],
-      corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
-      // corsProxy: "",
+      // corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
+      corsProxy: "",
 	  };
   },
   methods: {
-    calculateTime(nextStop,targetStop){
+    calculateDistance(lon1,lat1,lon2,lat2){
+      const R = 6371e3; // metres
+      const radlat1 = lat1 * Math.PI/180; // φ, λ in radians
+      const radlat2 = lat2 * Math.PI/180;
+      const latD = (lat2-lat1) * Math.PI/180;
+      const lonD = (lon2-lon1) * Math.PI/180;
+
+      const a = Math.sin(latD/2) * Math.sin(latD/2) +
+                Math.cos(radlat1) * Math.cos(radlat2) *
+                Math.sin(lonD/2) * Math.sin(lonD/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+      const d = R * c; // in metres
+      return d;
+    },
+    calculateTime(nextStop,targetStop,loc){
       let totaldistance = 0;
+      let currentRoutes = [];
+      for (let i = 0; i < this.busRouteTraffic[nextStop-1].routeCoordinates.split(";").length-1; i++) {
+        currentRoutes.push({
+          'x': parseFloat(this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[0]),
+          'y': parseFloat(this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1]),
+        });
+      }
+      let index = currentRoutes.findIndex(point => point.x == parseFloat(loc[0]) && point.y == parseFloat(loc[1]));
+      for (let i = index; i < this.busRouteTraffic[nextStop-1].routeCoordinates.split(";").length-2; i++) {
+        totaldistance += this.calculateDistance(this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[0],this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1],this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[0],this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[1]);
+      }
       for (let route of this.busRouteTraffic.slice(nextStop,targetStop)) {
         for (let i = 0; i < route.routeCoordinates.split(";").length-2; i++) {
           let lon1 = route.routeCoordinates.split(";")[i].split(",")[0]; let lat1 = route.routeCoordinates.split(";")[i].split(",")[1];
           let lon2 = route.routeCoordinates.split(";")[i+1].split(",")[0]; let lat2 = route.routeCoordinates.split(";")[i+1].split(",")[1];
-          const R = 6371e3; // metres
-          const radlat1 = lat1 * Math.PI/180; // φ, λ in radians
-          const radlat2 = lat2 * Math.PI/180;
-          const latD = (lat2-lat1) * Math.PI/180;
-          const lonD = (lon2-lon1) * Math.PI/180;
-
-          const a = Math.sin(latD/2) * Math.sin(latD/2) +
-                    Math.cos(radlat1) * Math.cos(radlat2) *
-                    Math.sin(lonD/2) * Math.sin(lonD/2);
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-          const d = R * c; // in metres
-          totaldistance += d*parseInt(route.newRouteTraffic);
+          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseInt(route.newRouteTraffic);
         }
       }
       return Math.ceil(totaldistance / 750);
     },
     toggleIndex(index) {
-      this.getArrivingBuses(index);
+      let details = document.querySelectorAll('details');
+      if (details[index].hasAttribute("open")) {
+        this.getArrivingBuses(index);
+      }
     },
     changeDirection() {
       if (this.busDirection == 0) {
@@ -53,8 +70,7 @@ Vue.createApp({
       this.fetchData();
     },
     getArrivingBuses(index) {
-      let arrivingBus = [];
-      let noTimeArrivingBus = [];
+      this.arrivingBuses = [];
       this.arrivingBuses[index] = [];
       if (this.busRouteInfo) {
         let stationBefore = this.busRouteInfo.slice(0, index).reverse();
@@ -62,34 +78,33 @@ Vue.createApp({
         for (let i = 0; i < index; i++) {
           for (let comingBus of stationBefore[i].busInfo) {
             if (count < 3) {
-              noTimeArrivingBus.push({
+              this.arrivingBuses[index].push({
                 'plate': comingBus.busPlate,
                 'speed': comingBus.speed,
                 'distanceToThis': i + 1,
-                'durationGet': false,
-                'duration': 99999
+                'durationGet': true,
+                'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude])+i,
               });
-              this.arrivingBuses[index] = noTimeArrivingBus.slice(0,3);
-              let url = `https://router.project-osrm.org/route/v1/driving/${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude},${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude};${this.busStationLocations[index-i].longitude},${this.busStationLocations[index-i].latitude}`;
-              url += `?generate_hints=false&skip_waypoints=true`;
-              fetch(url).
-              then(response => response.json()).
-              then(data => {
-                let time = Math.ceil(data.routes[0].distance / 600);
-                let b = {
-                  'plate': comingBus.busPlate,
-                  'speed': comingBus.speed,
-                  'distanceToThis': i + 1,
-                  'durationGet': true,
-                  'duration': time * parseInt(this.busRouteTraffic[index-i-1].newRouteTraffic) + this.calculateTime(index-i,index)+i,
-                };
-                this.arrivingBuses[index].shift();
-                this.arrivingBuses[index].push(b);
-                this.arrivingBuses[index] = [...new Set(this.arrivingBuses[index])]
-                if (this.arrivingBuses[index].filter(bus => bus.durationGet).length == this.arrivingBuses[index].length) {
-                  this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
-                }
-              });
+              // let url = `https://router.project-osrm.org/route/v1/driving/${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude},${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude};${this.busStationLocations[index-i].longitude},${this.busStationLocations[index-i].latitude}`;
+              // url += `?generate_hints=false&skip_waypoints=true`;
+              // fetch(url).
+              // then(response => response.json()).
+              // then(data => {
+              //   let time = Math.ceil(data.routes[0].distance / 600);
+              //   let b = {
+              //     'plate': comingBus.busPlate,
+              //     'speed': comingBus.speed,
+              //     'distanceToThis': i + 1,
+              //     'durationGet': true,
+              //     'duration': time * parseInt(this.busRouteTraffic[index-i-1].newRouteTraffic) + this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude])+i,
+              //   };
+              //   this.arrivingBuses[index].shift();
+              //   this.arrivingBuses[index].push(b);
+              //   this.arrivingBuses[index] = [...new Set(this.arrivingBuses[index].slice())]
+              //   if (this.arrivingBuses[index].slice().filter(bus => bus.durationGet).length == this.arrivingBuses[index].length) {
+              //     this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
+              //   }
+              // });
               count++;
             }
           }
@@ -183,7 +198,7 @@ Vue.createApp({
         // Close all the details that are not targetDetail.
         details.forEach((detail) => {
           if (detail !== targetDetail) {
-          detail.removeAttribute("open");
+            detail.removeAttribute("open");
           }
         });
 	    });
@@ -194,9 +209,8 @@ Vue.createApp({
       this.fetchData();
     }, 15000);
     setInterval(() => {
-      console.log(this.currentlyOpenedIndex);
       this.getArrivingBuses(this.currentlyOpenedIndex);
-    },30000);
+    },1000);
     setInterval(() => {
       this.fetchTraffic();
     },60000)
