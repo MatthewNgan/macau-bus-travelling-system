@@ -58,8 +58,8 @@ Vue.createApp({
       this.arrivingBuses[index] = [];
       if (this.busRouteInfo) {
         let stationBefore = this.busRouteInfo.slice(0, index).reverse();
+        var count = 0;
         for (let i = 0; i < index; i++) {
-          var count=0;
           for (let comingBus of stationBefore[i].busInfo) {
             if (count < 3) {
               noTimeArrivingBus.push({
