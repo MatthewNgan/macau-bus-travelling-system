@@ -66,7 +66,8 @@ Vue.createApp({
                 'plate': comingBus.busPlate,
                 'speed': comingBus.speed,
                 'distanceToThis': i + 1,
-                'durationGet': false
+                'durationGet': false,
+                'duration': 99999
               });
               this.arrivingBuses[index] = noTimeArrivingBus.slice(0,3);
               let url = `https://router.project-osrm.org/route/v1/driving/${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude},${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude};${this.busStationLocations[index-i].longitude},${this.busStationLocations[index-i].latitude}`;
