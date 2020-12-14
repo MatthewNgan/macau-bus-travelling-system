@@ -75,15 +75,15 @@ Vue.createApp({
               then(response => response.json()).
               then(data => {
                 let time = Math.ceil(data.routes[0].distance / 600);
-                arrivingBus.push({
+                let b = {
                   'plate': comingBus.busPlate,
                   'speed': comingBus.speed,
                   'distanceToThis': i + 1,
                   'durationGet': true,
                   'duration': time * parseInt(this.busRouteTraffic[index-i-1].newRouteTraffic) + this.calculateTime(index-i,index)+i,
-                });
-                if (count < 3) this.arrivingBuses[index][count] = arrivingBus[count];
-                count++;
+                };
+                this.arrivingBuses[index].shift();
+                this.arrivingBuses[index].push(b);
               });
             }
           }
