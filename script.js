@@ -85,7 +85,9 @@ Vue.createApp({
                 };
                 this.arrivingBuses[index].shift();
                 this.arrivingBuses[index].push(b);
-                this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
+                if (this.arrivingBuses[index].filter(bus => bus.durationGet).length == this.arrivingBuses[index].length) {
+                  this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
+                }
               });
               count++;
             }
