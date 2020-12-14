@@ -13,8 +13,8 @@ Vue.createApp({
       error: false,
       routesGenerated: {},
       currentlyOpenedIndex: [],
-      // corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
-      corsProxy: "",
+      corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
+      // corsProxy: "",
 	  };
   },
   methods: {
@@ -210,7 +210,7 @@ Vue.createApp({
     }, 15000);
     setInterval(() => {
       this.getArrivingBuses(this.currentlyOpenedIndex);
-    },1000);
+    },5000);
     setInterval(() => {
       this.fetchTraffic();
     },60000)
