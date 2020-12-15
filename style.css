@@ -14,7 +14,7 @@ body > * {
 }
 
 header {
-    padding: 0px 7.5px;
+    padding: 0px 10px;
     height: 15vh;
     display: flex;
     flex-direction: column;
