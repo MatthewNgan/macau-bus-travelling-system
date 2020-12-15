@@ -167,7 +167,7 @@ Vue.createApp({
           this.busInfoLocations = data.data.busInfoList;
           this.busStationLocations = data.data.stationInfoList;
           this.error = false;
-        }).
+        })//.
         //catch(() => {
           //this.error = true;
         //});
