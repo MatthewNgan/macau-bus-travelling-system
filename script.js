@@ -67,6 +67,12 @@ Vue.createApp({
       } else {
         this.busDirection = 0;
       }
+      
+      const details = document.querySelectorAll("details");
+      details.forEach(detail => {
+        detail.removeAttribute("open");
+      });
+      
       this.fetchData();
       this.fetchTraffic();
     },
