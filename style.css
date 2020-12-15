@@ -26,12 +26,20 @@ h1 {
     font-weight: bold !important;
 }
 
+input {
+    border: 1px solid #ccc;
+}
+
 summary {
     padding: 10px;
 }
 
 .route-input {
     display: flex;
+}
+
+.route-input > * {
+    margin-left: 7.5px;
 }
 
 .traffic.green {
@@ -54,7 +62,17 @@ summary {
     width: 100%;
 }
 
+#fetchbutton {
+    border: none;
+    border-radius: 2px;
+    background-color: dodgerblue;
+    padding: 5px 10px;
+}
+
 @media (prefers-color-scheme: dark) {
+    * {
+        color: white;
+    }
     body {
         background-color: black;
     }
@@ -64,5 +82,24 @@ summary {
     header {
         border-bottom: 1px solid #222;
         background-color: black;
+    }
+    input {
+        background-color: #222;
+        border: 1px solid #444;
+    }
+    .traffic.green {
+        background-color: green;
+    }
+    
+    .traffic.yellow {
+        background-color: olive;
+    }
+    .traffic.orange {
+        background-color: rgb(182, 100, 0);
+    }
+    
+    .traffic.red {
+        background-color: darkred;
+        color: white;
     }
 }

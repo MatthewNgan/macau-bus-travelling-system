@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>A Better Bus Travelling System for Macau</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -18,8 +18,8 @@
 </header>
 <div id="app">
   <div class="route-input">
-    <input v-model="busRoute" @input="routeChanged">
-    <button @click="routeChanged" id="#fetchbutton">查詢</button>
+    <input v-model="busRoute" @input="routeChanged" class="rounded">
+    <button @click="routeChanged" id="fetchbutton">查詢</button>
     <button @click="changeDirection" v-if="busAvailableDirection == '0'">切換方向</button>
   </div>
   <template v-if="busRouteInfo && busRouteData">
