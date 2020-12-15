@@ -68,6 +68,7 @@ Vue.createApp({
         this.busDirection = 0;
       }
       this.fetchData();
+      this.fetchTraffic();
     },
     getArrivingBuses(index) {
       this.arrivingBuses = [];
