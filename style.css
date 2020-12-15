@@ -3,3 +3,16 @@ body {
     justify-content: center;
     padding: 10px;
 }
+
+traffic green {
+    font-color: green;
+}
+
+traffic yellow {
+    background-color: yellow;
+}
+
+traffic red {
+    background-color:red;
+    font-color: white;
+}
