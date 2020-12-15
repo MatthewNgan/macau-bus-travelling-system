@@ -67,7 +67,7 @@ Vue.createApp({
       } else {
         this.busDirection = 0;
       }
-      this.fetchData();
+      this.routeChanged(this.busDirection);
     },
     getArrivingBuses(index) {
       this.arrivingBuses = [];
@@ -176,10 +176,10 @@ Vue.createApp({
         this.error = false;
       }
     },
-    routeChanged() {
+    routeChanged(dir) {
       this.currentlyOpenedIndex = undefined;
       this.busRoute = this.busRoute.toUpperCase();
-      this.busDirection = 0;
+      this.busDirection = dir;
       this.routesGenerated = {};
 	  
       const details = document.querySelectorAll("details");
