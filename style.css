@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    outline: none;
 }
 
 body {
@@ -14,7 +15,7 @@ body > * {
 
 header {
     padding: 10px 7.5px;
-    height: 20vh;
+    height: 15vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
