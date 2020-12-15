@@ -19,7 +19,7 @@
   <template v-if="busRouteInfo != null && busRouteData != null">
     <button @click="changeDirection" v-if="busAvailableDirection == '0'">Change Direction</button>
     <details v-for="(station,index) in busRouteInfo" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
-      <summary class="traffic" v-class="{green: busRouteTraffic[index-1].routeTraffic == 1}">{{ station.staCode }} {{ getName(station.staCode) }}</summary>
+      <summary class="traffic" :class="{green: busRouteTraffic[index-1].routeTraffic == 1}">{{ station.staCode }} {{ getName(station.staCode) }}</summary>
       <ul>
         <li v-for="arrivingBus in arrivingBuses[index]">
           {{ arrivingBus.plate }} {{ arrivingBus.speed }}km/h 距離呢個站仲有 {{ arrivingBus.distanceToThis }} 個站 <span v-if="arrivingBus.durationGet">約 {{ arrivingBus.duration }} 分鐘</span><span v-else>ETA 加載中<span>
