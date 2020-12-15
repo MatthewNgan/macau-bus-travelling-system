@@ -73,8 +73,8 @@ Vue.createApp({
         detail.removeAttribute("open");
       });
       
-      this.fetchData();
       this.fetchTraffic();
+      this.fetchData();
     },
     getArrivingBuses(index) {
       this.arrivingBuses = [];
@@ -184,18 +184,25 @@ Vue.createApp({
       }
     },
     routeChanged() {
-      this.currentlyOpenedIndex = undefined;
-      this.busRoute = this.busRoute.toUpperCase();
-      this.busDirection = 0;
-      this.routesGenerated = {};
-	  
-      const details = document.querySelectorAll("details");
-      details.forEach(detail => {
-        detail.removeAttribute("open");
-      });
-
-      this.fetchData();
-      this.fetchTraffic();
+      if (this.busRoute.toLowerCase() != "701x") this.busRoute = this.busRoute.toUpperCase();
+      else this.busRoute = this.busRoute.toLowerCase();
+      
+      var tempRoute = this.busRoute.valueOf();
+      setTimeout(() => {
+        if (tempRoute == this.busRoute) {
+          this.currentlyOpenedIndex = undefined;
+          this.busDirection = 0;
+          this.routesGenerated = {};
+        
+          const details = document.querySelectorAll("details");
+          details.forEach(detail => {
+            detail.removeAttribute("open");
+          });
+    
+          this.fetchTraffic();
+          this.fetchData();
+        }
+      },1000);
     } },
   updated() {
     const details = document.querySelectorAll("details");
@@ -212,6 +219,9 @@ Vue.createApp({
 	  });
   },
   mounted() {
+    if (window.location.href.includes("localhost")) {
+      this.corsProxy = "";
+    }
     setInterval(() => {
       this.fetchData();
     }, 15000);

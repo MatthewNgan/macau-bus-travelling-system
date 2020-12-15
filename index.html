@@ -16,10 +16,10 @@
 <div id="app">
   <input v-model="busRoute" @input="routeChanged">
   <button @click="routeChanged" id="#fetchbutton">Get Route Info</button>
-  <template v-if="busRouteInfo != null && busRouteData != null">
+  <template v-if="busRouteInfo && busRouteData">
     <button @click="changeDirection" v-if="busAvailableDirection == '0'">Change Direction</button>
     <details v-for="(station,index) in busRouteInfo" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
-      <summary>{{ station.staCode }} {{ getName(station.staCode) }}</summary>
+      <summary class="traffic" :class="{green: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '1',yellow: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '2',orange: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '3',red: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '4'}">{{ station.staCode }} {{ getName(station.staCode) }}</summary>
       <ul>
         <li v-for="arrivingBus in arrivingBuses[index]">
           {{ arrivingBus.plate }} {{ arrivingBus.speed }}km/h 距離呢個站仲有 {{ arrivingBus.distanceToThis }} 個站 <span v-if="arrivingBus.durationGet">約 {{ arrivingBus.duration }} 分鐘</span><span v-else>ETA 加載中<span>

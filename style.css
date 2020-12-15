@@ -4,15 +4,22 @@ body {
     padding: 10px;
 }
 
-traffic green {
-    font-color: green;
+summary {
+    padding: 10px;
 }
 
-traffic yellow {
+.traffic.green {
+    background-color: lightgreen;
+}
+
+.traffic.yellow {
     background-color: yellow;
 }
+.traffic.orange {
+    background-color: orange;
+}
 
-traffic red {
+.traffic.red {
     background-color:red;
-    font-color: white;
+    color: white;
 }
