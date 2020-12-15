@@ -15,7 +15,7 @@
 <!-- partial:index.partial.html -->
 <div id="app">
   <input v-model="busRoute" @input="routeChanged">
-  <button @click="routeChanged(0)" id="#fetchbutton">Get Route Info</button>
+  <button @click="routeChanged" id="#fetchbutton">Get Route Info</button>
   <p>{{ busRouteTraffic.length }}</p>
   <template v-if="busRouteInfo != null && busRouteData != null">
     <button @click="changeDirection" v-if="busAvailableDirection == '0'">Change Direction</button>
