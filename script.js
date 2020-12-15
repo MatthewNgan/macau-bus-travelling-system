@@ -176,7 +176,7 @@ Vue.createApp({
         this.error = false;
       }
     },
-    routeChanged(dir) {
+    routeChanged(dir=0) {
       this.currentlyOpenedIndex = undefined;
       this.busRoute = this.busRoute.toUpperCase();
       this.busDirection = dir;
