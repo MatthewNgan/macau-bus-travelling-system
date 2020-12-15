@@ -14,7 +14,7 @@ body > * {
 
 header {
     padding: 10px 7.5px;
-    height: 100px;
+    height: 20vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
