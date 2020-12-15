@@ -16,6 +16,7 @@
 <div id="app">
   <input v-model="busRoute" @input="routeChanged">
   <button @click="routeChanged" id="#fetchbutton">Get Route Info</button>
+  <p>{{ busRouteTraffic.length }}</p>
   <template v-if="busRouteInfo != null && busRouteData != null">
     <button @click="changeDirection" v-if="busAvailableDirection == '0'">Change Direction</button>
     <details v-for="(station,index) in busRouteInfo" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
