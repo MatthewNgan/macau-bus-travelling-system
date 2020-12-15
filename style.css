@@ -1,11 +1,36 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     display: flex;
-    justify-content: center;
-    padding: 10px;
+    flex-direction: column;
+}
+
+body > * {
+    margin-bottom: 5px;
+}
+
+header {
+    padding: 10px 7.5px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-bottom: 1px solid #ccc;
+    background-color: white;
+}
+
+h1 {
+    font-weight: bold !important;
 }
 
 summary {
     padding: 10px;
+}
+
+.route-input {
+    display: flex;
 }
 
 .traffic.green {
@@ -22,4 +47,8 @@ summary {
 .traffic.red {
     background-color:red;
     color: white;
+}
+
+#app {
+    width: 100%;
 }
