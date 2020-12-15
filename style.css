@@ -63,13 +63,6 @@ summary {
     width: 100%;
 }
 
-#fetchbutton {
-    border: none;
-    border-radius: 2px;
-    background-color: dodgerblue;
-    padding: 5px 10px;
-}
-
 @media (prefers-color-scheme: dark) {
     * {
         color: white;
