@@ -1,6 +1,14 @@
 Vue.createApp({
   data() {
     return {
+      busList: undefined,
+    }
+  },
+}).mount("#home");
+
+Vue.createApp({
+  data() {
+    return {
       busRoute: "",
       busDirection: 0,
       busAvailableDirection: "2",
