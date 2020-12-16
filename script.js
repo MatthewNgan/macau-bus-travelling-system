@@ -215,8 +215,8 @@ Vue.createApp({
             detail.removeAttribute("open");
           }
         });
-	    });
-	  });
+      });
+    });
   },
   mounted() {
     if (window.location.href.includes("localhost")) {
