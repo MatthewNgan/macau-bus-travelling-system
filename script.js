@@ -207,7 +207,7 @@ Vue.createApp({
       
       var tempRoute = this.busRoute.valueOf();
       setTimeout(() => {
-        if (tempRoute == this.busRoute && tempRoute != "") {
+        if (tempRoute == this.busRoute) {
           this.busAvailableDirection == "2";
           this.currentlyOpenedIndex = undefined;
           this.busDirection = 0;
