@@ -73,6 +73,8 @@ Vue.createApp({
         detail.removeAttribute("open");
       });
       
+      const changeDirectionButton = document.querySelector("#changedirection");
+      changeDirectionButton.disabled = true;
       this.fetchTraffic();
       this.fetchData();
     },
@@ -149,6 +151,10 @@ Vue.createApp({
         then(data => {
           this.busRouteData = data.data.routeInfo;
           this.busAvailableDirection = data.data.direction;
+          if (data.data.direction == "0") {
+            const changeDirectionButton = document.querySelector("#changedirection");
+            changeDirectionButton.disabled = false;
+          }
         }).
         catch(() => {
           this.busRouteData = undefined;
