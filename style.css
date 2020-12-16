@@ -14,17 +14,19 @@ body > * {
 }
 
 header {
-    padding: 0px 10px;
-    height: 15vh;
+    padding: 10px 7.5px;
+    min-height: 50px;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     border-bottom: 1px solid #ccc;
     background-color: white;
 }
 
 h1 {
     font-weight: bold !important;
+    margin: 0 !important;
 }
 
 input {

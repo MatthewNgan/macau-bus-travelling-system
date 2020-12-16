@@ -239,4 +239,4 @@ Vue.createApp({
     },60000)
   }
 }).
-mount("#app");
+mount("#route-info");
