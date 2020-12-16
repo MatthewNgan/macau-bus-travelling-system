@@ -18,7 +18,7 @@ Vue.createApp({
       busInfoLocations: undefined,
       busStationLocations: undefined,
       arrivingBuses: [],
-      error: false,
+      noSuchNumberError: false,
       routesGenerated: {},
       currentlyOpenedIndex: [],
       corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
@@ -143,9 +143,10 @@ Vue.createApp({
         let url = `${this.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${"0".repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
         fetch(url).then(response => response.json()).then(data => {
           this.busRouteTraffic = data.data;
-          this.error = false;
-        }).catch(() => {
-          this.error = true;
+          this.noSuchNumberError = false;
+        }).catch((error) => {
+          console.log(error)
+          this.noSuchNumberError = true;
           this.busRouteTraffic = undefined;
         });
       }
@@ -161,12 +162,13 @@ Vue.createApp({
           this.busAvailableDirection = data.data.direction;
           if (data.data.direction == "0") {
             const changeDirectionButton = document.querySelector("#changedirection");
-            changeDirectionButton.disabled = false;
+            if (changeDirectionButton) changeDirectionButton.disabled = false;
           }
         }).
-        catch(() => {
+        catch((error) => {
+          console.log(error)
           this.busRouteData = undefined;
-          this.error = true;
+          this.noSuchNumberError = true;
         });
         fetch(
         `${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/bus?routeName=${this.busRoute}&dir=${this.busDirection}`).
@@ -174,10 +176,11 @@ Vue.createApp({
         then(response => response.json()).
         then(data => {
           this.busRouteInfo = data.data.routeInfo;
-          this.error = false;
+          this.noSuchNumberError = false;
         }).
-        catch(() => {
-          this.error = true;
+        catch((error) => {
+          console.log(error)
+          this.noSuchNumberError = true;
           this.busRouteInfo = undefined;
         });
         fetch(
@@ -187,14 +190,15 @@ Vue.createApp({
         then(data => {
           this.busInfoLocations = data.data.busInfoList;
           this.busStationLocations = data.data.stationInfoList;
-          this.error = false;
+          this.noSuchNumberError = false;
         }).
-        catch(() => {
-          this.error = true;
+        catch((error) => {
+          console.log(error)
+          this.noSuchNumberError = true;
         });
       } else {
         this.busRouteInfo = undefined;
-        this.error = false;
+        this.noSuchNumberError = false;
       }
     },
     routeChanged() {
@@ -203,7 +207,8 @@ Vue.createApp({
       
       var tempRoute = this.busRoute.valueOf();
       setTimeout(() => {
-        if (tempRoute == this.busRoute) {
+        if (tempRoute == this.busRoute && tempRoute != "") {
+          this.busAvailableDirection == "2";
           this.currentlyOpenedIndex = undefined;
           this.busDirection = 0;
           this.routesGenerated = {};

@@ -37,6 +37,10 @@ summary {
     padding: 10px;
 }
 
+ul {
+    margin-top: 1rem;
+}
+
 .route-input {
     display: flex;
 }
