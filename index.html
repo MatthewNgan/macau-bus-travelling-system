@@ -28,6 +28,7 @@
     <div class="route-input">
       <!-- <input v-model="busRoute" @input="routeChanged" class="rounded" id="route-input"> -->
       <!-- <button @click="routeChanged" type="button" id="fetchbutton" class="btn btn-success">查詢</button> -->
+      <button @click="returnHome" class="btn btn-link">返回</button>
       <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="btn btn-primary" id="changedirection">切換方向</button>
     </div>
     <template v-if="busRouteInfo && busRouteData">

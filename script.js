@@ -14,12 +14,27 @@ Vue.createApp({
       arrivingBuses: [],
       noSuchNumberError: false,
       routesGenerated: {},
-      currentlyOpenedIndex: [],
+      currentlyOpenedIndex: undefined,
       corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
       // corsProxy: "",
 	  };
   },
   methods: {
+    returnHome() {
+      this.currentPage = "home";
+      this.busRoute = "";
+      this.busDirection = 0;
+      this.busAvailableDirection = "2";
+      this.busRouteInfo = undefined;
+      this.busRouteData = undefined;
+      this.busRouteTraffic = undefined;
+      this.busInfoLocations = undefined;
+      this.busStationLocations = undefined;
+      this.arrivingBuses = [];
+      this.noSuchNumberError = false;
+      this.routesGenerated = {};
+      this.currentlyOpenedIndex = undefined;
+    },
     getRoutes() {
       fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html`)
       .then(response => response.json())
@@ -215,37 +230,17 @@ Vue.createApp({
       else this.busRoute = this.busRoute.toLowerCase();
 
       this.busAvailableDirection = "2";
-      if (this.busRoute != "") {
-        var tempRoute = this.busRoute.valueOf();
-        setTimeout(() => {
-          if (tempRoute == this.busRoute) {
-            this.currentlyOpenedIndex = undefined;
-            this.busDirection = 0;
-            this.routesGenerated = {};
-          
-            const details = document.querySelectorAll("details");
-            details.forEach(detail => {
-              detail.removeAttribute("open");
-            });
-      
-            this.fetchTraffic();
-            this.fetchData();
-          }
-        },1000);
-      } else {
-        this.busAvailableDirection = "2";
-        this.currentlyOpenedIndex = undefined;
-        this.busDirection = 0;
-        this.routesGenerated = {};
+      this.currentlyOpenedIndex = undefined;
+      this.busDirection = 0;
+      this.routesGenerated = {};
+    
+      const details = document.querySelectorAll("details");
+      details.forEach(detail => {
+        detail.removeAttribute("open");
+      });
 
-        const details = document.querySelectorAll("details");
-        details.forEach(detail => {
-          detail.removeAttribute("open");
-        });
-      
-        this.fetchTraffic();
-        this.fetchData();
-      }
+      this.fetchTraffic();
+      this.fetchData();
     }
   },
   updated() {
