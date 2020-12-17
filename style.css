@@ -3,7 +3,7 @@
     outline: none;
 }
 
-#home {
+#home,#route-info {
     padding-top: 5rem;
 }
 
