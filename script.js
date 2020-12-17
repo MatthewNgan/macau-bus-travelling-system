@@ -1,6 +1,7 @@
 Vue.createApp({
   data() {
     return {
+      scroll: true,
       currentPage: 'home',
       busList: undefined,
       busRoute: "",
@@ -47,6 +48,7 @@ Vue.createApp({
       this.currentPage = 'info';
       const input = document.querySelector('#route-input');
       this.busRoute = route;
+      this.scroll = true;
       this.routeChanged();
     },
     calculateDistance(lon1,lat1,lon2,lat2){
@@ -217,7 +219,10 @@ Vue.createApp({
           this.busStationLocations = data.data.stationInfoList;
           this.noSuchNumberError = false;
           this.currentPage = 'info';
-          document.getElementById('route-info').scrollIntoView();
+          if (this.scroll) {
+            document.getElementById('route-info').scrollIntoView();
+            this.scroll = !this.scroll;
+          }
         }).
         catch((error) => {
           console.log(error)
