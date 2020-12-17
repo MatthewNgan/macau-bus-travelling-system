@@ -16,38 +16,44 @@
 <header class="shadow-sm sticky-top">
   <h1 class="display-2">巴士報站</h1>
 </header>
-<div id="home">
-  
-</div>
 <div id="route-info">
-  <div class="route-input">
-    <input v-model="busRoute" @input="routeChanged" class="rounded">
-    <!-- <button @click="routeChanged" type="button" id="fetchbutton" class="btn btn-success">查詢</button> -->
-    <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="btn btn-primary" id="changedirection">切換方向</button>
+  <div id="home" v-if="currentPage == 'home'">
+    <div class="container row">
+      <div v-if="busList" v-for="bus in busList.routeList" :class="{blue: bus.color.toLowerCase() == 'blue', orange: bus.color.toLowerCase() == 'orange'}" class="bus col-3 col-md-2">
+        <button class="btn" @click="requestRoute(bus.routeName)">{{ bus.routeName }}</button>
+      </div>
+    </div>
   </div>
-  <template v-if="busRouteInfo && busRouteData">
-    <details v-for="(station,index) in busRouteInfo" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
-      <summary class="traffic" :class="{green: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '1',yellow: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '2',orange: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '3',red: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '4'}">{{ station.staCode }} {{ getName(station.staCode) }}</summary>
-      <ul>
-        <li v-for="arrivingBus in arrivingBuses[index]">
-          {{ arrivingBus.plate }} {{ arrivingBus.speed }}km/h 距離呢個站仲有 {{ arrivingBus.distanceToThis }} 個站 <span v-if="arrivingBus.durationGet">約 {{ arrivingBus.duration }} 分鐘</span><span v-else>ETA 加載中<span>
-        </li>
-        <template v-for="bus in station.busInfo.filter((bus) => bus.status == '1')" :key="bus.busPlate">
-          <li>
-            {{ bus.busPlate }} <span v-if="index > 0">己進站</span><span v-else>即將發車</span>
+  <div id="route-info" v-if="currentPage == 'info'">
+    <div class="route-input">
+      <!-- <input v-model="busRoute" @input="routeChanged" class="rounded" id="route-input"> -->
+      <!-- <button @click="routeChanged" type="button" id="fetchbutton" class="btn btn-success">查詢</button> -->
+      <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="btn btn-primary" id="changedirection">切換方向</button>
+    </div>
+    <template v-if="busRouteInfo && busRouteData">
+      <details v-for="(station,index) in busRouteInfo" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
+        <summary class="traffic" :class="{green: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '1',yellow: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '2',orange: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '3',red: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '4'}">{{ station.staCode }} {{ getName(station.staCode) }}</summary>
+        <ul>
+          <li v-for="arrivingBus in arrivingBuses[index]">
+            {{ arrivingBus.plate }} {{ arrivingBus.speed }}km/h 距離呢個站仲有 {{ arrivingBus.distanceToThis }} 個站 <span v-if="arrivingBus.durationGet">約 {{ arrivingBus.duration }} 分鐘</span><span v-else>ETA 加載中<span>
           </li>
-        </template>
-        <template v-for="bus in station.busInfo.filter((bus) => bus.status == '0')" :key="bus.busPlate">
-          <li>
-            {{ bus.busPlate }} {{ bus.speed }}km/h 前往下一站中
-          </li>
-        </template>
-          <li v-if="station.busInfo.filter((bus) => bus.status == '1').length==0 && (!arrivingBuses[index] || arrivingBuses[index].length == 0)">
-			      尚未發車
-		      </li>
-      </ul>
-    </details>
-  </template>
+          <template v-for="bus in station.busInfo.filter((bus) => bus.status == '1')" :key="bus.busPlate">
+            <li>
+              {{ bus.busPlate }} <span v-if="index > 0">己進站</span><span v-else>即將發車</span>
+            </li>
+          </template>
+          <template v-for="bus in station.busInfo.filter((bus) => bus.status == '0')" :key="bus.busPlate">
+            <li>
+              {{ bus.busPlate }} {{ bus.speed }}km/h 前往下一站中
+            </li>
+          </template>
+            <li v-if="station.busInfo.filter((bus) => bus.status == '1').length==0 && (!arrivingBuses[index] || arrivingBuses[index].length == 0)">
+              尚未發車
+            </li>
+        </ul>
+      </details>
+    </template>
+  </div>
   <p v-if="noSuchNumberError">
     查無此路線
   </p>

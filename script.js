@@ -1,14 +1,8 @@
 Vue.createApp({
   data() {
     return {
+      currentPage: "home",
       busList: undefined,
-    }
-  },
-}).mount("#home");
-
-Vue.createApp({
-  data() {
-    return {
       busRoute: "",
       busDirection: 0,
       busAvailableDirection: "2",
@@ -26,6 +20,18 @@ Vue.createApp({
 	  };
   },
   methods: {
+    getRoutes() {
+      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html`)
+      .then(response => response.json())
+      .then(data => {
+        this.busList = data.data;
+      });
+    },
+    requestRoute(route) {
+      const input = document.querySelector('#route-input');
+      this.busRoute = route;
+      this.routeChanged();
+    },
     calculateDistance(lon1,lat1,lon2,lat2){
       const R = 6371e3; // metres
       const radlat1 = lat1 * Math.PI/180; // φ, λ in radians
@@ -193,6 +199,7 @@ Vue.createApp({
           this.busInfoLocations = data.data.busInfoList;
           this.busStationLocations = data.data.stationInfoList;
           this.noSuchNumberError = false;
+          this.currentPage = 'info';
         }).
         catch((error) => {
           console.log(error)
@@ -207,36 +214,38 @@ Vue.createApp({
       if (this.busRoute.toLowerCase() != "701x") this.busRoute = this.busRoute.toUpperCase();
       else this.busRoute = this.busRoute.toLowerCase();
 
-      // if (this.busRoute != "") {
-      var tempRoute = this.busRoute.valueOf();
-      setTimeout(() => {
-        if (tempRoute == this.busRoute) {
-          this.busAvailableDirection == "2";
-          this.currentlyOpenedIndex = undefined;
-          this.busDirection = 0;
-          this.routesGenerated = {};
-        
-          const details = document.querySelectorAll("details");
-          details.forEach(detail => {
-            detail.removeAttribute("open");
-          });
-    
-          this.fetchTraffic();
-          this.fetchData();
-        }
-      },1000);
-      //} else {
-      //  this.busAvailableDirection == "2";
-      //  this.currentlyOpenedIndex = undefined;
-      //  this.busDirection = 0;
-      //  this.routesGenerated = {};
-      //  const details = document.querySelectorAll("details");
-      //  details.forEach(detail => {
-      //    detail.removeAttribute("open");
-      //  });
-      //
-      //  this.fetchTraffic();
-      //  this.fetchData();
+      this.busAvailableDirection = "2";
+      if (this.busRoute != "") {
+        var tempRoute = this.busRoute.valueOf();
+        setTimeout(() => {
+          if (tempRoute == this.busRoute) {
+            this.currentlyOpenedIndex = undefined;
+            this.busDirection = 0;
+            this.routesGenerated = {};
+          
+            const details = document.querySelectorAll("details");
+            details.forEach(detail => {
+              detail.removeAttribute("open");
+            });
+      
+            this.fetchTraffic();
+            this.fetchData();
+          }
+        },1000);
+      } else {
+        this.busAvailableDirection = "2";
+        this.currentlyOpenedIndex = undefined;
+        this.busDirection = 0;
+        this.routesGenerated = {};
+
+        const details = document.querySelectorAll("details");
+        details.forEach(detail => {
+          detail.removeAttribute("open");
+        });
+      
+        this.fetchTraffic();
+        this.fetchData();
+      }
     }
   },
   updated() {
@@ -257,6 +266,7 @@ Vue.createApp({
     if (window.location.href.includes("localhost")) {
       this.corsProxy = "";
     }
+    this.getRoutes();
     setInterval(() => {
       this.fetchData();
     }, 15000);
