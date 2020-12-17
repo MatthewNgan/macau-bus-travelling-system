@@ -119,13 +119,13 @@ Vue.createApp({
               //   this.arrivingBuses[index].push(b);
               //   this.arrivingBuses[index] = [...new Set(this.arrivingBuses[index].slice())]
               //   if (this.arrivingBuses[index].slice().filter(bus => bus.durationGet).length == this.arrivingBuses[index].length) {
-              this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
               //   }
               // });
               count++;
             }
           }
         }
+        this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
       }
     },
     getName(code) {
@@ -155,7 +155,6 @@ Vue.createApp({
       if (this.busRoute != "") {
         fetch(
         `${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteData.html?routeName=${this.busRoute}&dir=${this.busDirection}&lang=zh-tw`).
-
         then(response => response.json()).
         then(data => {
           this.busRouteData = data.data.routeInfo;
@@ -223,7 +222,18 @@ Vue.createApp({
           this.fetchData();
         }
       },1000);
-      }
+      } else {
+        this.busAvailableDirection == "2";
+        this.currentlyOpenedIndex = undefined;
+        this.busDirection = 0;
+        this.routesGenerated = {};
+        const details = document.querySelectorAll("details");
+        details.forEach(detail => {
+          detail.removeAttribute("open");
+        });
+    
+        this.fetchTraffic();
+        this.fetchData();
     }
   },
   updated() {
