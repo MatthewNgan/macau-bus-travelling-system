@@ -22,18 +22,6 @@ Vue.createApp({
   },
   methods: {
     returnHome() {
-      this.busRoute = "";
-      this.busDirection = 0;
-      this.busAvailableDirection = "2";
-      this.busRouteInfo = undefined;
-      this.busRouteData = undefined;
-      this.busRouteTraffic = undefined;
-      this.busInfoLocations = undefined;
-      this.busStationLocations = undefined;
-      this.arrivingBuses = [];
-      this.noSuchNumberError = false;
-      this.routesGenerated = {};
-      this.currentlyOpenedIndex = undefined;
       document.getElementById('home').scrollIntoView();
       this.currentPage = 'home';
     },
