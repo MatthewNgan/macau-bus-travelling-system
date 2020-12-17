@@ -23,7 +23,6 @@ Vue.createApp({
   methods: {
     returnHome() {
       document.getElementById('home').scrollIntoView();
-      this.currentPage = 'home';
     },
     getRoutes() {
       fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html`)
