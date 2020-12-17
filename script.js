@@ -16,7 +16,7 @@ Vue.createApp({
       noSuchNumberError: false,
       routesGenerated: {},
       currentlyOpenedIndex: undefined,
-      corsProxy: "https://cors-for-macau-bus.herokuapp.com/",
+      corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
       // corsProxy: "",
 	  };
   },
