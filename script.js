@@ -1,7 +1,7 @@
 Vue.createApp({
   data() {
     return {
-      currentPage: "home",
+      currentPage: 'home',
       busList: undefined,
       busRoute: "",
       busDirection: 0,
@@ -21,7 +21,6 @@ Vue.createApp({
   },
   methods: {
     returnHome() {
-      this.currentPage = "home";
       this.busRoute = "";
       this.busDirection = 0;
       this.busAvailableDirection = "2";
@@ -34,6 +33,8 @@ Vue.createApp({
       this.noSuchNumberError = false;
       this.routesGenerated = {};
       this.currentlyOpenedIndex = undefined;
+      document.getElementById('home').scrollIntoView();
+      this.currentPage = 'home';
     },
     getRoutes() {
       fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html`)
@@ -43,6 +44,7 @@ Vue.createApp({
       });
     },
     requestRoute(route) {
+      this.currentPage = 'info';
       const input = document.querySelector('#route-input');
       this.busRoute = route;
       this.routeChanged();
@@ -215,6 +217,7 @@ Vue.createApp({
           this.busStationLocations = data.data.stationInfoList;
           this.noSuchNumberError = false;
           this.currentPage = 'info';
+          document.getElementById('route-info').scrollIntoView();
         }).
         catch((error) => {
           console.log(error)
@@ -273,4 +276,4 @@ Vue.createApp({
     },60000)
   }
 }).
-mount("#route-info");
+mount("#app");
