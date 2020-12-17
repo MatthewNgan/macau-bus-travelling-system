@@ -149,6 +149,9 @@ Vue.createApp({
           this.noSuchNumberError = true;
           this.busRouteTraffic = undefined;
         });
+      } else {
+        this.busRouteTraffic = undefined;
+        this.noSuchNumberError = false;
       }
     },
     fetchData() {
@@ -204,7 +207,7 @@ Vue.createApp({
       if (this.busRoute.toLowerCase() != "701x") this.busRoute = this.busRoute.toUpperCase();
       else this.busRoute = this.busRoute.toLowerCase();
 
-      if (this.busRoute == "") {
+      if (this.busRoute != "") {
       var tempRoute = this.busRoute.valueOf();
       setTimeout(() => {
         if (tempRoute == this.busRoute) {
