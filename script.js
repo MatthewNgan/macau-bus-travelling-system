@@ -207,7 +207,7 @@ Vue.createApp({
       if (this.busRoute.toLowerCase() != "701x") this.busRoute = this.busRoute.toUpperCase();
       else this.busRoute = this.busRoute.toLowerCase();
 
-      if (this.busRoute != "") {
+      // if (this.busRoute != "") {
       var tempRoute = this.busRoute.valueOf();
       setTimeout(() => {
         if (tempRoute == this.busRoute) {
@@ -225,18 +225,18 @@ Vue.createApp({
           this.fetchData();
         }
       },1000);
-      } else {
-        this.busAvailableDirection == "2";
-        this.currentlyOpenedIndex = undefined;
-        this.busDirection = 0;
-        this.routesGenerated = {};
-        const details = document.querySelectorAll("details");
-        details.forEach(detail => {
-          detail.removeAttribute("open");
-        });
-    
-        this.fetchTraffic();
-        this.fetchData();
+      //} else {
+      //  this.busAvailableDirection == "2";
+      //  this.currentlyOpenedIndex = undefined;
+      //  this.busDirection = 0;
+      //  this.routesGenerated = {};
+      //  const details = document.querySelectorAll("details");
+      //  details.forEach(detail => {
+      //    detail.removeAttribute("open");
+      //  });
+      //
+      //  this.fetchTraffic();
+      //  this.fetchData();
     }
   },
   updated() {
