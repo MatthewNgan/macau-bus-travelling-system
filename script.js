@@ -119,7 +119,7 @@ Vue.createApp({
               //   this.arrivingBuses[index].push(b);
               //   this.arrivingBuses[index] = [...new Set(this.arrivingBuses[index].slice())]
               //   if (this.arrivingBuses[index].slice().filter(bus => bus.durationGet).length == this.arrivingBuses[index].length) {
-              //     this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
+              this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
               //   }
               // });
               count++;
@@ -204,7 +204,8 @@ Vue.createApp({
     routeChanged() {
       if (this.busRoute.toLowerCase() != "701x") this.busRoute = this.busRoute.toUpperCase();
       else this.busRoute = this.busRoute.toLowerCase();
-      
+
+      if (this.busRoute == "") {
       var tempRoute = this.busRoute.valueOf();
       setTimeout(() => {
         if (tempRoute == this.busRoute) {
@@ -222,7 +223,9 @@ Vue.createApp({
           this.fetchData();
         }
       },1000);
-    } },
+      }
+    }
+  },
   updated() {
     const details = document.querySelectorAll("details");
     // Add the onclick listeners.
