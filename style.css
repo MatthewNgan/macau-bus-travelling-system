@@ -17,6 +17,10 @@ body > * {
     margin-bottom: 5px;
 }
 
+button:active, .traffic:active {
+    opacity: 0.75
+}
+
 header {
     padding: 10px 7.5px;
     height: 5rem;
