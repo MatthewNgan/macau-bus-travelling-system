@@ -19,7 +19,7 @@ body > * {
     margin-bottom: 5px;
 }
 
-button:hover, details[open] summary:hover {
+button:hover, details[open] summary {
     opacity: 0.75;
 }
 
