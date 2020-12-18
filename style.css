@@ -112,6 +112,7 @@ ul {
     z-index: 2000;
     height: 80vh;
     overflow-y: auto;
+    overflow-x: hidden;
     background-color: #ddd;
     border-radius: 7.5px;
     padding: 10px 0;
