@@ -118,6 +118,11 @@ ul {
     padding: 10px 0;
 }
 
+.no-scroll {
+    overflow: hidden;
+    max-height: 100%;
+}
+
 .traffic.green {
     background-color: lightgreen;
 }

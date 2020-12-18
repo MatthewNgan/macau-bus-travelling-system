@@ -37,7 +37,7 @@ Vue.createApp({
       this.routesGenerated = {};
       this.currentlyOpenedIndex = undefined;
       // document.getElementById('home').scrollIntoView();
-      document.querySelector('#home').scroll = "yes";
+      document.body.classList.rem("no-scroll");
     },
     getRoutes() {
       fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html`)
@@ -53,7 +53,7 @@ Vue.createApp({
       this.scroll = true;
       this.busColor = color;
       this.routeChanged();
-      document.querySelector('#home').scroll = "no";
+      document.body.classList.add("no-scroll");
     },
     calculateDistance(lon1,lat1,lon2,lat2){
       const R = 6371e3; // metres
