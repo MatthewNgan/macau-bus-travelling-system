@@ -17,7 +17,7 @@ body > * {
     margin-bottom: 5px;
 }
 
-button:active, .traffic:active {
+button:hover, .traffic:hover {
     opacity: 0.75
 }
 
