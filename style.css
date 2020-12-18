@@ -4,8 +4,7 @@
     transition: opacity 0.25s;
 }
 
-#home,#route-info {
-    position: relative;
+#home {
     padding-top: 5rem;
 }
 
@@ -19,7 +18,7 @@ body > * {
     margin-bottom: 5px;
 }
 
-button:hover, details[open] summary {
+.bus:hover, details[open] summary {
     opacity: 0.75;
 }
 
@@ -82,6 +81,42 @@ ul {
     padding-left: auto;
 }
 
+.bus-title {
+    margin-left: 10px;
+}
+
+.align-middle {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+#route-info {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-color:rgba(0, 0, 0, 0.3);
+    z-index: 1500;
+    top: 0;
+    right: 0;
+}
+
+.main-route-info {
+    position: fixed;
+    width: 95vw;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 2000;
+    height: 80vh;
+    overflow-y: auto;
+    background-color: #ddd;
+    border-radius: 7.5px;
+    padding: 10px 0;
+}
+
 .traffic.green {
     background-color: lightgreen;
 }
@@ -119,6 +154,9 @@ ul {
     input {
         background-color: #222;
         border: 1px solid #444;
+    }
+    .main-route-info {
+        background-color: #333;
     }
     .traffic.green {
         background-color: green;

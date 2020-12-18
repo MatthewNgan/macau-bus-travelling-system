@@ -5,6 +5,7 @@ Vue.createApp({
       currentPage: 'home',
       busList: undefined,
       busRoute: "",
+      busColor: "",
       busDirection: 0,
       busAvailableDirection: "2",
       busRouteInfo: undefined,
@@ -22,7 +23,20 @@ Vue.createApp({
   },
   methods: {
     returnHome() {
-      document.getElementById('home').scrollIntoView();
+      this.currentPage = 'home';
+      this.busRoute = "";
+      this.busDirection = 0;
+      this.busAvailableDirection = "2";
+      this.busRouteInfo = undefined;
+      this.busRouteData = undefined;
+      this.busRouteTraffic = undefined;
+      this.busInfoLocations = undefined;
+      this.busStationLocations = undefined;
+      this.arrivingBuses = [];
+      this.noSuchNumberError = false;
+      this.routesGenerated = {};
+      this.currentlyOpenedIndex = undefined;
+      // document.getElementById('home').scrollIntoView();
     },
     getRoutes() {
       fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html`)
@@ -31,11 +45,12 @@ Vue.createApp({
         this.busList = data.data;
       });
     },
-    requestRoute(route) {
+    requestRoute(route,color) {
       this.currentPage = 'info';
       const input = document.querySelector('#route-input');
       this.busRoute = route;
       this.scroll = true;
+      this.busColor = color;
       this.routeChanged();
     },
     calculateDistance(lon1,lat1,lon2,lat2){
@@ -207,7 +222,7 @@ Vue.createApp({
           this.noSuchNumberError = false;
           this.currentPage = 'info';
           if (this.scroll) {
-            document.getElementById('route-info').scrollIntoView();
+            // document.getElementById('route-info').scrollIntoView();
             this.scroll = !this.scroll;
           }
         }).
