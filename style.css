@@ -6,7 +6,7 @@
 
 #home,#route-info {
     position: relative;
-    top: 5rem;
+    padding-top: 5rem;
 }
 
 body {
@@ -19,7 +19,7 @@ body > * {
     margin-bottom: 5px;
 }
 
-button:hover, .traffic:hover {
+button:hover, details[open] summary:hover {
     opacity: 0.75;
 }
 
@@ -45,6 +45,7 @@ input {
 
 summary {
     padding: 10px;
+    opacity: 1;
 }
 
 ul {
