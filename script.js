@@ -37,7 +37,7 @@ Vue.createApp({
       this.routesGenerated = {};
       this.currentlyOpenedIndex = undefined;
       // document.getElementById('home').scrollIntoView();
-      document.body.classList.rem("no-scroll");
+      document.body.classList.remove("no-scroll");
     },
     getRoutes() {
       fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html`)
