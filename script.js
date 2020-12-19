@@ -24,8 +24,9 @@ Vue.createApp({
   methods: {
     returnHome() {
       document.body.classList.remove("no-scroll");
-      setTimeout(()=>{
       this.currentPage = 'home';
+      setTimeout(()=>{
+     
       this.busRoute = "";
       this.busDirection = 0;
       this.busAvailableDirection = "2";
