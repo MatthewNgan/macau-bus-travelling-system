@@ -107,7 +107,7 @@ ul {
     margin: auto;
     left: 0;
     right: 0;
-    top: 0;
+    top: 100;
     bottom: 0;
     z-index: 2000;
     height: 80vh;
@@ -116,6 +116,11 @@ ul {
     background-color: #ddd;
     border-radius: 7.5px;
     padding: 10px 0;
+    transition: top 0.75s ease-in 0s;
+}
+
+.main-route-info.info-shown {
+    top: 0;
 }
 
 .no-scroll {
