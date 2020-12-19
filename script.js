@@ -23,6 +23,8 @@ Vue.createApp({
   },
   methods: {
     returnHome() {
+      document.body.classList.remove("no-scroll");
+      setTimeout(()=>{
       this.currentPage = 'home';
       this.busRoute = "";
       this.busDirection = 0;
@@ -37,7 +39,7 @@ Vue.createApp({
       this.routesGenerated = {};
       this.currentlyOpenedIndex = undefined;
       // document.getElementById('home').scrollIntoView();
-      document.body.classList.remove("no-scroll");
+      },1000);
     },
     getRoutes() {
       fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html`)
