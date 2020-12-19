@@ -193,12 +193,12 @@ ul {
     }
     
     .traffic.red {
-        background-color: darkred;
+        background-color: firebrick;
         color: white;
     }
 
     .traffic.brown {
-        background-color: maroon;
+        background-color: darkred;
         color: white;
     }
 }
