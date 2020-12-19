@@ -121,7 +121,7 @@ ul {
     height: 80vh;
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: #ddd;
+    background-color: #efefef;
     border-radius: 7.5px;
     padding: 10px 0;
     transition: top 0.5s ease 0s;
