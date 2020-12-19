@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
     outline: none;
-    transition: opacity 0.25s;
+    transition: all 0.25s;
 }
 
 #home {
