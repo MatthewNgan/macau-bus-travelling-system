@@ -40,7 +40,7 @@ Vue.createApp({
       this.routesGenerated = {};
       this.currentlyOpenedIndex = undefined;
       // document.getElementById('home').scrollIntoView();
-      },1000);
+      },250);
     },
     getRoutes() {
       fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html`)
