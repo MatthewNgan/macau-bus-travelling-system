@@ -184,19 +184,16 @@ ul {
     .traffic.green {
         background-color: green;
     }
-    
     .traffic.yellow {
         background-color: olive;
     }
     .traffic.orange {
         background-color: rgb(182, 100, 0);
     }
-    
     .traffic.red {
         background-color: firebrick;
         color: white;
     }
-
     .traffic.brown {
         background-color: darkred;
         color: white;
