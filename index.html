@@ -43,10 +43,12 @@
     <div v-if="busRouteInfo && busRouteData" class="row">
       <div class="col">
         <details v-for="(station,index) in busRouteInfo" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
-          <summary class="traffic" :class="{green: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '1',yellow: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '2',orange: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '3',red: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '4',brown: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '5'}">
+          <summary class="traffic align-top" :class="{green: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '1',yellow: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '2',orange: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '3',red: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '4',brown: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '5'}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-fill station-dot" viewBox="0 0 16 16">
+              <circle cx="8" cy="8" r="8"/>
+            </svg>
             <span class="station-line"></span>
             </span>
-            <span class="circle station-dot"></span>
             <span class="station-name">{{ station.staCode }} {{ getName(station.staCode) }}</span>
           </summary>
           <ul>
