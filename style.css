@@ -101,10 +101,12 @@ ul {
     right: 0;
     opacity: 0;
     transition: opacity 0.5s linear 0;
+    pointer-events: none;
 }
 
 #route-info.shadow-shown {
     opacity: 1;
+    pointer-events: auto;
 }
 
 .main-route-info {
