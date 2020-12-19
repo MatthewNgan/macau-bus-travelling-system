@@ -22,6 +22,10 @@ body > * {
     filter: brightness(0.8);
 }
 
+.bus-info ul {
+    list-style: none;
+}
+
 details[open] summary {
     background-color: #ddd;
 }
@@ -66,6 +70,8 @@ ul {
 
 .route-input {
     display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .route-input > * {
@@ -81,6 +87,10 @@ ul {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+.bus-info {
+    overflow: hidden;
 }
 
 .bus.blue {
@@ -147,6 +157,8 @@ ul {
 
 .traffic {
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .traffic .station-name {
@@ -159,12 +171,16 @@ ul {
     z-index: 2000;
 }
 
+.traffic .station-dot circle {
+    color: #333;
+}
+
 .traffic .station-line {
     position: absolute;
     width: 5px;
-    height: 40px;
-    top: -20px;
-    left: 15px;
+    height: 300px;
+    top: 20px;
+    left: 12.5px;
     z-index: 1500;
 }
 
@@ -188,9 +204,8 @@ ul {
     background-color: brown;
     color: white;
 }
-
-details[open] + details .station-line {
-    opacity: 0;
+.traffic.last .station-line {
+    background-color: #efefef !important;
 }
 
 #app {
@@ -227,6 +242,9 @@ details[open] + details .station-line {
     .main-route-info {
         background-color: #333;
     }
+    .traffic .station-dot circle {
+        color: white;
+    }
     .traffic.green .station-line {
         background-color: rgb(0, 116, 0);
     }
@@ -243,5 +261,8 @@ details[open] + details .station-line {
     .traffic.brown .station-line {
         background-color: rgb(70, 0, 0);
         color: white;
+    }
+    .traffic.last .station-line {
+        background-color: #333 !important;
     }
 }

@@ -41,10 +41,10 @@
       <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="btn btn-primary" id="changedirection">切換方向</button>
     </div>
     <div v-if="busRouteInfo && busRouteData" class="row">
-      <div class="col">
+      <div class="col bus-info">
         <details v-for="(station,index) in busRouteInfo" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
-          <summary class="traffic align-top" :class="{green: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '1',yellow: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '2',orange: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '3',red: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '4',brown: busRouteTraffic && busRouteTraffic[index-1] && busRouteTraffic[index-1].routeTraffic == '5'}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-fill station-dot" viewBox="0 0 16 16">
+          <summary class="traffic align-top" :class="{last: index == busRouteInfo.length-1, green: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '1',yellow: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '2',orange: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '3',red: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '4',brown: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '5'}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-circle-fill station-dot" viewBox="0 0 16 16">
               <circle cx="8" cy="8" r="8"/>
             </svg>
             <span class="station-line"></span>
