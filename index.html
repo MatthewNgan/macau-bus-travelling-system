@@ -26,7 +26,7 @@
   </div>
   <div id="route-info" v-if="currentPage == 'info'" @click="returnHome">
   </div>
-  <div class="main-route-info" v-if="currentPage == 'info'">
+  <div class="main-route-info" :class="{'info-shown': currentPage == 'info'}">
     <div class="row ml-0 bus-title align-middle">
       <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="bus col-auto">
       </div><h1 class="header-1 col">{{ busRoute }}</h1>
