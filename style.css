@@ -107,7 +107,7 @@ ul {
     margin: auto;
     left: 0;
     right: 0;
-    top: 100;
+    top: 100vh;
     bottom: 0;
     z-index: 2000;
     height: 80vh;
