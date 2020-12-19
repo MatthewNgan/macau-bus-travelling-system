@@ -148,9 +148,13 @@ ul {
 }
 
 .traffic.red {
-    background-color:red;
+    background-color: orangered;
     color: white;
 }
+
+.traffic.brown {
+    background-color: brown;
+    color: white;
 
 #app {
     width: 100%;
@@ -192,4 +196,8 @@ ul {
         background-color: darkred;
         color: white;
     }
+
+    .traffic.brown {
+        background-color: maroon;
+        color: white;
 }
