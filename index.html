@@ -18,9 +18,11 @@
 </header>
 <div id="app">
   <div id="home">
-    <div class="container row">
-      <div v-if="busList" v-for="bus in busList.routeList" :class="{blue: bus.color.toLowerCase() == 'blue', orange: bus.color.toLowerCase() == 'orange'}" class="bus col-3 col-md-2">
+    <div class="container">
+      <div class="row">
+      <div v-if="busList" v-for="bus in busList.routeList" :class="{blue: bus.color.toLowerCase() == 'blue', orange: bus.color.toLowerCase() == 'orange'}" class="bus col-2">
         <button class="btn bus-btn" @click="requestRoute(bus.routeName,bus.color)">{{ bus.routeName }}</button>
+      </div>
       </div>
     </div>
   </div>
