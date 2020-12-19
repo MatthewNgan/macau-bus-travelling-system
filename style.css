@@ -25,6 +25,9 @@ body > * {
 details[open] summary {
     background-color: #ddd;
 }
+details[open] ul {
+    background-color: #ccc;
+}
 
 header {
     padding: 10px 7.5px;
@@ -50,6 +53,7 @@ summary {
     list-style: none;
     padding: 10px;
     opacity: 1;
+    transition: none !important;
 }
 
 summary::-webkit-details-marker {
@@ -61,7 +65,10 @@ summary .station-line {
 }
 
 ul {
-    margin-top: 1rem;
+    margin: 0;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: transparent;
 }
 
 .route-input {
@@ -147,6 +154,8 @@ ul {
 
 .traffic {
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .traffic .station-name {
@@ -155,8 +164,15 @@ ul {
 }
 
 .traffic .station-dot {
+    display: inline-block;
     position: relative;
     z-index: 2000;
+    width: 16px;
+    height: 16px;
+    border-radius: 25px;
+    border: 2px solid black;
+    background: RoyalBlue;
+    box-shadow: 0 0 10px rgba(0, 0, 0,0.75);
 }
 
 .traffic .station-line {
@@ -213,6 +229,9 @@ details[open] + details .station-line {
     details[open] summary {
         background-color: #222;
     }
+    details[open] ul {
+        background-color: #282828;
+    }
     h1 {
         color: #eee !important;
     }
@@ -226,6 +245,9 @@ details[open] + details .station-line {
     }
     .main-route-info {
         background-color: #333;
+    }
+    .traffic .station-dot {
+        border-color: white;
     }
     .traffic.green .station-line {
         background-color: rgb(0, 116, 0);
