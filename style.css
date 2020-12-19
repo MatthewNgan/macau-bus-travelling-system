@@ -19,7 +19,7 @@ body > * {
 }
 
 .bus:hover, details[open] summary {
-    opacity: 0.75;
+    filter: brightness(0.8);
 }
 
 header {
