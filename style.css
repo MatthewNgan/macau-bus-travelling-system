@@ -30,6 +30,10 @@ details[open] summary {
     background-color: #ddd;
 }
 
+details[open] summary .station-dot {
+    transform: scale(1.5);
+}
+
 header {
     padding: 10px 7.5px;
     height: 5rem;
@@ -110,6 +114,13 @@ ul {
     flex-direction: row;
 }
 
+.left {
+    position: relative;
+    z-index: 2500;
+    margin-left: -2rem;
+    padding-left: 8.75px;
+}
+
 #route-info {
     width: 100%;
     height: 100%;
@@ -144,6 +155,7 @@ ul {
     border-radius: 7.5px;
     padding: 10px 0;
     transition: top 0.5s ease 0s;
+    box-shadow: 0 0 50px rgba(0,0,0,0.75);
 }
 
 .main-route-info.info-shown {
