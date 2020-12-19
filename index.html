@@ -24,7 +24,7 @@
       </div>
     </div>
   </div>
-  <div id="route-info" v-if="currentPage == 'info'" @click="returnHome">
+  <div id="route-info" :class="{'shadow-shown': currentPage == 'info'}" @click="returnHome">
   </div>
   <div class="main-route-info" :class="{'info-shown': currentPage == 'info'}">
     <div class="row ml-0 bus-title align-middle">
