@@ -116,7 +116,7 @@ ul {
     background-color: #ddd;
     border-radius: 7.5px;
     padding: 10px 0;
-    transition: top 0.75s ease-out 0s;
+    transition: top 0.25s ease 0s;
 }
 
 .main-route-info.info-shown {
