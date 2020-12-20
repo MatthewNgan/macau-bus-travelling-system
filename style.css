@@ -66,7 +66,7 @@ input {
 
 summary {
     list-style: none;
-    padding: 10px;
+    padding: 10px 15px;
     opacity: 1;
 }
 
@@ -116,13 +116,14 @@ ul {
 }
 
 .bus-title {
-    margin-left: 10px;
+    padding-left: 20px;
     display: flex;
     align-items: center;
+    background-color: #333;
 }
 
 .bus-title .bus {
-    padding: 25px !important;
+    padding: 25px 15px !important;
 }
 
 .bus-title h5 {
@@ -200,8 +201,8 @@ ul {
     overflow-y: auto;
     overflow-x: hidden;
     background-color: #efefef;
-    border-radius: 7.5px;
-    padding: 10px 0;
+    border-radius: 10px;
+    padding-bottom: 10px;
     transition: top 0.5s ease 0s;
     box-shadow: 0 0 50px rgba(0,0,0,0.75);
 }
@@ -242,7 +243,7 @@ ul {
     width: 5px;
     height: calc(1.5rem + 20px);
     top: calc((1.5rem + 20px)/2);
-    left: calc(7.5px + (1rem/1.5/2));
+    left: calc(12.5px + (1rem/1.5/2));
     z-index: 1500;
     transition: none !important;
 }
