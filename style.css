@@ -224,12 +224,6 @@ ul {
     width: 100%;
 }
 
-@supports (font: -apple-system-body) {
-  html {
-    font: -apple-system-body !important;
-  }
-}
-
 @media (prefers-color-scheme: dark) {
     * {
         color: white;
