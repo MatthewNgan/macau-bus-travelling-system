@@ -130,6 +130,7 @@ Vue.createApp({
       const changeDirectionText = document.querySelector("#changedirection-text");
       changeDirectionText.disabled = true;
       this.fetchTraffic();
+      this.fetchRouteData();
       this.fetchData();
     },
     getArrivingBuses(index) {
