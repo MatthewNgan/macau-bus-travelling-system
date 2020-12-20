@@ -93,6 +93,7 @@ ul {
 }
 
 .bus {
+    font-size: 0.8rem;
     padding-bottom: 12px !important;
     margin: 10px 0;
     min-height: 50px;
@@ -116,12 +117,40 @@ ul {
 
 .bus-title {
     margin-left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.bus-title .bus {
+    padding: 25px !important;
+}
+
+.bus-title h5 {
+    color: #111 !important;
+}
+
+.bus-title .h3 {
+    font-size: calc(1.3rem + .6vw);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .align-middle {
     display: flex;
     align-items: center;
     flex-direction: row;
+}
+
+.destination {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.destination svg {
+    width: calc(1.3rem + .6vw);
+    height: calc(1.3rem + .6vw);
 }
 
 .left {
