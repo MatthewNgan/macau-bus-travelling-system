@@ -2,12 +2,12 @@
 	"short_name": "巴士報站",
 	"name": "澳門巴士報站",
 	"lang": "zh-Hant",
-	"start_url": "https://bus.matthewngan.ga/",
+	"start_url": "/",
 	"background_color": "#000000",
 	"theme_color": "#18703f",
 	"dir": "ltr",
 	"display": "standalone",
-	"orientation": "portrait",
+	"orientation": "portrait-primary",
 	"icons": [
 		{
 			"src": "/android-icon-192x192-dunplab-manifest-25120.png",
