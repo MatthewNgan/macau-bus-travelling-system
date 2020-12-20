@@ -31,7 +31,7 @@ details[open] summary {
 }
 
 details[open] summary .station-dot {
-    transform: scale(1.5);
+    transform: scale3d(1.5,1.5,1);
 }
 
 details[open] .last .station-line {
@@ -246,6 +246,7 @@ ul {
     z-index: 2000;
     width: calc(1rem/1.5);
     height: calc(1rem/1.5);
+    transform: scale3d(1,1,1);
 }
 
 .traffic .station-dot circle {
