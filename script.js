@@ -25,24 +25,23 @@ Vue.createApp({
     returnHome() {
       document.documentElement.classList.remove("no-scroll");
       document.body.classList.remove("no-scroll");
-      for (let element of document.querySelectorAll("#home, #home *")) {
+      for (let element of document.querySelectorAll("#app, #home, #home *")) {
         element.classList.remove("no-scroll");
       }
       this.currentPage = 'home';
       setTimeout(()=>{
-      
-      this.busRoute = "";
-      this.busDirection = 0;
-      this.busAvailableDirection = "2";
-      this.busRouteInfo = undefined;
-      this.busRouteData = undefined;
-      this.busRouteTraffic = undefined;
-      this.busInfoLocations = undefined;
-      this.busStationLocations = undefined;
-      this.arrivingBuses = [];
-      this.noSuchNumberError = false;
-      this.routesGenerated = {};
-      this.currentlyOpenedIndex = undefined;
+        this.busRoute = "";
+        this.busDirection = 0;
+        this.busAvailableDirection = "2";
+        this.busRouteInfo = undefined;
+        this.busRouteData = undefined;
+        this.busRouteTraffic = undefined;
+        this.busInfoLocations = undefined;
+        this.busStationLocations = undefined;
+        this.arrivingBuses = [];
+        this.noSuchNumberError = false;
+        this.routesGenerated = {};
+        this.currentlyOpenedIndex = undefined;
       },250);
     },
     getRoutes() {
@@ -61,7 +60,7 @@ Vue.createApp({
       this.routeChanged();
       document.body.classList.add("no-scroll");
       document.documentElement.classList.add("no-scroll");
-      for (let element of document.querySelectorAll("#home, #home *")) {
+      for (let element of document.querySelectorAll("#app, #home, #home *")) {
         element.classList.add("no-scroll");
       }
     },
