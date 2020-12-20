@@ -211,7 +211,7 @@ ul {
     width: 5px;
     height: calc(1.5rem + 20px);
     top: calc((1.5rem + 20px)/2);
-    left: 12.5px;
+    left: calc(7.5px + (1rem/1.5/2));
     z-index: 1500;
     transition: none !important;
 }
