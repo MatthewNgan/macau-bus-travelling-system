@@ -1,5 +1,5 @@
 const staticCacheName = 'site-assets-static-v1';
-const dynamicCache = 'site-dynamic-v1'
+const dynamicCache = 'site-dynamic-v2'
 const assets = [
     '/',
     '/index.html',
@@ -40,6 +40,7 @@ self.addEventListener('fetch', e => {
     e.respondWith(
         caches.match(e.request).then(cacheRes => {
             console.log(cacheRes);
+            console.log(cacheRes.headers.get('date'));
             if (cacheRes == undefined || Date.now() > cacheRes.headers.get('date') + 15000) {
                 return fetch(e.request).then(fetchRes => {
                     return caches.open(dynamicCache).then(cache => {
