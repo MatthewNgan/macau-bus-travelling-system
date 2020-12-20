@@ -210,9 +210,9 @@ Vue.createApp({
           this.busAvailableDirection = data.data.direction;
           if (data.data.direction == "0") {
             const changeDirectionIcon = document.querySelector("#changedirection-icon");
-            if (changeDirectionIcon) changeDirectionIcon.disabled = true;
+            if (changeDirectionIcon) changeDirectionIcon.disabled = false;
             const changeDirectionText = document.querySelector("#changedirection-text");
-            if (changeDirectionText) changeDirectionText.disabled = true;
+            if (changeDirectionText) changeDirectionText.disabled = false;
           }
         }).
         catch((error) => {

@@ -93,7 +93,7 @@
             <span class="station-line"></span>
             </span>
             <span class="station-name">{{ station.staCode }} {{ getName(station.staCode) }}</span>
-            <span v-if="busRouteData[index].suspendState == '1'" class="suspended">暫不停靠此站</span>
+            <span v-if="busRouteData[index] && busRouteData[index].suspendState == '1'" class="suspended">暫不停靠此站</span>
           </summary>
           <ul class="arriving-list">
             <li v-for="arrivingBus in arrivingBuses[index]">
