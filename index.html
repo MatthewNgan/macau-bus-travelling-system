@@ -25,7 +25,7 @@
   </div>
   <div id="route-info" :class="{'shadow-shown': currentPage == 'info'}" @click="returnHome">
   </div>
-  <div class="main-route-info" :class="{'info-shown': currentPage == 'info'}">
+  <div class="main-route-info" id="main-route-info" :class="{'info-shown': currentPage == 'info'}">
     <div class="row ml-0 bus-title" v-if="busRouteInfo && busRouteData">
       <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="bus col-auto">
         <h5>{{ busRoute }}</h5>
