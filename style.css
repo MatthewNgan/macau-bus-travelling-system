@@ -177,7 +177,7 @@ ul {
 
 .traffic .station-name {
     position: relative;
-    margin-left: 1rem;
+    margin-left: calc(2rem - (1rem / 1.5) - 10px);
 }
 
 .traffic .station-dot {
