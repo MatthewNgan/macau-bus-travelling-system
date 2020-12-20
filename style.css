@@ -136,11 +136,29 @@ ul {
     color: #111 !important;
 }
 
-.bus-title .h3, .route-input .h3 {
+.bus-title .h3 {
     font-size: calc(1.3rem + .6vw);
+}
+
+.route-input .h5 {
+    font-size: 1rem;
+}
+
+.bus-title .header, .route-input .header {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    margin-bottom: 0 !important;
+}
+
+.route-input-title {
+    display: flex;
+    align-items: center;
+    opacity: 0;
+}
+
+.route-input.stuck .route-input-title {
+    opacity: 1;
 }
 
 .align-middle {

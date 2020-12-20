@@ -67,7 +67,7 @@ Vue.createApp({
       // get the sticky element
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
         var thisTop = document.querySelector(".route-input").offsetTop;
-        this.isStuck = thisTop > 92;
+        document.querySelector(".route-input").classList.toggle("stuck", thisTop > 92);
       })
     },
     calculateDistance(lon1,lat1,lon2,lat2){
