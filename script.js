@@ -200,7 +200,7 @@ Vue.createApp({
         this.noSuchNumberError = false;
       }
     },
-    fetchData() {
+    fetchRouteData() {
       if (this.busRoute != "") {
         fetch(
         `${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteData.html?routeName=${this.busRoute}&dir=${this.busDirection}&lang=zh-tw`).
@@ -220,6 +220,10 @@ Vue.createApp({
           this.busRouteData = undefined;
           this.noSuchNumberError = true;
         });
+      }
+    },
+    fetchData() {
+      if (this.busRoute != "") {
         fetch(
         `${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/bus?routeName=${this.busRoute}&dir=${this.busDirection}`).
 
@@ -271,6 +275,7 @@ Vue.createApp({
       });
 
       this.fetchTraffic();
+      this.fetchRouteData();
       this.fetchData();
     }
   },
@@ -292,7 +297,6 @@ Vue.createApp({
     if (window.location.href.includes("localhost")) {
       this.corsProxy = "";
     }
-
     this.getRoutes();
     setInterval(() => {
       this.fetchData();
