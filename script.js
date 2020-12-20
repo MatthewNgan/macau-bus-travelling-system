@@ -125,8 +125,10 @@ Vue.createApp({
         detail.removeAttribute("open");
       });
       
-      const changeDirectionButton = document.querySelector("#changedirection");
-      changeDirectionButton.disabled = true;
+      const changeDirectionIcon = document.querySelector("#changedirection-icon");
+      changeDirectionIcon.disabled = true;
+      const changeDirectionText = document.querySelector("#changedirection-text");
+      changeDirectionText.disabled = true;
       this.fetchTraffic();
       this.fetchData();
     },
