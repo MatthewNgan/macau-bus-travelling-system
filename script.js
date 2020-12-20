@@ -209,8 +209,10 @@ Vue.createApp({
           this.busRouteData = data.data.routeInfo;
           this.busAvailableDirection = data.data.direction;
           if (data.data.direction == "0") {
-            const changeDirectionButton = document.querySelector("#changedirection");
-            if (changeDirectionButton) changeDirectionButton.disabled = false;
+            const changeDirectionIcon = document.querySelector("#changedirection-icon");
+            if (changeDirectionIcon) changeDirectionIcon.disabled = true;
+            const changeDirectionText = document.querySelector("#changedirection-text");
+            if (changeDirectionText) changeDirectionText.disabled = true;
           }
         }).
         catch((error) => {
