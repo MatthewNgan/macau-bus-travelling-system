@@ -219,7 +219,10 @@ ul {
 
 .no-scroll {
     overflow: hidden;
-    max-height: 100%;
+}
+
+.no-scroll .main-route-info {
+    -webkit-overflow-scrolling: touch;
 }
 
 .suspended {
