@@ -24,7 +24,7 @@ Vue.createApp({
   methods: {
     returnHome() {
       document.body.classList.remove("no-scroll");
-      disableBodyScroll(true, 'body');
+      disableBodyScroll(false, 'body');
       this.currentPage = 'home';
       setTimeout(()=>{
      
