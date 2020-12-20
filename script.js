@@ -27,27 +27,25 @@ Vue.createApp({
       /**
        * Private variables
        */
-      var _selector = false,
-          _element = false,
-          _clientY;
+      var _selector = false, _element = false, _clientY;
 
       /**
        * Polyfills for Element.matches and Element.closest
        */
       if (!Element.prototype.matches)
-          Element.prototype.matches = Element.prototype.msMatchesSelector ||
-          Element.prototype.webkitMatchesSelector;
+        Element.prototype.matches = Element.prototype.msMatchesSelector ||
+        Element.prototype.webkitMatchesSelector;
 
       if (!Element.prototype.closest)
-          Element.prototype.closest = function (s) {
-              var ancestor = this;
-              if (!document.documentElement.contains(el)) return null;
-              do {
-                  if (ancestor.matches(s)) return ancestor;
-                  ancestor = ancestor.parentElement;
-              } while (ancestor !== null);
-              return el;
-          };
+        Element.prototype.closest = function (s) {
+          var ancestor = this;
+          if (!document.documentElement.contains(el)) return null;
+          do {
+            if (ancestor.matches(s)) return ancestor;
+            ancestor = ancestor.parentElement;
+          } while (ancestor !== null);
+          return el;
+        };
 
       /**
        * Prevent default unless within _selector
@@ -56,9 +54,9 @@ Vue.createApp({
        * @return void
        */
       var preventBodyScroll = function (event) {
-          if (false === _element || !event.target.closest(_selector)) {
-              event.preventDefault();
-          }
+        if (false === _element || !event.target.closest(_selector)) {
+          event.preventDefault();
+        }
       };
 
       /**
@@ -69,10 +67,10 @@ Vue.createApp({
        * @return void
        */
       var captureClientY = function (event) {
-          // only respond to a single touch
-          if (event.targetTouches.length === 1) { 
-              _clientY = event.targetTouches[0].clientY;
-          }
+        // only respond to a single touch
+        if (event.targetTouches.length === 1) { 
+          _clientY = event.targetTouches[0].clientY;
+        }
       };
 
       /**
@@ -94,14 +92,14 @@ Vue.createApp({
         // The element at the top of its scroll,
         // and the user scrolls down
         if (_element.scrollTop === 0 && clientY > 0) {
-            event.preventDefault();
+          event.preventDefault();
         }
 
         // The element at the bottom of its scroll,
         // and the user scrolls up
       // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight#Problems_and_solutions
       if ((_element.scrollHeight - _element.scrollTop <= _element.clientHeight) && clientY < 0) {
-            event.preventDefault();
+          event.preventDefault();
         }
 
       };
@@ -116,8 +114,8 @@ Vue.createApp({
        */
       return function (allow, selector) {
         if (typeof selector !== "undefined") {
-            _selector = selector;
-            _element = document.querySelector(selector);
+          _selector = selector;
+          _element = document.querySelector(selector);
         }
         if (true === allow) {
         	if (false !== _element) {
@@ -137,8 +135,7 @@ Vue.createApp({
     returnHome() {
       document.documentElement.classList.remove("no-scroll");
       document.body.classList.remove("no-scroll");
-      document.querySelector("#app").classList.remove("no-scroll");
-      this.disableBodyScroll(false, '#home');
+      this.disableBodyScroll(false, '#main-route-info');
       this.currentPage = 'home';
       setTimeout(()=>{
       
@@ -173,8 +170,7 @@ Vue.createApp({
       this.routeChanged();
       document.body.classList.add("no-scroll");
       document.documentElement.classList.add("no-scroll");
-      document.querySelector("#app").classList.add("no-scroll");
-      this.disableBodyScroll(true, '#home');
+      this.disableBodyScroll(true, '#main-route-info');
     },
     calculateDistance(lon1,lat1,lon2,lat2){
       const R = 6371e3; // metres
