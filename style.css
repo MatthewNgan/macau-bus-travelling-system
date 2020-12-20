@@ -85,9 +85,10 @@ ul {
 
 .route-input {
     display: flex;
-    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     position: sticky;
-    top: 10px;
+    top: 0px;
     background-color: #efefef;
     z-index: 3000;
 }
