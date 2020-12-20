@@ -214,7 +214,7 @@ ul {
     box-shadow: 0 0 50px rgba(0,0,0,0.75);
 }
 
-.main-route-info.bus {
+.main-route-info .bus {
     margin: 0 !important;
 }
 
