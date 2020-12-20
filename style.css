@@ -119,7 +119,7 @@ ul {
     padding: 0 20px;
     display: flex;
     align-items: center;
-    background-color: #333;
+    background-color: #efefef;
 }
 
 .bus-title .bus {
@@ -202,7 +202,7 @@ ul {
     overflow-x: hidden;
     background-color: #efefef;
     border-radius: 10px;
-    padding: 0 10px;
+    padding: 10px 0;
     transition: top 0.5s ease 0s;
     box-shadow: 0 0 50px rgba(0,0,0,0.75);
 }
@@ -300,6 +300,9 @@ ul {
     input {
         background-color: #222;
         border: 1px solid #444;
+    }
+    .bus-title {
+        background-color: #333;
     }
     .main-route-info {
         background-color: #333;
