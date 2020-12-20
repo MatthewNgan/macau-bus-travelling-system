@@ -86,6 +86,8 @@ ul {
 .route-input {
     display: flex;
     margin-bottom: 10px;
+    position: sticky;
+    top: calc(10vh + 10px)
 }
 
 .route-input > * {
