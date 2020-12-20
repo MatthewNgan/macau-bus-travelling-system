@@ -216,6 +216,16 @@ ul {
     max-height: 100%;
 }
 
+.suspended {
+    position: absolute;
+    right: 2rem;
+    font-size: 0.9rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 1rem;
+    background-color: orangered;
+    color: white;
+}
+
 .traffic {
     position: relative;
 }
