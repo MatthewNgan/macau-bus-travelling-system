@@ -88,7 +88,7 @@ ul {
     padding-top: 10px;
     padding-bottom: 10px;
     position: sticky;
-    top: 0px;
+    top: -1px;
     background-color: #efefef;
     z-index: 3000;
 }
