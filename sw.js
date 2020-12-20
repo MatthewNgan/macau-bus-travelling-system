@@ -4,8 +4,11 @@ const assets = [
     '/index.html',
     '/script.js',
     '/style.css',
+    '/logo.png',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
-    'https://cors-anywhere.matthewngan.workers.dev/?https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html'
+    'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
+    'https://unpkg.com/vue@3.0.4/dist/vue.global.js',
+    'https://cors-anywhere.matthewngan.workers.dev/?https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html',
 
 ];
 
