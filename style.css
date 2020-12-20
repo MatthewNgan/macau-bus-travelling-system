@@ -219,11 +219,10 @@ ul {
 }
 
 .no-scroll {
+    touch-action: none;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
     overflow: hidden;
-}
-
-.no-scroll .main-route-info {
-    -webkit-overflow-scrolling: touch;
 }
 
 .suspended {
