@@ -90,6 +90,7 @@ ul {
     padding-bottom: 10px;
     position: sticky;
     top: -1px;
+    height: calc(2.75rem + 20px);
     background-color: #efefef;
     z-index: 3000;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
