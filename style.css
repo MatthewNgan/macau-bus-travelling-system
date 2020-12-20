@@ -174,13 +174,14 @@ ul {
 }
 
 .route-input-title {
-    display: flex;
     align-items: center;
+    display: none;
     opacity: 0;
     transition: opacity .075s linear !important;
 }
 
 .route-input.stuck .route-input-title {
+    display: flex;
     opacity: 1;
 }
 
@@ -188,6 +189,22 @@ ul {
     display: flex;
     align-items: center;
     flex-direction: row;
+}
+
+#changedirection-icon {
+    display: none;
+}
+
+.route-input.stuck #changedirection-icon {
+    display: block;
+}
+
+#changedirection-text {
+    display: block;
+}
+
+.route-input.stuck #changedirection-text {
+    display: none;
 }
 
 .destination {
