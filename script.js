@@ -25,7 +25,7 @@ Vue.createApp({
     returnHome() {
       document.documentElement.classList.remove("no-scroll");
       document.body.classList.remove("no-scroll");
-      disableBodyScroll(false, 'body');
+      disableBodyScroll(false, '#app');
       this.currentPage = 'home';
       setTimeout(()=>{
      
@@ -60,7 +60,7 @@ Vue.createApp({
       this.routeChanged();
       document.body.classList.add("no-scroll");
       document.documentElement.classList.add("no-scroll");
-      disableBodyScroll(true, 'body');
+      disableBodyScroll(true, '#app');
     },
     calculateDistance(lon1,lat1,lon2,lat2){
       const R = 6371e3; // metres
