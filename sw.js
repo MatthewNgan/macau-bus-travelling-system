@@ -1,5 +1,6 @@
-const staticCacheName = 'site-assets-static-v1';
-const dynamicCache = 'site-dynamic-v2'
+const staticCacheName = 'site-assets-static';
+const dynamicCache = 'site-dynamic';
+const count = 0;
 const assets = [
     '/',
     '/index.html',
@@ -37,19 +38,25 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
     // console.log('Fetch event', e)
-    e.respondWith(
-        caches.match(e.request).then(cacheRes => {
-            console.log(cacheRes);
-            if (cacheRes) console.log(cacheRes.headers.get('date'));
-            if (cacheRes == undefined || Date.now() > cacheRes.headers.get('date') + 15000) {
-                return fetch(e.request).then(fetchRes => {
-                    return caches.open(dynamicCache).then(cache => {
-                        cache.put(e.request.url, fetchRes.clone());
-                        return fetchRes;
-                    })
-                });
-            }
-            return cacheRes;
-        })
-    )
+    // e.respondWith(
+    //     caches.match(e.request).then(cacheRes => {
+    //         if (e.request.url.includes('dsat.gov.mo')) {
+    //             if (!cacheRes) {
+    //                 return fetch(e.request).then(fetchRes => {
+    //                     return caches.open("site-route-info-"+count).then(cache => {
+    //                         cache.put(e.request.url, fetchRes.clone());
+    //                         return fetchRes;
+    //                     })
+    //                 });
+    //             }
+    //             if (Date.now() > cacheRes.headers.get('date') + 15000) {
+    //                 caches.delete("site-route-info-" + (count-1).toString());
+    //             }
+    //             if (cacheRes == undefined || Date.now() > cacheRes.headers.get('date') + 15000) {
+                    
+    //             }
+    //         }
+    //         return cacheRes;
+    //     })
+    // )
 });
