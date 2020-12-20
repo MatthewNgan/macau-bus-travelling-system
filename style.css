@@ -80,6 +80,7 @@ summary .station-line {
 
 ul {
     margin-top: 1rem;
+    padding-left: calc(2rem + 5px);;
 }
 
 .route-input {
