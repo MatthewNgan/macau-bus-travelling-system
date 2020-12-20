@@ -121,6 +121,10 @@ ul {
     padding-left: 8.75px;
 }
 
+.left span {
+    margin-left: calc(2rem - 21.25px);
+}
+
 #route-info {
     width: 100%;
     height: 100%;
@@ -169,18 +173,18 @@ ul {
 
 .traffic {
     position: relative;
-    display: flex;
-    align-items: center;
 }
 
 .traffic .station-name {
     position: relative;
-    margin-left: 10px;
+    margin-left: 1rem;
 }
 
 .traffic .station-dot {
     position: relative;
     z-index: 2000;
+    width: calc(1rem/1.5);
+    height: calc(1rem/1.5);
 }
 
 .traffic .station-dot circle {
