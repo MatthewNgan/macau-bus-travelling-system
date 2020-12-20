@@ -87,7 +87,8 @@ ul {
     display: flex;
     margin-bottom: 10px;
     position: sticky;
-    top: calc(10vh + 10px)
+    top: 10px;
+    background-color: #efefef;
 }
 
 .route-input > * {
@@ -313,10 +314,7 @@ ul {
         background-color: #222;
         border: 1px solid #444;
     }
-    .bus-title {
-        background-color: #333;
-    }
-    .main-route-info {
+    .bus-title, .main-route-info, .route-input {
         background-color: #333;
     }
     .traffic .station-dot circle {
