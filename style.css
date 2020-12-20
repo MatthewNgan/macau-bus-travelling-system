@@ -215,7 +215,7 @@ ul {
 }
 
 .main-route-info .bus {
-    margin: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 .main-route-info.info-shown {
