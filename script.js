@@ -1,6 +1,7 @@
 Vue.createApp({
   data() {
     return {
+      isStuck: false,
       scroll: true,
       currentPage: 'home',
       busList: undefined,
@@ -63,6 +64,11 @@ Vue.createApp({
       for (let element of document.querySelectorAll("#app, #home, #home *")) {
         element.classList.add("no-scroll");
       }
+      // get the sticky element
+      document.querySelector("#main-route-info").addEventListener("scroll", () => {
+        var thisTop = document.querySelector(".route-input").offsetTop;
+        this.isStuck = thisTop > 92;
+      })
     },
     calculateDistance(lon1,lat1,lon2,lat2){
       const R = 6371e3; // metres
@@ -282,6 +288,7 @@ Vue.createApp({
     if (window.location.href.includes("localhost")) {
       this.corsProxy = "";
     }
+
     this.getRoutes();
     setInterval(() => {
       this.fetchData();
@@ -295,19 +302,4 @@ Vue.createApp({
   }
 }).
 mount("#app");
-
-/**
- * Prevent body scroll and overscroll.
- * Tested on mac, iOS chrome / Safari, Android Chrome.
- *
- * Based on: https://benfrain.com/preventing-body-scroll-for-modals-in-ios/
- *           https://stackoverflow.com/a/41601290
- *
- * Use in combination with:
- * html, body {overflow: hidden;}
- *
- * and: -webkit-overflow-scrolling: touch; for the element that should scroll.
- *
- * disableBodyScroll(true, '.i-can-scroll');
- */
 

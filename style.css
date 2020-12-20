@@ -136,7 +136,7 @@ ul {
     color: #111 !important;
 }
 
-.bus-title .h3 {
+.bus-title .h3, .route-input .h3 {
     font-size: calc(1.3rem + .6vw);
     display: flex;
     align-items: center;
