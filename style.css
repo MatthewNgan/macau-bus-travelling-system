@@ -43,6 +43,7 @@ details[open] summary .station-line {
 }
 
 header {
+    margin-top: -1px;
     padding: 10px 7.5px;
     padding-top: 15px;
     height: auto;
