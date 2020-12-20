@@ -117,7 +117,7 @@ ul {
 }
 
 .bus-title {
-    padding-left: 20px;
+    padding: 0 20px;
     display: flex;
     align-items: center;
     background-color: #333;
