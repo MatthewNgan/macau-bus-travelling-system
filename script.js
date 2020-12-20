@@ -25,10 +25,11 @@ Vue.createApp({
     returnHome() {
       document.documentElement.classList.remove("no-scroll");
       document.body.classList.remove("no-scroll");
+      document.querySelector("#app").classList.remove("no-scroll");
       disableBodyScroll(false, '#home');
       this.currentPage = 'home';
       setTimeout(()=>{
-     
+      
       this.busRoute = "";
       this.busDirection = 0;
       this.busAvailableDirection = "2";
@@ -60,6 +61,7 @@ Vue.createApp({
       this.routeChanged();
       document.body.classList.add("no-scroll");
       document.documentElement.classList.add("no-scroll");
+      document.querySelector("#app").classList.add("no-scroll");
       disableBodyScroll(true, '#home');
     },
     calculateDistance(lon1,lat1,lon2,lat2){
