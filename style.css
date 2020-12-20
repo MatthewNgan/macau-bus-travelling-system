@@ -101,7 +101,7 @@ ul {
 .input-bus {
     font-size: 0.9rem;
     padding: 0;
-    padding-top: 7.5px !important;
+    padding-top: 0.5rem !important;
     margin: 0px 0;
     height: 2.75rem;
     width: 2.75rem;
@@ -121,7 +121,7 @@ ul {
 
 .bus {
     font-size: 0.8rem;
-    padding-bottom: 12px !important;
+    padding-bottom: 0.8rem !important;
     margin: 10px 0;
     min-height: 50px;
     min-width: 50px;
