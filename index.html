@@ -45,13 +45,13 @@
         <details v-for="(station,index) in busRouteInfo" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
           <summary class="traffic" :class="{last: index == busRouteInfo.length-1, green: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '1',yellow: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '2',orange: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '3',red: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '4',brown: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '5'}">
             <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-circle-fill station-dot" viewBox="0 0 16 16">
-              <circle cx="8" cy="8" r="8"/>
+              <circle cx="8" cy="8" r="7"/>
             </svg>
             <span class="station-line"></span>
             </span>
             <span class="station-name">{{ station.staCode }} {{ getName(station.staCode) }}</span>
           </summary>
-          <ul>
+          <ul class="arriving-list">
             <li v-for="arrivingBus in arrivingBuses[index]">
               {{ arrivingBus.plate }} {{ arrivingBus.speed }}km/h 距離本站 {{ arrivingBus.distanceToThis }} 站 <span v-if="arrivingBus.durationGet">約 {{ arrivingBus.duration }} 分鐘</span><span v-else>ETA 加載中<span>
             </li>

@@ -34,6 +34,14 @@ details[open] summary .station-dot {
     transform: scale(1.5);
 }
 
+details[open] .last .station-line {
+    background-color: #ddd !important;
+}
+
+details[open] summary .station-line {
+    height: 400px;
+}
+
 header {
     padding: 10px 7.5px;
     height: 5rem;
@@ -118,11 +126,16 @@ ul {
     position: relative;
     z-index: 2500;
     margin-left: -2rem;
-    padding-left: 8.75px;
+}
+
+.left svg {
+    position: absolute;
+    top: calc(0.75rem - 6.25px);
+    left: 8.75px;
 }
 
 .left span {
-    margin-left: calc(2rem - 21.25px);
+    margin-left: 2rem;
 }
 
 #route-info {
@@ -188,16 +201,19 @@ ul {
 }
 
 .traffic .station-dot circle {
-    color: #333;
+    color: #777;
+    stroke: #00000022;
+    stroke-width: 2px;
 }
 
 .traffic .station-line {
     position: absolute;
     width: 5px;
-    height: 300px;
-    top: 20px;
+    height: calc(1.5rem + 20px);
+    top: calc((1.5rem + 20px)/2);
     left: 12.5px;
     z-index: 1500;
+    transition: none !important;
 }
 
 .traffic.green .station-line {
@@ -221,6 +237,7 @@ ul {
     color: white;
 }
 .traffic.last .station-line {
+    height: calc((1.5rem + 20px)/2);
     background-color: #efefef !important;
 }
 
@@ -237,6 +254,9 @@ ul {
     }
     details[open] summary {
         background-color: #222;
+    }
+    details[open] .last .station-line {
+        background-color: #222 !important;
     }
     h1 {
         color: #eee !important;
