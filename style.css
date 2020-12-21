@@ -195,6 +195,7 @@ ul {
     align-items: center;
     display: none;
     justify-content: center;
+    border: 2px solid red;
 }
 
 .route-input.stuck .route-input-title {
