@@ -186,7 +186,9 @@ ul {
 
 .bus-title .header, .route-input .header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
     flex-wrap: wrap;
     margin-bottom: 0 !important;
 }
