@@ -194,14 +194,13 @@ ul {
 
 .route-input-title {
     align-items: center;
+    justify-content: center;
     display: none;
-    opacity: 0;
     transition: opacity .075s linear !important;
 }
 
 .route-input.stuck .route-input-title {
     display: flex;
-    opacity: 1;
 }
 
 .align-middle {
