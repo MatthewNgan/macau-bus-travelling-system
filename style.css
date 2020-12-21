@@ -181,10 +181,6 @@ ul {
 }
 
 .route-input .h5 {
-    font-size: 0rem;
-}
-
-.route-input.stuck .h5 {
     font-size: 1rem;
 }
 
@@ -200,7 +196,6 @@ ul {
     align-items: center;
     display: flex;
     justify-content: center;
-    transition: font-size 0s;
     transition: opacity 0.075s linear 0s;
     opacity: 0;
 }
