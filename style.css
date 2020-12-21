@@ -196,7 +196,7 @@ ul {
     align-items: center;
     display: flex;
     justify-content: center;
-    transition: opacity 0.075s linear 0s;
+    transition: opacity 0.1s linear;
     opacity: 0;
 }
 
