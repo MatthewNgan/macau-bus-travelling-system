@@ -33,6 +33,9 @@
       <div class="row" v-if="busList">
         <button v-for="bus in busList.routeList" :class="{blue: bus.color.toLowerCase() == 'blue', orange: bus.color.toLowerCase() == 'orange'}" class="bus col-2 btn" @click="requestRoute(bus.routeName,bus.color)">{{ bus.routeName }}</button>
       </div>
+      <div v-else class="text-center loading">
+        載入中...
+      </div>
     </div>
   </div>
   <div id="route-info" :class="{'shadow-shown': currentPage == 'info'}" @click="returnHome" v-if="!noInternet">
