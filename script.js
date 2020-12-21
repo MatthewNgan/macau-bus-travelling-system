@@ -299,9 +299,20 @@ Vue.createApp({
     });
   },
   mounted() {
-    if (window.location.href.includes("localhost")) {
+    if (window.location.href.includes("127.0.0.1")) {
       this.corsProxy = "";
     }
+
+    var headerHeight = document.querySelector('header').offsetHeight;
+    var home = document.querySelector('#home');
+    home.style.paddingTop = headerHeight + "px";
+
+    window.addEventListener('resize',() => {
+      var headerHeight = document.querySelector('header').offsetHeight;
+      var home = document.querySelector('#home');
+      home.style.paddingTop = headerHeight + "px";
+    })
+
     this.getRoutes();
     setInterval(() => {
       this.fetchData();
