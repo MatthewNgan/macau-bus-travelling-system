@@ -1,4 +1,4 @@
-const staticCacheName = 'site-assets-static-v1';
+const staticCacheName = 'site-assets-static';
 const assets = [
     '/',
     '/index.html',
@@ -6,6 +6,7 @@ const assets = [
     '/style.css',
     '/logo.png',
     '/manifest.json',
+    '/cache.manifest',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
     'https://unpkg.com/vue@3.0.4/dist/vue.global.js',
