@@ -38,8 +38,8 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
     // console.log('Fetch event', e)
-    // e.respondWith(
-    //     caches.match(e.request).then(cacheRes => {
+    e.respondWith(
+        caches.match(e.request).then(cacheRes => {
     //         if (e.request.url.includes('dsat.gov.mo')) {
     //             if (!cacheRes) {
     //                 return fetch(e.request).then(fetchRes => {
@@ -56,7 +56,7 @@ self.addEventListener('fetch', e => {
                     
     //             }
     //         }
-    //         return cacheRes;
-    //     })
-    // )
+            return cacheRes || fetch(e.request.url);
+        })
+    )
 });

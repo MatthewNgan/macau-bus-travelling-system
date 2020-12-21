@@ -50,6 +50,9 @@ Vue.createApp({
       .then(response => response.json())
       .then(data => {
         this.busList = data.data;
+      })
+      .catch(() => {
+        window.location.href = '/error.html';
       });
     },
     requestRoute(route,color) {
