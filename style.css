@@ -2,7 +2,6 @@
     box-sizing: border-box;
     outline: none;
     transition: all 0.25s !important;
-    border: 2px solid red;
 }
 
 .logo {
