@@ -24,7 +24,7 @@
 <body>
 
 <header class="shadow-sm fixed-top">
-  <img src="logo.png" class="logo">
+  <img src="logo.png" class="logo" alt="Logo">
   <h1 class="display-3">巴士報站</h1>
 </header>
 <div id="app">
@@ -59,17 +59,15 @@
       </div>
     </div>
     <div class="route-input">
-      <!-- <input v-model="busRoute" @input="routeChanged" class="rounded" id="route-input"> -->
-      <!-- <button @click="routeChanged" type="button" id="fetchbutton" class="btn btn-success">查詢</button> -->
-      <button @click="returnHome" class="btn btn-secondary">
+      <button @click="returnHome" class="btn btn-secondary" name="return-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
         </svg>
       </button>
-      <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="btn btn-primary" id="changedirection-text">
+      <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="btn btn-primary" id="changedirection-text" name="change-direction-text-button">
         切換方向
       </button>
-      <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="btn btn-primary" id="changedirection-icon">
+      <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="btn btn-primary" id="changedirection-icon" name="change-direction-icon-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
         </svg>
@@ -138,7 +136,7 @@
         噢!
       </h1>
       <p>尚未連接網路</p>
-      <a href="/" class="btn btn-success">重試</a>
+      <a href="/" class="btn btn-success" name="retry">重試</a>
     </div>
   </div>
 </div>
