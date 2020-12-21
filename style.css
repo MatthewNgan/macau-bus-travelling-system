@@ -198,7 +198,7 @@ ul {
     border: 2px solid red;
 }
 
-.route-input-title {
+.route-input-title > * {
     border: 1px solid blue;
 }
 
