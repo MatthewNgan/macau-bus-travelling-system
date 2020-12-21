@@ -1,4 +1,4 @@
-const staticCacheName = 'site-assets-static#14';
+const staticCacheName = 'site-assets-static#15';
 const assets = [
     '/',
     '/index.html',
@@ -37,7 +37,7 @@ self.addEventListener('fetch', e => {
     // console.log('Fetch event', e)
     e.respondWith(
         caches.match(e.request).then(cacheRes => {
-            return cacheRes || fetch(e.request.url,{mode: 'cors'});
+            return cacheRes || fetch(e.request.url);
         })
     )
 });

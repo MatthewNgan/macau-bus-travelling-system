@@ -9,10 +9,6 @@
     height: calc(1.525rem + 3.3vw);
 }
 
-#home {
-    padding-top: 5rem;
-}
-
 body {
     display: flex;
     flex-direction: column;
