@@ -1,5 +1,4 @@
-const staticCacheName = 'site-assets-static';
-const dynamicCache = 'site-dynamic';
+const staticCacheName = 'site-assets-static-v1';
 const count = 0;
 const assets = [
     '/',
@@ -7,11 +6,12 @@ const assets = [
     '/script.js',
     '/style.css',
     '/logo.png',
+    '/error.html',
     'manifest.json',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
     'https://unpkg.com/vue@3.0.4/dist/vue.global.js',
-    'https://cors-anywhere.matthewngan.workers.dev/?https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html',
+    'https://bus.matthewngan.ga/apple-icon-144x144-dunplab-manifest-25120.png',
 
 ];
 
@@ -57,6 +57,8 @@ self.addEventListener('fetch', e => {
     //             }
     //         }
             return cacheRes || fetch(e.request.url);
+        }).catch(() => {
+            caches.match('/error.html');
         })
     )
 });
