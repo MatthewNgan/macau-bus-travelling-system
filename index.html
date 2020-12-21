@@ -62,7 +62,7 @@
       </div>
     </div>
     <div class="route-input row">
-      <button @click="returnHome" class="col-2 btn btn-secondary" aria-label="Return Button">
+      <button @click="returnHome" class="col-auto btn btn-secondary" aria-label="Return Button">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
         </svg>
@@ -70,11 +70,11 @@
       <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="col-auto btn btn-primary" id="changedirection-text" aria-label="change direction text button">
         切換方向
       </button>
-      <div class="col-8 row route-input-title" v-if="busRouteInfo && busRouteData">
+      <div class="col-6 row route-input-title" v-if="busRouteInfo && busRouteData">
         <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="input-bus col-auto">
           {{ busRoute }}
         </div>
-        <div class="header h5 col-auto">
+        <div class="header h5 col-5">
           <span class="destination">
             {{ getName(busRouteInfo[0].staCode) }}&nbsp;
           </span>
@@ -90,7 +90,7 @@
           </span>
         </div>
       </div>
-      <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="col-2 btn btn-primary" id="changedirection-icon" aria-label="change direction icon button">
+      <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="col-auto btn btn-primary" id="changedirection-icon" aria-label="change direction icon button">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
         </svg>
