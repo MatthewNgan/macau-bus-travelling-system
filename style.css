@@ -31,6 +31,13 @@ body > * {
     list-style: none;
 }
 
+.no-internet-error {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+}
+
 details[open] summary {
     background-color: #ddd;
 }
