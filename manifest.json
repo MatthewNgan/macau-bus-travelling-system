@@ -12,12 +12,14 @@
 		{
 			"src": "/bus-travelling-system-logo-512.png",
 			"type": "image/png",
-			"sizes": "512x512"
+			"sizes": "512x512",
+			"purpose": "any maskable"	  
 		},
 		{
 			"src": "/android-icon-192x192-dunplab-manifest-25120.png",
 			"type": "image/png",
-			"sizes": "192x192"
+			"sizes": "192x192",
+			"purpose": "any maskable"
 		},
 		{
 			"src": "/apple-icon-180x180-dunplab-manifest-25120.png",
