@@ -198,6 +198,10 @@ ul {
     border: 2px solid red;
 }
 
+.route-input-title {
+    border: 1px solid blue;
+}
+
 .route-input.stuck .route-input-title {
     display: flex;
 }
