@@ -3,6 +3,7 @@ Vue.createApp({
     return {
       isStuck: false,
       scroll: true,
+      noInternet: false,
       currentPage: 'home',
       busList: undefined,
       busRoute: "",
@@ -52,7 +53,7 @@ Vue.createApp({
         this.busList = data.data;
       })
       .catch(() => {
-        window.location.href = '/error.html';
+        this.noInternet = true;
       });
     },
     requestRoute(route,color) {

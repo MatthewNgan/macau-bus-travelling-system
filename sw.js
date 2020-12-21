@@ -6,8 +6,7 @@ const assets = [
     '/script.js',
     '/style.css',
     '/logo.png',
-    '/error.html',
-    'manifest.json',
+    '/manifest.json',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
     'https://unpkg.com/vue@3.0.4/dist/vue.global.js',
@@ -57,8 +56,6 @@ self.addEventListener('fetch', e => {
     //             }
     //         }
             return cacheRes || fetch(e.request.url);
-        }).catch(() => {
-            caches.match('/error.html');
         })
     )
 });
