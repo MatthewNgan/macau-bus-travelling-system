@@ -194,11 +194,11 @@ ul {
 .route-input-title {
     align-items: center;
     display: none;
+    justify-content: center;
 }
 
 .route-input.stuck .route-input-title {
     display: flex;
-    flex-wrap: nowrap;
 }
 
 .align-middle {
