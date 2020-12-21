@@ -70,11 +70,11 @@
       <button @click="changeDirection" type="button" v-if="busAvailableDirection == '0'" class="col-auto btn btn-primary" id="changedirection-text" aria-label="change direction text button">
         切換方向
       </button>
-      <div class="col-6 row route-input-title" v-if="busRouteInfo && busRouteData">
+      <div class="col-8 row route-input-title" v-if="busRouteInfo && busRouteData">
         <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="input-bus col-auto">
           {{ busRoute }}
         </div>
-        <div class="header h5 col-5">
+        <div class="header h5 col">
           <span class="destination">
             {{ getName(busRouteInfo[0].staCode) }}&nbsp;
           </span>
