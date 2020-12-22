@@ -27,84 +27,6 @@ Vue.createApp({
 	  };
   },
   methods: {
-    returnHome() {
-      document.documentElement.classList.remove("no-scroll");
-      document.body.classList.remove("no-scroll");
-      for (let element of document.querySelectorAll("#app, #home, #home *")) {
-        element.classList.remove("no-scroll");
-      }
-      document.querySelector(".route-input").classList.remove('stuck');
-      document.querySelector('#info-box').classList.remove('shown');
-      this.currentPage = 'home';
-      setTimeout(()=>{
-        this.busRoute = "";
-        this.busDirection = 0;
-        this.busAvailableDirection = "2";
-        this.busRouteInfo = undefined;
-        this.busRouteData = undefined;
-        this.busRouteTraffic = undefined;
-        this.busInfoLocations = undefined;
-        this.busStationLocations = undefined;
-        this.arrivingBuses = [];
-        this.noSuchNumberError = false;
-        this.routesGenerated = {};
-        this.currentlyOpenedIndex = undefined;
-      },250);
-    },
-    openInfoBox() {
-      this.currentPage = 'message';
-      document.querySelector('#info-box').classList.add('shown');
-    },
-    fetchDyMessage() {
-      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getDyMessage.html?lang=zh_tw`)
-      .then(response => response.json())
-      .then(data => {
-        this.messages = [];
-        for (item of data.data) {
-          var startTime = Date.parse(item.startTime.replace(' ','T') + '+08:00');
-          var expireTime = Date.parse(item.expireTime.replace(' ','T') + '+08:00');
-          var now = Date.now();
-          if (startTime < now && expireTime > now) {
-            this.messages.push(item.message);
-          }
-        }
-      })
-      .catch(() => {
-        this.noInternet = true;
-      })
-    },
-    fetchRoutes() {
-      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html?lang=zh_tw`)
-      .then(response => response.json())
-      .then(data => {
-        this.busList = data.data;
-      })
-      .catch(() => {
-        this.noInternet = true;
-      });
-    },
-    requestRoute(route,color) {
-      this.currentPage = 'info';
-      const input = document.querySelector('#route-input');
-      this.busRoute = route;
-      this.scroll = true;
-      this.busColor = color;
-      this.routeChanged();
-      document.body.classList.add("no-scroll");
-      document.documentElement.classList.add("no-scroll");
-      for (let element of document.querySelectorAll("#app, #home, #home *")) {
-        element.classList.add("no-scroll");
-      }
-      document.querySelector("#main-route-info").addEventListener("scroll", () => {
-        if (document.querySelector(".bus-title")) {
-          var thisTop = document.querySelector(".route-input").offsetTop;
-          var titleHeight = document.querySelector(".bus-title").offsetHeight;
-          document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
-        } else {
-          document.querySelector(".route-input").classList.toggle("stuck", false);
-        }
-      })
-    },
     calculateDistance(lon1,lat1,lon2,lat2){
       const R = 6371e3; // metres
       const radlat1 = lat1 * Math.PI/180; // φ, λ in radians
@@ -142,12 +64,6 @@ Vue.createApp({
       }
       return Math.ceil(totaldistance / 750);
     },
-    toggleIndex(index) {
-      let details = document.querySelectorAll('details');
-      if (details[index].hasAttribute("open")) {
-        this.getArrivingBuses(index);
-      }
-    },
     changeDirection() {
       if (this.busDirection == 0) {
         this.busDirection = 1;
@@ -167,113 +83,6 @@ Vue.createApp({
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
-    },
-    getArrivingBuses(index) {
-      this.arrivingBuses = [];
-      this.arrivingBuses[index] = [];
-      if (this.busRouteInfo) {
-        let stationBefore = this.busRouteInfo.slice(0, index).reverse();
-        var count = 0;
-        for (let i = 0; i < index; i++) {
-          for (let comingBus of stationBefore[i].busInfo) {
-            if (count < 3) {
-              this.arrivingBuses[index].push({
-                'plate': comingBus.busPlate,
-                'speed': comingBus.speed,
-                'distanceToThis': i + 1,
-                'durationGet': true,
-                'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude])+i,
-              });
-              // let url = `https://router.project-osrm.org/route/v1/driving/${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude},${this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude};${this.busStationLocations[index-i].longitude},${this.busStationLocations[index-i].latitude}`;
-              // url += `?generate_hints=false&skip_waypoints=true`;
-              // fetch(url).
-              // then(response => response.json()).
-              // then(data => {
-              //   let time = Math.ceil(data.routes[0].distance / 600);
-              //   let b = {
-              //     'plate': comingBus.busPlate,
-              //     'speed': comingBus.speed,
-              //     'distanceToThis': i + 1,
-              //     'durationGet': true,
-              //     'duration': time * parseInt(this.busRouteTraffic[index-i-1].newRouteTraffic) + this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude])+i,
-              //   };
-              //   this.arrivingBuses[index].shift();
-              //   this.arrivingBuses[index].push(b);
-              //   this.arrivingBuses[index] = [...new Set(this.arrivingBuses[index].slice())]
-              //   if (this.arrivingBuses[index].slice().filter(bus => bus.durationGet).length == this.arrivingBuses[index].length) {
-              //   }
-              // });
-              count++;
-            }
-          }
-        }
-        this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
-      }
-    },
-    getName(code) {
-      if (
-      this.busRouteData != undefined &&
-      this.busRouteData.filter(station => code == station.staCode)[0] !=
-      undefined)
-      {
-        return this.busRouteData.filter(station => code == station.staCode)[0].
-        staName;
-      }
-    },
-    fetchValid() {
-      // console.log(this.busRouteChange);
-      if (this.busRoute != "" && this.busRouteChange) {
-        let url = `${this.corsProxy}https://bis.dsat.gov.mo:37011/its/RouteChangeMsg/getValid.html?lang=zh_tw&routeName=${this.busRoute}`
-        fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          this.busChangeValid = data.data;
-          // console.log(this.busChangeValid);
-        })
-        .catch(() => {
-          this.noInternet = true;
-        })
-      }
-    },
-    fetchTraffic(){
-      if (this.busRoute != "") {
-        let url = `${this.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${"0".repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
-        fetch(url).then(response => response.json()).then(data => {
-          this.busRouteTraffic = data.data;
-          this.noSuchNumberError = false;
-        }).catch((error) => {
-          this.noSuchNumberError = true;
-          this.busRouteTraffic = undefined;
-          this.noInternet = true;
-        });
-      } else {
-        this.busRouteTraffic = undefined;
-        this.noSuchNumberError = false;
-      }
-    },
-    fetchRouteData() {
-      if (this.busRoute != "") {
-        fetch(
-        `${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteData.html?routeName=${this.busRoute}&dir=${this.busDirection}&lang=zh-tw`).
-        then(response => response.json()).
-        then(data => {
-          this.busRouteData = data.data.routeInfo;
-          this.busAvailableDirection = data.data.direction;
-          if (data.data.direction == "0") {
-            const changeDirectionIcon = document.querySelector("#changedirection-icon");
-            if (changeDirectionIcon) changeDirectionIcon.disabled = false;
-            const changeDirectionText = document.querySelector("#changedirection-text");
-            if (changeDirectionText) changeDirectionText.disabled = false;
-          }
-          this.busRouteChange = (data.data.routeChange == '1');
-          this.fetchValid();
-        }).
-        catch(() => {
-          this.busRouteData = undefined;
-          this.noSuchNumberError = true;
-          this.noInternet = true;
-        });
-      }
     },
     fetchData() {
       if (this.busRoute != "") {
@@ -313,6 +122,168 @@ Vue.createApp({
         this.noSuchNumberError = false;
       }
     },
+    fetchDyMessage() {
+      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getDyMessage.html?lang=zh_tw`)
+      .then(response => response.json())
+      .then(data => {
+        this.messages = [];
+        for (item of data.data) {
+          var startTime = Date.parse(item.startTime.replace(' ','T') + '+08:00');
+          var expireTime = Date.parse(item.expireTime.replace(' ','T') + '+08:00');
+          var now = Date.now();
+          if (startTime < now && expireTime > now) {
+            this.messages.push(item.message);
+          }
+        }
+      })
+      .catch(() => {
+        this.noInternet = true;
+      })
+    },
+    fetchRouteData() {
+      if (this.busRoute != "") {
+        fetch(
+        `${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteData.html?routeName=${this.busRoute}&dir=${this.busDirection}&lang=zh-tw`).
+        then(response => response.json()).
+        then(data => {
+          this.busRouteData = data.data.routeInfo;
+          this.busAvailableDirection = data.data.direction;
+          if (data.data.direction == "0") {
+            const changeDirectionIcon = document.querySelector("#changedirection-icon");
+            if (changeDirectionIcon) changeDirectionIcon.disabled = false;
+            const changeDirectionText = document.querySelector("#changedirection-text");
+            if (changeDirectionText) changeDirectionText.disabled = false;
+          }
+          this.busRouteChange = (data.data.routeChange == '1');
+          this.fetchValid();
+        }).
+        catch(() => {
+          this.busRouteData = undefined;
+          this.noSuchNumberError = true;
+          this.noInternet = true;
+        });
+      }
+    },
+    fetchRoutes() {
+      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html?lang=zh_tw`)
+      .then(response => response.json())
+      .then(data => {
+        this.busList = data.data;
+      })
+      .catch(() => {
+        this.noInternet = true;
+      });
+    },
+    fetchTraffic(){
+      if (this.busRoute != "") {
+        let url = `${this.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${"0".repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
+        fetch(url).then(response => response.json()).then(data => {
+          this.busRouteTraffic = data.data;
+          this.noSuchNumberError = false;
+        }).catch((error) => {
+          this.noSuchNumberError = true;
+          this.busRouteTraffic = undefined;
+          this.noInternet = true;
+        });
+      } else {
+        this.busRouteTraffic = undefined;
+        this.noSuchNumberError = false;
+      }
+    },
+    fetchValid() {
+      // console.log(this.busRouteChange);
+      if (this.busRoute != "" && this.busRouteChange) {
+        let url = `${this.corsProxy}https://bis.dsat.gov.mo:37011/its/RouteChangeMsg/getValid.html?lang=zh_tw&routeName=${this.busRoute}`
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          this.busChangeValid = data.data;
+          // console.log(this.busChangeValid);
+        })
+        .catch(() => {
+          this.noInternet = true;
+        })
+      }
+    },
+    getArrivingBuses(index) {
+      this.arrivingBuses = [];
+      this.arrivingBuses[index] = [];
+      if (this.busRouteInfo) {
+        let stationBefore = this.busRouteInfo.slice(0, index).reverse();
+        var count = 0;
+        for (let i = 0; i < index; i++) {
+          for (let comingBus of stationBefore[i].busInfo) {
+            if (count < 3) {
+              this.arrivingBuses[index].push({
+                'plate': comingBus.busPlate,
+                'speed': comingBus.speed,
+                'distanceToThis': i + 1,
+                'durationGet': true,
+                'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude])+i,
+              });
+              count++;
+            }
+          }
+        }
+        this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
+      }
+    },
+    getName(code) {
+      if (
+      this.busRouteData != undefined &&
+      this.busRouteData.filter(station => code == station.staCode)[0] !=
+      undefined)
+      {
+        return this.busRouteData.filter(station => code == station.staCode)[0].
+        staName;
+      }
+    },
+    requestRoute(route,color) {
+      this.currentPage = 'info';
+      const input = document.querySelector('#route-input');
+      this.busRoute = route;
+      this.scroll = true;
+      this.busColor = color;
+      this.routeChanged();
+      document.body.classList.add("no-scroll");
+      document.documentElement.classList.add("no-scroll");
+      for (let element of document.querySelectorAll("#app, #home, #home *")) {
+        element.classList.add("no-scroll");
+      }
+      document.querySelector("#main-route-info").addEventListener("scroll", () => {
+        if (document.querySelector(".bus-title")) {
+          var thisTop = document.querySelector(".route-input").offsetTop;
+          var titleHeight = document.querySelector(".bus-title").offsetHeight;
+          document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
+        } else {
+          document.querySelector(".route-input").classList.toggle("stuck", false);
+        }
+      })
+    },
+    returnHome() {
+      document.documentElement.classList.remove("no-scroll");
+      document.body.classList.remove("no-scroll");
+      for (let element of document.querySelectorAll("#app, #home, #home *")) {
+        element.classList.remove("no-scroll");
+      }
+      document.querySelector(".route-input").classList.remove('stuck');
+      document.querySelector('#info-box').classList.remove('shown');
+      this.currentPage = 'home';
+      setTimeout(()=>{
+        this.busRoute = "";
+        this.busDirection = 0;
+        this.busAvailableDirection = "2";
+        this.busRouteInfo = undefined;
+        this.busRouteData = undefined;
+        this.busRouteTraffic = undefined;
+        this.busInfoLocations = undefined;
+        this.busStationLocations = undefined;
+        this.arrivingBuses = [];
+        this.noSuchNumberError = false;
+        this.routesGenerated = {};
+        this.currentlyOpenedIndex = undefined;
+      },250);
+    },
     routeChanged() {
       if (this.busRoute.toLowerCase() != "701x") this.busRoute = this.busRoute.toUpperCase();
       else this.busRoute = this.busRoute.toLowerCase();
@@ -330,6 +301,16 @@ Vue.createApp({
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
+    },
+    openInfoBox() {
+      this.currentPage = 'message';
+      document.querySelector('#info-box').classList.add('shown');
+    },
+    toggleIndex(index) {
+      let details = document.querySelectorAll('details');
+      if (details[index].hasAttribute("open")) {
+        this.getArrivingBuses(index);
+      }
     }
   },
   updated() {
