@@ -64,6 +64,28 @@
     top: 0;
 }
 
+.arriving-list li {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 1.5rem;
+}
+
+@keyframes blink {
+    from, to { background-color:rgba(32, 117, 32, 1); }
+    50% { background-color:rgba(32, 117, 32, 0.75); }
+}
+
+.time-remaining {
+    display: block;
+    padding-left: .75rem;
+    padding-right: .75rem;
+    border-radius: .5rem;
+}
+
+.live {
+    animation: blink 5s ease-in infinite;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -338,6 +360,7 @@ ul {
     height: 80vh;
     padding: 10px 0;
     padding-top: 0;
+    scroll-behavior: smooth;
 }
 
 .main-route-info .bus {
