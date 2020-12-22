@@ -59,8 +59,8 @@ Vue.createApp({
       .then(data => {
         this.messages = [];
         for (item of data.data) {
-          var startTime = Date.parse(item.startTime + ' UTC+8');
-          var expireTime = Date.parse(item.expireTime + ' UTC+8');
+          var startTime = Date.parse(item.startTime.replace(' ','T') + '+08:00');
+          var expireTime = Date.parse(item.expireTime.replace(' ','T') + '+08:00');
           var now = Date.now();
           if (startTime < now && expireTime > now) {
             this.messages.push(item.message);
