@@ -22,6 +22,7 @@ Vue.createApp({
       noSuchNumberError: false,
       routesGenerated: {},
       currentlyOpenedIndex: undefined,
+      currentScrollToWarning: 0,
       corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
       // corsProxy: "",
 	  };
@@ -238,6 +239,15 @@ Vue.createApp({
         staName;
       }
     },
+    scrollToWarning() {
+      var mainRouteInfo = document.querySelector('.main-route-info');
+      var suspendedParent = document.querySelectorAll('.suspended')[this.currentScrollToWarning].parentNode;
+      var input = document.querySelector('.route-input');
+      mainRouteInfo.scrollTop = suspendedParent.offsetTop - input.offsetHeight;
+      var suspendedStations = this.busRouteData.filter(station => station.suspendState == "1");
+      if (this.currentScrollToWarning == suspendedStations.length-1) this.currentScrollToWarning = 0;
+      else this.currentScrollToWarning++;
+    },
     requestRoute(route,color) {
       this.currentPage = 'info';
       const input = document.querySelector('#route-input');
@@ -281,6 +291,7 @@ Vue.createApp({
         this.arrivingBuses = [];
         this.noSuchNumberError = false;
         this.routesGenerated = {};
+        this.currentScrollToWarning = 0;
         this.currentlyOpenedIndex = undefined;
       },250);
     },
