@@ -66,7 +66,6 @@ Vue.createApp({
             this.messages.push(item.message);
           }
         }
-        console.log(this.messages);
       })
     },
     fetchRoutes() {
