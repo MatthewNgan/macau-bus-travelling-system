@@ -132,7 +132,7 @@
             <span v-if="busRouteData[index] && busRouteData[index].suspendState == '1'" class="suspended">暫不停靠此站</span>
           </summary>
           <ul class="arriving-list">
-            <li v-for="arrivingBus in arrivingBuses[index]">
+            <li v-for="arrivingBus in arrivingBuses[index].slice().reverse()" v-if="arrivingBuses[index]">
               <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{ arrivingBus.plate }}</code> 距離本站 {{ arrivingBus.distanceToThis }} 站</span> 
               <span v-if="arrivingBus.durationGet" class="time-remaining live" :class="{green: arrivingBus.routeTraffic == '1',yellow: arrivingBus.routeTraffic == '2',orange: arrivingBus.routeTraffic == '3',red: arrivingBus.routeTraffic == '4',brown: arrivingBus.routeTraffic == '5'}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16">
@@ -153,7 +153,8 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="12.5" height="12.5" fill="currentColor" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
                   <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
                 </svg>
-                <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{ `${bus.busPlate.substring(0,2)}-${bus.busPlate.substring(2,4)}-${bus.busPlate.substring(4,6)}` }}</code> 前往下一站中</span>
+                <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{ `${bus.busPlate.substring(0,2)}-${bus.busPlate.substring(2,4)}-${bus.busPlate.substring(4,6)}` }}</code></span>
+                <span class="time-remaining">前往下一站中</span>
               </li>
             </template>
             <li v-if="station.busInfo.filter((bus) => bus.status == '1').length==0 && (!arrivingBuses[index] || arrivingBuses[index].length == 0)">
