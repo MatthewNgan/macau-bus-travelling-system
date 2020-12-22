@@ -16,6 +16,8 @@ Vue.createApp({
       busRouteTraffic: undefined,
       busInfoLocations: undefined,
       busStationLocations: undefined,
+      busRouteChange: false,
+      busChangeValid: undefined,
       arrivingBuses: [],
       noSuchNumberError: false,
       routesGenerated: {},
@@ -214,6 +216,18 @@ Vue.createApp({
         staName;
       }
     },
+    fetchValid() {
+      console.log(this.busRouteChange);
+      if (this.busRoute != "" && this.busRouteChange) {
+        let url = `${this.corsProxy}https://bis.dsat.gov.mo:37011/its/RouteChangeMsg/getValid.html?lang=zh_tw&routeName=${this.busRoute}`
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          this.busChangeValid = data.data;
+          console.log(this.busChangeValid);
+        })
+      }
+    },
     fetchTraffic(){
       if (this.busRoute != "") {
         let url = `${this.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${"0".repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
@@ -244,6 +258,8 @@ Vue.createApp({
             const changeDirectionText = document.querySelector("#changedirection-text");
             if (changeDirectionText) changeDirectionText.disabled = false;
           }
+          this.busRouteChange = (data.data.routeChange == '1');
+          this.fetchValid();
         }).
         catch((error) => {
           console.log(error)

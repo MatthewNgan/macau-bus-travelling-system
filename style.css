@@ -20,7 +20,6 @@
 .overlay {
     position: fixed;
     margin: auto;
-    z-index: 2000;
     left: 0;
     right: 0;
     top: 300vh;
@@ -32,6 +31,10 @@
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 3rem;
+}
+
+.overlay-2 {
+    z-index: 2000;
 }
 
 .info-box {
