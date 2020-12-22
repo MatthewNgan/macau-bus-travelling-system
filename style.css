@@ -61,7 +61,7 @@
 }
 
 .shown {
-    top: 0vh;
+    top: 0;
 }
 
 body {
@@ -84,8 +84,9 @@ body > * {
 
 .no-internet-error {
     display: flex;
-    height: 100vh;
-    width: 100%;
+    height: fit-content;
+    width: fit-content;
+    padding: 5rem;
     align-items: center;
 }
 
@@ -341,10 +342,6 @@ ul {
 
 .main-route-info .bus {
     margin-bottom: 0 !important;
-}
-
-.main-route-info.info-shown {
-    top: 0;
 }
 
 .no-scroll {

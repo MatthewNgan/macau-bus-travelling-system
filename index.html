@@ -34,7 +34,7 @@
       </svg>
     </button>
   </header>
-  <div id="route-info" :class="{'shadow-shown': currentPage == 'info' || currentPage == 'message'}" @click="returnHome" v-if="!noInternet">
+  <div id="route-info" :class="{'shadow-shown': currentPage != 'home'}" @click="returnHome" v-if="!noInternet">
   </div>
   <div id="info-box" class="info-box overlay overlay-2" v-if="messages">
     <div class="header">
@@ -58,7 +58,7 @@
       </div>
     </div>
   </div>
-  <div class="main-route-info overlay overlay-2" id="main-route-info" :class="{'info-shown': currentPage == 'info'}" v-if="!noInternet">
+  <div class="main-route-info overlay overlay-2" id="main-route-info" :class="{'shown': currentPage == 'info'}" v-if="!noInternet">
     <div class="row ml-0 bus-title" v-if="busRouteInfo && busRouteData">
       <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="bus col-auto">
         <h5>{{ busRoute }}</h5>
@@ -159,10 +159,10 @@
        載入中...
     </div>
   </div>
-  <div class="no-internet-error" v-if="noInternet">
+  <div class="no-internet-error overlay overlay-2" :class="{shown: noInternet}">
     <div class="container text-center">
       <h1>
-        噢!
+        OOPS!
       </h1>
       <p>尚未連接網路</p>
       <a href="/" class="btn btn-success" aria-label="Retry">重試</a>

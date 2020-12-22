@@ -69,6 +69,9 @@ Vue.createApp({
           }
         }
       })
+      .catch(() => {
+        this.noInternet = true;
+      })
     },
     fetchRoutes() {
       fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html?lang=zh_tw`)
@@ -92,12 +95,13 @@ Vue.createApp({
       for (let element of document.querySelectorAll("#app, #home, #home *")) {
         element.classList.add("no-scroll");
       }
-      // get the sticky element
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
         if (document.querySelector(".bus-title")) {
           var thisTop = document.querySelector(".route-input").offsetTop;
           var titleHeight = document.querySelector(".bus-title").offsetHeight;
           document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
+        } else {
+          document.querySelector(".route-input").classList.toggle("stuck", false);
         }
       })
     },
@@ -217,14 +221,17 @@ Vue.createApp({
       }
     },
     fetchValid() {
-      console.log(this.busRouteChange);
+      // console.log(this.busRouteChange);
       if (this.busRoute != "" && this.busRouteChange) {
         let url = `${this.corsProxy}https://bis.dsat.gov.mo:37011/its/RouteChangeMsg/getValid.html?lang=zh_tw&routeName=${this.busRoute}`
         fetch(url)
         .then(response => response.json())
         .then(data => {
           this.busChangeValid = data.data;
-          console.log(this.busChangeValid);
+          // console.log(this.busChangeValid);
+        })
+        .catch(() => {
+          this.noInternet = true;
         })
       }
     },
@@ -235,9 +242,9 @@ Vue.createApp({
           this.busRouteTraffic = data.data;
           this.noSuchNumberError = false;
         }).catch((error) => {
-          console.log(error)
           this.noSuchNumberError = true;
           this.busRouteTraffic = undefined;
+          this.noInternet = true;
         });
       } else {
         this.busRouteTraffic = undefined;
@@ -261,10 +268,10 @@ Vue.createApp({
           this.busRouteChange = (data.data.routeChange == '1');
           this.fetchValid();
         }).
-        catch((error) => {
-          console.log(error)
+        catch(() => {
           this.busRouteData = undefined;
           this.noSuchNumberError = true;
+          this.noInternet = true;
         });
       }
     },
@@ -278,10 +285,10 @@ Vue.createApp({
           this.busRouteInfo = data.data.routeInfo;
           this.noSuchNumberError = false;
         }).
-        catch((error) => {
-          console.log(error)
+        catch(() => {
           this.noSuchNumberError = true;
           this.busRouteInfo = undefined;
+          this.noInternet = true;
         });
         fetch(
         `${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/location?routeName=${this.busRoute}&dir=${this.busDirection}&lang=zh-tw`).
@@ -297,9 +304,9 @@ Vue.createApp({
             this.scroll = !this.scroll;
           }
         }).
-        catch((error) => {
-          console.log(error)
+        catch(() => {
           this.noSuchNumberError = true;
+          this.noInternet = true;
         });
       } else {
         this.busRouteInfo = undefined;
