@@ -5,6 +5,7 @@ Vue.createApp({
       scroll: true,
       noInternet: false,
       currentPage: 'home',
+      messages: undefined,
       busList: undefined,
       busRoute: "",
       busColor: "",
@@ -30,6 +31,8 @@ Vue.createApp({
       for (let element of document.querySelectorAll("#app, #home, #home *")) {
         element.classList.remove("no-scroll");
       }
+      document.querySelector(".route-input").classList.remove('stuck');
+      document.querySelector('#info-box').classList.remove('shown');
       this.currentPage = 'home';
       setTimeout(()=>{
         this.busRoute = "";
@@ -46,8 +49,28 @@ Vue.createApp({
         this.currentlyOpenedIndex = undefined;
       },250);
     },
-    getRoutes() {
-      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html`)
+    openInfoBox() {
+      this.currentPage = 'message';
+      document.querySelector('#info-box').classList.add('shown');
+    },
+    fetchDyMessage() {
+      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getDyMessage.html?lang=zh_tw`)
+      .then(response => response.json())
+      .then(data => {
+        this.messages = [];
+        for (item of data.data) {
+          var startTime = Date.parse(item.startTime + ' UTC+8');
+          var expireTime = Date.parse(item.expireTime + ' UTC+8');
+          var now = Date.now();
+          if (startTime < now && expireTime > now) {
+            this.messages.push(item.message);
+          }
+        }
+        console.log(this.messages);
+      })
+    },
+    fetchRoutes() {
+      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html?lang=zh_tw`)
       .then(response => response.json())
       .then(data => {
         this.busList = data.data;
@@ -70,8 +93,11 @@ Vue.createApp({
       }
       // get the sticky element
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
-        var thisTop = document.querySelector(".route-input").offsetTop;
-        document.querySelector(".route-input").classList.toggle("stuck", thisTop > 92);
+        if (document.querySelector(".bus-title")) {
+          var thisTop = document.querySelector(".route-input").offsetTop;
+          var titleHeight = document.querySelector(".bus-title").offsetHeight;
+          document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
+        }
       })
     },
     calculateDistance(lon1,lat1,lon2,lat2){
@@ -313,7 +339,8 @@ Vue.createApp({
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     })
 
-    this.getRoutes();
+    this.fetchRoutes();
+    this.fetchDyMessage();
     setInterval(() => {
       this.fetchData();
     }, 15000);
