@@ -1,7 +1,6 @@
 * {
     box-sizing: border-box;
     outline: none;
-    transition: all 0.25s !important;
 }
 
 .logo {
@@ -77,6 +76,7 @@ summary {
     list-style: none;
     padding: 10px 15px;
     opacity: 1;
+    transition: background-color 0.25s linear;
 }
 
 summary::-webkit-details-marker {

@@ -305,12 +305,12 @@ Vue.createApp({
 
     var headerHeight = document.querySelector('header').offsetHeight;
     var home = document.querySelector('#home');
-    home.style.paddingTop = headerHeight + "px";
+    home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
 
     window.addEventListener('resize',() => {
       var headerHeight = document.querySelector('header').offsetHeight;
       var home = document.querySelector('#home');
-      home.style.paddingTop = headerHeight + "px";
+      home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     })
 
     this.getRoutes();
