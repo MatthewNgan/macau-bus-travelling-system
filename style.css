@@ -70,20 +70,56 @@
     padding-right: 1.5rem;
 }
 
-@keyframes blink {
+@keyframes blink-green {
     from, to { background-color:rgba(32, 117, 32, 1); }
     50% { background-color:rgba(32, 117, 32, 0.75); }
 }
+@keyframes blink-yellow {
+    from, to { background-color:rgba(177, 180, 0, 1); }
+    50% { background-color:rgba(177, 180, 0, 0.75); }
+}
+@keyframes blink-orange {
+    from, to { background-color:rgba(161, 109, 24, 1); }
+    50% { background-color:rgba(161, 109, 24, 0.75); }
+}
+@keyframes blink-red {
+    from, to { background-color:rgba(131, 28, 28, 1); }
+    50% { background-color:rgba(131, 28, 28, 0.75); }
+}
+@keyframes blink-brown {
+    from, to { background-color:rgba(73, 27, 0, 1); }
+    50% { background-color:rgba(73, 27, 0, 0.75); }
+}
 
 .time-remaining {
-    display: block;
     padding-left: .75rem;
     padding-right: .75rem;
     border-radius: .5rem;
 }
 
 .live {
-    animation: blink 5s ease-in infinite;
+    transform: scale(0.9);
+    color: white;
+}
+
+.live.green {
+    animation: blink-green 5s linear infinite;
+}
+
+.live.yellow {
+    animation: blink-yellow 5s linear infinite;
+}
+
+.live.orange {
+    animation: blink-orange 5s linear infinite;
+}
+
+.live.red {
+    animation: blink-red 5s linear infinite;
+}
+
+.live.brown {
+    animation: blink-brown 5s linear infinite;
 }
 
 body {
@@ -104,6 +140,20 @@ body > * {
     list-style: none;
 }
 
+code {
+    color: white;
+    padding: 2px 5px;
+    border-radius: 2px;
+}
+
+code.blue {
+    background-color: #276299;
+}
+
+code.orange {
+    background-color: #c26c32;
+}
+
 .no-internet-error {
     display: flex;
     height: fit-content;
@@ -122,6 +172,10 @@ details[open] summary .station-dot {
 
 details[open] summary .station-line {
     height: 400px;
+}
+
+details[open] .last .station-line {
+    background-color: #ddd !important;
 }
 
 header {
@@ -403,7 +457,7 @@ ul {
 }
 
 .traffic .station-dot circle {
-    color: #777;
+    color: #222;
     stroke: #00000022;
     stroke-width: 2px;
 }
@@ -416,14 +470,15 @@ ul {
     left: calc(12.5px + (1rem/1.5/2));
     z-index: 1500;
     transition: background-color 0.2s linear;
+    box-shadow: 0 0 1px rgba(83, 83, 83, 0.1);
 }
 
 .traffic.green .station-line {
-    background-color: lightgreen;
+    background-color: rgb(49, 230, 49);
 }
 
 .traffic.yellow .station-line {
-    background-color: yellow;
+    background-color: rgb(221, 221, 28);
 }
 .traffic.orange .station-line {
     background-color: orange;
@@ -431,21 +486,16 @@ ul {
 
 .traffic.red .station-line {
     background-color: orangered;
-    color: white;
 }
 
 .traffic.brown .station-line {
     background-color: brown;
-    color: white;
 }
 .traffic.last .station-line {
-    height: calc((1.5rem + 20px)/2);
-    background-color: #efefef !important;
-}
-
-.last .station-line {
     transition: background-color 0.25s ease !important;
-    background-color: #ddd !important;
+    background-color: #efefef;
+    height: calc((1.5rem + 20px)/2);
+    box-shadow: none !important;
 }
 
 #app {
@@ -493,11 +543,9 @@ ul {
     }
     .traffic.red .station-line {
         background-color: rgb(126, 0, 0);
-        color: white;
     }
     .traffic.brown .station-line {
         background-color: rgb(70, 0, 0);
-        color: white;
     }
     .traffic.last .station-line {
         background-color: #333 !important;
