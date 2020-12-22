@@ -392,7 +392,7 @@ ul {
     top: calc((1.5rem + 20px)/2);
     left: calc(12.5px + (1rem/1.5/2));
     z-index: 1500;
-    transition: none !important;
+    transition: background-color 0.2s linear;
 }
 
 .traffic.green .station-line {
