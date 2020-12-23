@@ -2,6 +2,19 @@ Vue.createApp({
   data() {
     return {
       busMap: undefined,
+      mapLayerGroup: undefined,
+      blueBusIcon: L.icon({
+        iconUrl: '/images/icons/blue-bus-icon.png',
+        iconSize: [24,24],
+        iconAnchor: [12,12],
+        popupAnchor: [0,-15]
+      }),
+      orangeBusIcon: L.icon({
+        iconUrl: '/images/icons/orange-bus-icon.png',
+        iconSize: [24,24],
+        iconAnchor: [12,12],
+        popupAnchor: [0,-15]
+      }),
       isStuck: false,
       scroll: true,
       noInternet: false,
@@ -113,6 +126,11 @@ Vue.createApp({
           if (this.scroll) {
             // document.getElementById('route-info').scrollIntoView();
             this.scroll = !this.scroll;
+          }
+          this.mapLayerGroup.clearLayers();
+          for (bus of this.busInfoLocations) {
+            if (this.busColor.toLowerCase() == 'blue') L.marker([parseFloat(bus.latitude), parseFloat(bus.longitude)], {icon: this.blueBusIcon}).addTo(this.mapLayerGroup).bindPopup(`${bus.busPlate} ${bus.speed}km/h`);
+            else if (this.busColor.toLowerCase() == 'orange') L.marker([parseFloat(bus.latitude), parseFloat(bus.longitude)], {icon: this.orangeBusIcon}).addTo(this.mapLayerGroup).bindPopup(`${bus.busPlate} ${bus.speed}km/h`);
           }
         }).
         catch(() => {
@@ -372,6 +390,7 @@ Vue.createApp({
 
     this.busMap = L.map('bus-map');
     this.busMap.setView([22.17,113.5597966], 12);
+    this.mapLayerGroup = L.layerGroup().addTo(this.busMap);
     L.tileLayer(`${this.corsProxy}https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,

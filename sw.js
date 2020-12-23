@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static#40';
+const staticCacheName = 'site-static#41';
 const dynamicCacheName = 'site-dynamic#4'
 const assets = [
     '/',
@@ -8,6 +8,8 @@ const assets = [
     '/images/icons/logo.png',
     '/images/icons/rounded-logo.png',
     '/manifest.json',
+    '/images/icons/blue-bus-icon.png',
+    '/images/icons/orange-bus-icon.png',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
     'https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js'
