@@ -1,17 +1,16 @@
-const staticCacheName = 'site-static#38';
-const dynamicCacheName = 'site-dynamic#3'
+const staticCacheName = 'site-static#39';
+const dynamicCacheName = 'site-dynamic#4'
 const assets = [
     '/',
     '/index.html',
     '/script.js',
     '/style.css',
-    '/logo.png',
-    '/rounded-logo.png',
+    '/images/icons/logo.png',
+    '/images/icons/rounded-logo.png',
     '/manifest.json',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
-    'https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js',
-    'https://bus.matthewngan.ga/apple-icon-144x144-dunplab-manifest-25120.png'
+    'https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js'
 ];
 
 self.addEventListener('install', e => {
