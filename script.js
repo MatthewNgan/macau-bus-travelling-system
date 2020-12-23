@@ -270,7 +270,7 @@ Vue.createApp({
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
         if (document.querySelector(".bus-title")) {
           var thisTop = document.querySelector(".route-input").offsetTop;
-          var titleHeight = document.querySelector(".bus-title").offsetHeight;
+          var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#mapid").offsetHeight;
           document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
         } else {
           document.querySelector(".route-input").classList.toggle("stuck", false);
@@ -346,8 +346,10 @@ Vue.createApp({
     });
   },
   mounted() {
+    var mapboxAccessToken = 'MAPBOX_API_KEY';
     if (window.location.href.includes("127.0.0.1")) {
       this.corsProxy = "";
+      mapboxAccessToken = 'pk.eyJ1IjoibWF0dGhld25nYW4iLCJhIjoiY2tqMTNzNzJuMWtjaDJ5bTBucjNrM3I3NiJ9.DOqgKmjCq8zL50KNIvZNlg';
     }
 
     var headerHeight = document.querySelector('header').offsetHeight;
@@ -359,7 +361,7 @@ Vue.createApp({
       var home = document.querySelector('#home');
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     });
-    
+
     var mymap = L.map('mapid').setView([22.17,113.5597966], 12);
     L.tileLayer(`${this.corsProxy}https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -367,7 +369,7 @@ Vue.createApp({
         id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1,
-        accessToken: 'MAPBOX_API_KEY'
+        accessToken: mapboxAccessToken,
     }).addTo(mymap);
 
     this.fetchRoutes();

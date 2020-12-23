@@ -282,6 +282,9 @@ ul {
 
 .bus-info {
     overflow: hidden;
+    background-color: #efefef;
+    position: relative;
+    z-index: 2000;
 }
 
 .bus.blue {
@@ -296,6 +299,9 @@ ul {
     display: flex;
     align-items: center;
     background-color: #efefef;
+    position: sticky;
+    top: 0;
+    z-index: 2000;
 }
 
 .bus-title .bus {
@@ -449,7 +455,7 @@ ul {
 
 .traffic .station-dot {
     position: relative;
-    z-index: 2000;
+    z-index: 2200;
     width: calc(1rem/1.5);
     height: calc(1rem/1.5);
     transform: scale3d(1,1,1);
@@ -468,7 +474,7 @@ ul {
     height: calc(1.5rem + 20px);
     top: calc((1.5rem + 20px)/2);
     left: calc(12.5px + (1rem/1.5/2));
-    z-index: 1500;
+    z-index: 2100;
     transition: background-color 0.2s linear;
     box-shadow: 0 0 1px rgba(83, 83, 83, 0.1);
 }
@@ -504,7 +510,7 @@ ul {
 
 #mapid {
     height: 50vh;
-    width: 50vw;
+    width: 100%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -530,6 +536,9 @@ ul {
     input {
         background-color: #222;
         border: 1px solid #444;
+    }
+    .bus-info {
+        background-color: #333;
     }
     .bus-title, .overlay, .route-input {
         background-color: #333;

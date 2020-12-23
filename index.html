@@ -35,7 +35,6 @@
       </svg>
     </button>
   </header>
-  <div id="mapid"></div>
   <div id="route-info" :class="{'shadow-shown': currentPage != 'home'}" @click="returnHome" v-if="!noInternet">
   </div>
   <div id="info-box" class="info-box overlay overlay-2" v-if="messages">
@@ -81,6 +80,7 @@
         </span>
       </div>
     </div>
+    <div id="mapid"></div>
     <div class="route-input">
       <button @click="returnHome" class="col-auto btn btn-secondary" aria-label="Return Button">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
