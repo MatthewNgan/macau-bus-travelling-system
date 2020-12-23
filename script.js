@@ -1,6 +1,7 @@
 Vue.createApp({
   data() {
     return {
+      busMap: undefined,
       isStuck: false,
       scroll: true,
       noInternet: false,
@@ -280,6 +281,9 @@ Vue.createApp({
         }
       })
     },
+    resetMap() {
+      this.busMap.setView([22.17,113.56], 12);
+    },
     returnHome() {
       document.documentElement.classList.remove("no-scroll");
       document.body.classList.remove("no-scroll");
@@ -303,6 +307,7 @@ Vue.createApp({
         this.routesGenerated = {};
         this.currentScrollToWarning = 0;
         this.currentlyOpenedIndex = undefined;
+        this.resetMap();
       },250);
     },
     routeChanged() {
@@ -365,7 +370,8 @@ Vue.createApp({
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     });
 
-    var mymap = L.map('bus-map').setView([22.17,113.5597966], 12);
+    this.busMap = L.map('bus-map');
+    this.busMap.setView([22.17,113.5597966], 12);
     L.tileLayer(`${this.corsProxy}https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
@@ -373,7 +379,7 @@ Vue.createApp({
         tileSize: 512,
         zoomOffset: -1,
         accessToken: mapboxAccessToken,
-    }).addTo(mymap);
+    }).addTo(this.busMap);
 
     this.fetchRoutes();
     this.fetchDyMessage();
