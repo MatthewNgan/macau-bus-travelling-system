@@ -250,10 +250,13 @@ Vue.createApp({
       var mainRouteInfo = document.querySelector('.main-route-info');
       var suspendedParent = document.querySelectorAll('.suspended')[this.currentScrollToWarning].parentNode;
       var input = document.querySelector('.route-input');
-      mainRouteInfo.scrollTop = suspendedParent.offsetTop - input.offsetHeight;
+      var busMap = document.querySelector('#bus-map');
+      var title = document.querySelector('.bus-title');
+      mainRouteInfo.scrollTop = suspendedParent.offsetTop + busMap.offsetHeight + title.offsetHeight;
       var suspendedStations = this.busRouteData.filter(station => station.suspendState == "1");
       if (this.currentScrollToWarning == suspendedStations.length-1) this.currentScrollToWarning = 0;
       else this.currentScrollToWarning++;
+      console.log(busMap.offsetHeight,input.offsetHeight,suspendedParent.offsetTop,mainRouteInfo.scrollTop);
     },
     requestRoute(route,color) {
       this.currentPage = 'info';
@@ -270,7 +273,7 @@ Vue.createApp({
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
         if (document.querySelector(".bus-title")) {
           var thisTop = document.querySelector(".route-input").offsetTop;
-          var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#mapid").offsetHeight;
+          var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#bus-map").offsetHeight;
           document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
         } else {
           document.querySelector(".route-input").classList.toggle("stuck", false);
@@ -362,7 +365,7 @@ Vue.createApp({
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     });
 
-    var mymap = L.map('mapid').setView([22.17,113.5597966], 12);
+    var mymap = L.map('bus-map').setView([22.17,113.5597966], 12);
     L.tileLayer(`${this.corsProxy}https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
