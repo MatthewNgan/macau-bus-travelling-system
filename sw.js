@@ -1,4 +1,5 @@
-const staticCacheName = 'site-assets-static#33';
+const staticCacheName = 'site-static#34';
+const dynamicCacheName = 'site-dynamic#3'
 const assets = [
     '/',
     '/index.html',
@@ -27,7 +28,7 @@ self.addEventListener('activate', e => {
     e.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(keys
-                .filter(key => key !== staticCacheName)
+                .filter(key => key !== staticCacheName && key !== dynamicCacheName)
                 .map(key => caches.delete(key))
             )
         })
@@ -38,7 +39,12 @@ self.addEventListener('fetch', e => {
     // console.log('Fetch event', e)
     e.respondWith(
         caches.match(e.request).then(cacheRes => {
-            return cacheRes || fetch(e.request.url);
+            return cacheRes || fetch(e.request).then(fetchRes => {
+                return caches.open(dynamicCacheName).then(cache => {
+                    if (e.request.url.indexOf("dsat.gov.mo") == -1) cache.put(e.request.url, fetchRes.clone());
+                    return fetchRes;
+                })
+            });
         })
     )
 });

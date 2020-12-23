@@ -502,6 +502,11 @@ ul {
     width: 100%;
 }
 
+#mapid {
+    height: 50vh;
+    width: 50vw;
+}
+
 @media (prefers-color-scheme: dark) {
     * {
         color: white;

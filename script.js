@@ -358,7 +358,17 @@ Vue.createApp({
       var headerHeight = document.querySelector('header').offsetHeight;
       var home = document.querySelector('#home');
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
-    })
+    });
+    
+    var mymap = L.map('mapid').setView([22.17,113.5597966], 12);
+    L.tileLayer(`${this.corsProxy}https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'MAPBOX_API_KEY'
+    }).addTo(mymap);
 
     this.fetchRoutes();
     this.fetchDyMessage();
@@ -371,6 +381,7 @@ Vue.createApp({
     setInterval(() => {
       this.fetchTraffic();
     },60000)
+
   }
 }).
 mount("#app");
@@ -381,3 +392,5 @@ if ('serviceWorker' in navigator) {
       console.log('ServiceWorker not registered');
     })
 }
+
+
