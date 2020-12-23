@@ -132,7 +132,7 @@ Vue.createApp({
             if (this.busColor.toLowerCase() == 'blue') L.marker([parseFloat(bus.latitude), parseFloat(bus.longitude)], {icon: this.blueBusIcon}).addTo(this.mapLayerGroup).bindPopup(`${bus.busPlate} ${bus.speed}km/h`);
             else if (this.busColor.toLowerCase() == 'orange') L.marker([parseFloat(bus.latitude), parseFloat(bus.longitude)], {icon: this.orangeBusIcon}).addTo(this.mapLayerGroup).bindPopup(`${bus.busPlate} ${bus.speed}km/h`);
           }
-          this.busMap.fitBounds(this.mapLayerGroup.getBounds().pad(0.5));
+          if (this.mapLayerGroup) this.busMap.fitBounds(this.mapLayerGroup.getBounds().pad(0.25));
         }).
         catch(() => {
           this.noSuchNumberError = true;
