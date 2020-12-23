@@ -1,5 +1,5 @@
-const staticCacheName = 'site-static#46';
-const dynamicCacheName = 'site-dynamic#4'
+const staticCacheName = 'site-static#47';
+const dynamicCacheName = 'site-dynamic#5'
 const assets = [
     '/',
     '/index.html',
@@ -12,7 +12,9 @@ const assets = [
     '/images/icons/orange-bus-icon.png',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
-    'https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js'
+    'https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js',
+    'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js',
+    'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css',
 ];
 
 self.addEventListener('install', e => {
