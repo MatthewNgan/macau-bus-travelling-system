@@ -215,11 +215,12 @@ Vue.createApp({
         for (let i = 0; i < index; i++) {
           for (let comingBus of stationBefore[i].busInfo) {
             if (count < 3) {
-              if (comingBus.speed > 35) var routeTraffic = 1;
-              else if (comingBus.speed > 25) var routeTraffic = 2;
-              else if (comingBus.speed > 15) var routeTraffic = 3;
-              else if (comingBus.speed > 10) var routeTraffic = 4;
-              else var routeTraffic = 5;
+              // if (comingBus.speed > 35) var routeTraffic = 1;
+              // else if (comingBus.speed > 25) var routeTraffic = 2;
+              // else if (comingBus.speed > 15) var routeTraffic = 3;
+              // else if (comingBus.speed > 10) var routeTraffic = 4;
+              // else var routeTraffic = 5;
+              var routeTraffic = this.busRouteTraffic[index-i-1].routeTraffic;
               this.arrivingBuses[index].push({
                 'plate': `${comingBus.busPlate.substring(0,2)}-${comingBus.busPlate.substring(2,4)}-${comingBus.busPlate.substring(4,6)}`,
                 'speed': comingBus.speed,
