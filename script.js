@@ -389,7 +389,7 @@ Vue.createApp({
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     });
 
-    this.busMap = L.map('bus-map');
+    this.busMap = L.map('bus-map', {zoomSnap: 0});
     this.busMap.setView([22.17,113.5597966], 12);
     this.mapLayerGroup = L.featureGroup().addTo(this.busMap);
     L.tileLayer(`${this.corsProxy}https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
