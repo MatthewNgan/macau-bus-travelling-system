@@ -347,7 +347,7 @@ ul {
 }
 .main-route-info {
     width: 95vw;
-    height: 80vh;
+    height: 85vh;
     padding: 10px 0;
     padding-top: 0;
     scroll-behavior: smooth;
@@ -421,6 +421,32 @@ ul {
     height: calc((1.5rem + 20px)/2);
     box-shadow: none !important;
 }
+.map-station {
+    width: 18px;
+}
+.map-important-station {
+    padding: 2px 5px;
+    border-radius: 10px;
+    border: 2px solid #fff;
+    z-index: 2700;
+}
+.map-important-station.origin {
+    background-color: rgb(45, 219, 45);
+}
+.map-important-station.destination {
+    background-color: orangered;
+}
+.mapboxgl-marker:hover {
+    cursor: pointer;
+}
+.mapboxgl-popup {
+    z-index: 3000;
+}
+.mapboxgl-popup-content {
+    padding: 10px 15px;
+    border-radius: 1rem;
+    font-size: .9rem;
+}
 #app {
     width: 100%;
 }
@@ -461,9 +487,17 @@ ul {
     .mapboxgl-popup-content {
         background-color: #444 !important;
     }
-    .mapboxgl-popup-tip {
-        border-top-color: #444 !important;
+    .mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
         border-bottom-color: #444 !important;
+    }
+    .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+        border-top-color: #444 !important;
+    }
+    .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+        border-left-color: #444 !important;
+    }
+    .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+        border-right-color: #444 !important;
     }
     .traffic .station-dot circle {
         color: white;
@@ -485,5 +519,11 @@ ul {
     }
     .traffic.last .station-line {
         background-color: #333 !important;
+    }
+    .map-important-station.origin {
+        background-color: rgb(14, 138, 14);
+    }
+    .map-important-station.destination {
+        background-color: rgb(149, 42, 23);
     }
 }
