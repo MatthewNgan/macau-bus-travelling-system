@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static#53';
+const staticCacheName = 'site-static#54';
 const dynamicCacheName = 'site-dynamic#9';
 const assets = [
     '/',
@@ -8,14 +8,9 @@ const assets = [
     '/images/icons/logo.png',
     '/images/icons/rounded-logo.png',
     '/manifest.json',
-    '/images/icons/blue-bus-icon.png',
-    '/images/icons/orange-bus-icon.png',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
     'https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js',
-    'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js',
-    'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css',
-    'https://unpkg.com/@turf/turf/turf.min.js',
 ];
 
 self.addEventListener('install', e => {
@@ -32,7 +27,7 @@ self.addEventListener('activate', e => {
     e.waitUntil(
         caches.keys().then(keys => {
             return Promise.all(keys
-                .filter(key => key !== staticCacheName && key !== dynamicCacheName)
+                .filter(key => key !== staticCacheName && key !== dynamicCacheName && key !== "mapbox-tiles")
                 .map(key => caches.delete(key))
             )
         })

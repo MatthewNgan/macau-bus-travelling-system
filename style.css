@@ -6,7 +6,7 @@
     border-radius: calc((1.525rem + 3.3vw)/4);
     height: calc(1.525rem + 3.3vw);
 }
-.info {
+.options {
     margin-left: auto;
 }
 .info svg {
