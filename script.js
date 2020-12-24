@@ -376,7 +376,7 @@ Vue.createApp({
         center: [113.565,22.165], // starting position [lng, lat]
         zoom: 11.25, // starting zoom
         minZoom: 11,
-        maxZoom: 16.5,
+        maxZoom: 16.75,
         maxBounds: [[113.51,22.1],[113.62,22.22]]
       });
   
