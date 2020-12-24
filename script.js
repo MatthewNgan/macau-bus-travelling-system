@@ -438,10 +438,9 @@ Vue.createApp({
     });
   },
   mounted() {
-    var mapboxAccessToken = 'MAPBOX_API_KEY';
+    var mapboxAccessToken = 'sk.eyJ1IjoibWF0dGhld25nYW4iLCJhIjoiY2tqMmJweGU3M2FlZzJzbjRrdWZrMHdpdSJ9.bBZ3wY0iU-TgGqvBPAnUqA';
     if (window.location.href.includes("127.0.0.1")) {
       this.corsProxy = "";
-      mapboxAccessToken = 'pk.eyJ1IjoibWF0dGhld25nYW4iLCJhIjoiY2tqMTNzNzJuMWtjaDJ5bTBucjNrM3I3NiJ9.DOqgKmjCq8zL50KNIvZNlg';
     }
 
     var headerHeight = document.querySelector('header').offsetHeight;
