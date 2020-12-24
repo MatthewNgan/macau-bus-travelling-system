@@ -429,7 +429,7 @@ ul {
     padding: 2px 5px;
     border-radius: 10px;
     border: 2px solid #fff;
-    z-index: 2700;
+    z-index: 1800;
 }
 .map-important-station.origin {
     background-color: rgb(45, 219, 45);
@@ -441,7 +441,7 @@ ul {
     cursor: pointer;
 }
 .mapboxgl-popup {
-    z-index: 3000;
+    z-index: 1850;
 }
 .mapboxgl-popup-content {
     padding: 10px 15px;
