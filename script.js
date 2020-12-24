@@ -438,7 +438,7 @@ Vue.createApp({
     });
   },
   mounted() {
-    var mapboxAccessToken = 'sk.eyJ1IjoibWF0dGhld25nYW4iLCJhIjoiY2tqMmJweGU3M2FlZzJzbjRrdWZrMHdpdSJ9.bBZ3wY0iU-TgGqvBPAnUqA';
+    var mapboxAccessToken = 'pk.eyJ1IjoibWF0dGhld25nYW4iLCJhIjoiY2tqMmJ1bmp1M2E3ODJ5bjRtejhsbDBnMSJ9.8d5AH06RmzA6od3W8UNz9A';
     if (window.location.href.includes("127.0.0.1")) {
       this.corsProxy = "";
     }
