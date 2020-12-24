@@ -1,6 +1,6 @@
 * {
     box-sizing: border-box;
-    outline: none;
+    outline: none !important;
 }
 .logo {
     border-radius: calc((1.525rem + 3.3vw)/4);
@@ -458,11 +458,12 @@ ul {
     .bus-title, .overlay, .route-input {
         background-color: #333;
     }
-    .leaflet-container {
-        background: #444 !important;
+    .mapboxgl-popup-content {
+        background-color: #444 !important;
     }
-    .leaflet-popup-content {
-        color: black;
+    .mapboxgl-popup-tip {
+        border-top-color: #444 !important;
+        border-bottom-color: #444 !important;
     }
     .traffic .station-dot circle {
         color: white;
