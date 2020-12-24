@@ -2,9 +2,26 @@ Vue.createApp({
   data() {
     return {
       busMap: undefined,
-      busLayerGroup: [],
-      routeLayerGroup: [],
-      stationLayerGroup: [],
+      busLayerGroup: undefined,
+      routeLayerGroup: undefined,
+      stationLayerGroup: undefined,
+      blueBusIcon: L.icon({
+        iconUrl: '/images/icons/blue-bus-icon.png',
+        iconSize: [24,24],
+        iconAnchor: [12,12],
+        popupAnchor: [0,-15]
+      }),
+      orangeBusIcon: L.icon({
+        iconUrl: '/images/icons/orange-bus-icon.png',
+        iconSize: [24,24],
+        iconAnchor: [12,12],
+        popupAnchor: [0,-15]
+      }),
+      stationIcon: L.icon({
+        iconUrl: '/images/icons/bus-stop.png',
+        iconSize: [20,20],
+        iconAnchor: [10,10]
+      }),
       mapRefreshed: false,
       isStuck: false,
       scroll: true,
@@ -116,39 +133,28 @@ Vue.createApp({
           this.noSuchNumberError = false;
           this.currentPage = 'info';
           if (this.scroll) {
+            // document.getElementById('route-info').scrollIntoView();
             this.scroll = !this.scroll;
           }
-          if (this.stationLayerGroup) {
-            for (let marker of this.stationLayerGroup) {
-              marker.remove();
+          this.busLayerGroup.clearLayers();
+          this.stationLayerGroup.clearLayers();
+          for (station of this.busStationLocations) {
+            L.marker([parseFloat(station.latitude), parseFloat(station.longitude)], {icon: this.stationIcon}).addTo(this.stationLayerGroup);
+          }
+          for (bus of this.busInfoLocations) {
+            if (this.busColor.toLowerCase() == 'blue') {
+              var icon = this.blueBusIcon;
             }
-          }
-          this.stationLayerGroup = [];
-          for (let station of this.busStationLocations) {
-            var stationElement = document.createElement('img');
-            stationElement.src = '/images/icons/bus-stop.png';
-            stationElement.style.width = '16px';
-            var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).addTo(this.busMap);
-            this.stationLayerGroup.push(stationMarker);
-          }
-          if (this.busLayerGroup) {
-            for (let marker of this.busLayerGroup) {
-              marker.remove();
+            else {
+              var icon = this.orangeBusIcon;
             }
-          }
-          this.busLayerGroup = [];
-          for (let bus of this.busInfoLocations) {
-            var busElement = document.createElement('img');
-            if (this.busColor.toLowerCase() == 'blue') busElement.src = '/images/icons/blue-bus-icon.png'
-            else if (this.busColor.toLowerCase() == 'orange') busElement.src = '/images/icons/orange-bus-icon.png'
-            var busMarker = new mapboxgl.Marker(busElement).setLngLat([bus.longitude, bus.latitude]).addTo(this.busMap);
-            this.busLayerGroup.push(busMarker);
+            L.marker([parseFloat(bus.latitude), parseFloat(bus.longitude)], {icon: icon}).addTo(this.busLayerGroup).bindPopup(bus.busPlate + (bus.speed != "-1" ? ` ${bus.speed}km/h` : ""));
           }
         })
-        // .catch(() => {
-        //   this.noSuchNumberError = true;
-        //   this.noInternet = true;
-        // });
+        .catch(() => {
+          this.noSuchNumberError = true;
+          this.noInternet = true;
+        });
       } else {
         this.busRouteInfo = undefined;
         this.noSuchNumberError = false;
@@ -159,7 +165,7 @@ Vue.createApp({
       .then(response => response.json())
       .then(data => {
         this.messages = [];
-        for (let item of data.data) {
+        for (item of data.data) {
           var startTime = Date.parse(item.startTime.replace(' ','T') + '+08:00');
           var expireTime = Date.parse(item.expireTime.replace(' ','T') + '+08:00');
           var now = Date.now();
@@ -212,64 +218,30 @@ Vue.createApp({
         fetch(url).then(response => response.json()).then(data => {
           this.busRouteTraffic = data.data;
           this.noSuchNumberError = false;
-          if (this.routeLayerGroup) {
-            for (let i of this.routeLayerGroup) {
-              this.busMap.removeLayer(i);
-              this.busMap.removeSource(i);
-            }
-          }
-          this.routeLayerGroup = [];
-          var allCoords = [];
-          for (let i = 0; i < this.busRouteTraffic.length-1; i++) {
+          this.routeLayerGroup.clearLayers();
+          for (route of this.busRouteTraffic) {
             var routeCoordinates = [];
-            for (let routeCoordinate of this.busRouteTraffic[i].routeCoordinates.slice().split(';')) {
-              routeCoordinates.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
-              allCoords.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
+            for (coord of route.routeCoordinates.split(';')) {
+              routeCoordinates.push([parseFloat(coord.split(',')[1]),parseFloat(coord.split(',')[0])]);
             }
             routeCoordinates.pop();
-            this.busMap.addSource(i.toString(),{
-              'type': 'geojson',
-              'data': {
-                'type': 'Feature',
-                'properties': {},
-                'geometry': {
-                  'type': 'LineString',
-                  'coordinates': routeCoordinates,
-                },
-              },
-            });
-            if (this.busRouteTraffic[i].routeTraffic == 1) var color = "#007400";
-            else if (this.busRouteTraffic[i].routeTraffic == 2) var color = "#7c7400";
-            else if (this.busRouteTraffic[i].routeTraffic == 3) var color = "#814700";
-            else if (this.busRouteTraffic[i].routeTraffic == 4) var color = "#7e0000";
-            else if (this.busRouteTraffic[i].routeTraffic == 5) var color = "#460000"
-            this.busMap.addLayer({
-              'id': i.toString(),
-              'type': 'line',
-              'source': i.toString(),
-              'layout': {
-                'line-join': 'round',
-                'line-cap': 'round'
-              },
-              'paint': {
-                'line-color': color,
-                'line-width': 4,
-              }
-            });
-            this.routeLayerGroup.push(i.toString());
+            if (route.routeTraffic == 1) var color = "#007400";
+            else if (route.routeTraffic == 2) var color = "#7c7400";
+            else if (route.routeTraffic == 3) var color = "#814700";
+            else if (route.routeTraffic == 4) var color = "#7e0000";
+            else if (route.routeTraffic == 5) var color = "#460000"
+            L.polyline(routeCoordinates, {color: color}).addTo(this.routeLayerGroup);
           }
           if (this.busInfoLocations && !this.mapRefreshed) {
-            var routeLine = turf.lineString(allCoords);
-            var bbox = turf.bbox(routeLine);
-            this.busMap.fitBounds(bbox, {padding: 50});
+            this.busMap.fitBounds(this.routeLayerGroup.getBounds().pad(0.1));
             this.mapRefreshed = true;
           }
         })
-        // .catch((error) => {
-        //   this.noSuchNumberError = true;
-        //   this.busRouteTraffic = undefined;
-        //   this.noInternet = true;
-        // });
+        .catch((error) => {
+          this.noSuchNumberError = true;
+          this.busRouteTraffic = undefined;
+          this.noInternet = true;
+        });
       } else {
         this.busRouteTraffic = undefined;
         this.noSuchNumberError = false;
@@ -364,8 +336,7 @@ Vue.createApp({
       })
     },
     resetMap() {
-      this.busMap.setCenter([113.565,22.165]);
-      this.busMap.setZoom(11.25);
+      this.busMap.setView([22.17,113.56], 12);
     },
     returnHome() {
       document.documentElement.classList.remove("no-scroll");
@@ -376,8 +347,6 @@ Vue.createApp({
       document.querySelector(".route-input").classList.remove('stuck');
       document.querySelector('#info-box').classList.remove('shown');
       this.currentPage = 'home';
-      this.mapRefreshed = false;
-      this.resetMap();
       setTimeout(()=>{
         this.busRoute = "";
         this.busDirection = 0;
@@ -392,6 +361,8 @@ Vue.createApp({
         this.routesGenerated = {};
         this.currentScrollToWarning = 0;
         this.currentlyOpenedIndex = undefined;
+        this.mapRefreshed = false;
+        this.resetMap();
       },250);
     },
     routeChanged() {
@@ -453,24 +424,27 @@ Vue.createApp({
       var home = document.querySelector('#home');
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     });
+
+    this.busMap = L.map('bus-map', {zoomSnap: 0,zoomAnimation:false});
+    this.busMap.setView([22.17,113.5597966], 12);
+    this.busLayerGroup = L.featureGroup().addTo(this.busMap);
+    this.stationLayerGroup = L.featureGroup().addTo(this.busMap);
+    this.routeLayerGroup = L.featureGroup().addTo(this.busMap);
     
-    var mapStyle = 'mapbox/light-v9';
+    var mapStyle = 'mapbox/light-v10';
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      mapStyle = 'mapbox/dark-v9';
+      mapStyle = 'mapbox/dark-v10';
     }
 
-    mapboxgl.accessToken = mapboxAccessToken;
-    this.busMap = new mapboxgl.Map({
-      container: 'bus-map',
-      style: 'mapbox://styles/' + mapStyle, // stylesheet location
-      center: [113.565,22.165], // starting position [lng, lat]
-      zoom: 11.25, // starting zoom
-      minZoom: 11,
-    });
+    L.tileLayer(`${this.corsProxy}https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}`, {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: mapStyle,
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: mapboxAccessToken,
+    }).addTo(this.busMap);
 
-    this.busMap.addControl(new MapboxLanguage({
-      defaultLanguage: 'mul'
-    }));
 
     this.fetchRoutes();
     this.fetchDyMessage();

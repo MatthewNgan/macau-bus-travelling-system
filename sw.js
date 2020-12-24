@@ -1,5 +1,5 @@
-const staticCacheName = 'site-static#47';
-const dynamicCacheName = 'site-dynamic#5'
+const staticCacheName = 'site-static#51';
+const dynamicCacheName = 'site-dynamic#9'
 const assets = [
     '/',
     '/index.html',
@@ -15,6 +15,7 @@ const assets = [
     'https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js',
     'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js',
     'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css',
+    'https://unpkg.com/@turf/turf/turf.min.js',
 ];
 
 self.addEventListener('install', e => {
@@ -44,7 +45,7 @@ self.addEventListener('fetch', e => {
         caches.match(e.request).then(cacheRes => {
             return cacheRes || fetch(e.request).then(fetchRes => {
                 return caches.open(dynamicCacheName).then(cache => {
-                    if (e.request.url.indexOf("dsat.gov.mo") == -1) cache.put(e.request.url, fetchRes.clone());
+                    if (e.request.url.indexOf("dsat.gov.mo") == -1 && e.request.url.indexOf("mapbox") == -1) cache.put(e.request.url, fetchRes.clone());
                     return fetchRes;
                 })
             });
