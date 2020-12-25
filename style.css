@@ -62,20 +62,20 @@
     50% { background-color:rgba(32, 117, 32, 0.75); }
 }
 @keyframes blink-yellow {
-    from, to { background-color:rgba(177, 180, 0, 1); }
-    50% { background-color:rgba(177, 180, 0, 0.75); }
+    from, to { background-color:rgba(117, 180, 0, 1); }
+    50% { background-color:rgba(117, 180, 0, 0.75); }
 }
 @keyframes blink-orange {
-    from, to { background-color:rgba(161, 109, 24, 1); }
-    50% { background-color:rgba(161, 109, 24, 0.75); }
+    from, to { background-color:rgba(161, 152, 24, 1); }
+    50% { background-color:rgba(161, 152, 24, 0.75); }
 }
 @keyframes blink-red {
-    from, to { background-color:rgba(131, 28, 28, 1); }
-    50% { background-color:rgba(131, 28, 28, 0.75); }
+    from, to { background-color:rgba(131, 86, 28, 1); }
+    50% { background-color:rgba(131, 86, 28, 0.75); }
 }
 @keyframes blink-brown {
-    from, to { background-color:rgba(73, 27, 0, 1); }
-    50% { background-color:rgba(73, 27, 0, 0.75); }
+    from, to { background-color:rgba(100, 15, 0, 1); }
+    50% { background-color:rgba(100, 15, 0, 0.75); }
 }
 .time-remaining {
     padding-left: .75rem;
