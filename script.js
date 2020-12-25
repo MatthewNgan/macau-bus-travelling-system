@@ -424,7 +424,6 @@ Vue.createApp({
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         mapStyle = 'mapbox/dark-v9';
       }
-  
       mapboxgl.accessToken = mapboxAccessToken;
       this.busMap = new mapboxgl.Map({
         container: 'bus-map',
@@ -435,10 +434,12 @@ Vue.createApp({
         maxZoom: 16.75,
         maxBounds: [[113.51,22.1],[113.62,22.22]]
       });
-  
       this.busMap.addControl(new MapboxLanguage({
         defaultLanguage: 'mul'
       }));
+      this.busMap.dragRotate.disable();
+      this.busMap.touchZoomRotate.disableRotation();
+      
     },
     scrollToWarning() {
       var mainRouteInfo = document.querySelector('.main-route-info');
@@ -528,21 +529,19 @@ Vue.createApp({
       for (let interval of this.intervals) {
         clearInterval(interval);
       }
-      setTimeout(()=>{
-        this.busRoute = "";
-        this.busDirection = 0;
-        this.busAvailableDirection = "2";
-        this.busRouteInfo = undefined;
-        this.busRouteData = undefined;
-        this.busRouteTraffic = undefined;
-        this.busInfoLocations = undefined;
-        this.busStationLocations = undefined;
-        this.arrivingBuses = [];
-        this.noSuchNumberError = false;
-        this.routesGenerated = {};
-        this.currentScrollToWarning = 0;
-        this.currentlyOpenedIndex = undefined;
-      },250);
+      this.busRoute = "";
+      this.busDirection = 0;
+      this.busAvailableDirection = "2";
+      this.busRouteInfo = undefined;
+      this.busRouteData = undefined;
+      this.busRouteTraffic = undefined;
+      this.busInfoLocations = undefined;
+      this.busStationLocations = undefined;
+      this.arrivingBuses = [];
+      this.noSuchNumberError = false;
+      this.routesGenerated = {};
+      this.currentScrollToWarning = 0;
+      this.currentlyOpenedIndex = undefined;
     },
     routeChanged() {
       if (this.busRoute.toLowerCase() != "701x") this.busRoute = this.busRoute.toUpperCase();

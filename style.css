@@ -452,6 +452,9 @@ ul {
     border-radius: 1rem;
     font-size: .9rem;
 }
+.version {
+    margin-top: auto;
+}
 #app {
     width: 100%;
 }
