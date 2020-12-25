@@ -132,37 +132,38 @@ Vue.createApp({
           if (this.scroll) {
             this.scroll = !this.scroll;
           }
-          this.waitUntil(this.busRouteInfo, () => {
-            if (this.stationLayerGroup != []) {
-              for (let marker of this.stationLayerGroup) {
-                marker.remove();
-              }
-            }
-            this.stationLayerGroup = [];
-            for (let [index,station] of this.busStationLocations.entries()) {
-              if (index === 0) {
-                var stationElement = document.createElement('div');
-                stationElement.innerHTML = '始發站';
-                stationElement.classList.add('map-important-station');
-                stationElement.classList.add('origin');
-              } else if (index === this.busStationLocations.length - 1) {
-                var stationElement = document.createElement('div');
-                stationElement.innerHTML = '終點站';
-                stationElement.classList.add('map-important-station');
-                stationElement.classList.add('destination');
-              } else {
-                var stationElement = document.createElement('img');
-                stationElement.src = '/images/icons/bus-stop.png';
-                stationElement.classList.add('map-station');
-              }
-              stationElement.addEventListener('hover',() => {
-                this.busMap.getCanvas().style.cursor = 'pointer';
-              })
-              var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteInfo[index].staCode} ${this.getName(this.busRouteInfo[index].staCode)}`);
-              var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
-              this.stationLayerGroup.push(stationMarker);
-            }
+          this.waitUntil([this.busRouteInfo != null,this.busStationLocations != null,this.busRouteTraffic != null], () => {
             if (this.mapEnabled && this.busMap) {
+              if (this.stationLayerGroup != []) {
+                for (let marker of this.stationLayerGroup) {
+                  marker.remove();
+                }
+              }
+              this.stationLayerGroup = [];
+              for (let [index,station] of this.busStationLocations.slice().reverse().entries()) {
+                if (index === this.busStationLocations.length - 1) {
+                  var stationElement = document.createElement('div');
+                  stationElement.innerHTML = this.getName(this.busRouteInfo.slice().reverse()[index].staCode);
+                  stationElement.classList.add('map-important-station');
+                  stationElement.classList.add('origin');
+                } else if (index === 0) {
+                  var stationElement = document.createElement('div');
+                  stationElement.innerHTML = this.getName(this.busRouteInfo.slice().reverse()[index].staCode);
+                  stationElement.classList.add('map-important-station');
+                  stationElement.classList.add('destination');
+                } else {
+                  var stationElement = document.createElement('img');
+                  if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
+                  else stationElement.src = '/images/icons/bus-stop-dark.png'
+                  stationElement.classList.add('map-station');
+                }
+                stationElement.addEventListener('hover',() => {
+                  this.busMap.getCanvas().style.cursor = 'pointer';
+                })
+                var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteInfo.slice().reverse()[index].staCode} ${this.getName(this.busRouteInfo.slice().reverse()[index].staCode)}`);
+                var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
+                this.stationLayerGroup.push(stationMarker);
+              }
               if (this.busLayerGroup != []) {
                 for (let marker of this.busLayerGroup) {
                   marker.remove();
@@ -256,9 +257,10 @@ Vue.createApp({
               }
             }
             this.routeLayerGroup = [];
-            this.waitUntil(this.busStationLocations,() => {
+            this.waitUntil([this.busRouteInfo != null,this.busStationLocations != null,this.busRouteTraffic != null],() => {
               var allCoords = [];
               for (let i = 0; i < this.busRouteTraffic.length-1; i++) {
+                console.log(i);
                 var routeCoordinates = [];
                 for (let routeCoordinate of this.busRouteTraffic[i].routeCoordinates.slice().split(';')) {
                   routeCoordinates.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
@@ -278,16 +280,16 @@ Vue.createApp({
                 });
                 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                   if (this.busRouteTraffic[i].routeTraffic == 1) var color = "#007400";
-                  else if (this.busRouteTraffic[i].routeTraffic == 2) var color = "#7c7400";
-                  else if (this.busRouteTraffic[i].routeTraffic == 3) var color = "#814700";
-                  else if (this.busRouteTraffic[i].routeTraffic == 4) var color = "#7e0000";
-                  else if (this.busRouteTraffic[i].routeTraffic == 5) var color = "#460000"
+                  else if (this.busRouteTraffic[i].routeTraffic == 2) var color = "#5b7c00";
+                  else if (this.busRouteTraffic[i].routeTraffic == 3) var color = "#817f00";
+                  else if (this.busRouteTraffic[i].routeTraffic == 4) var color = "#7e4e00";
+                  else if (this.busRouteTraffic[i].routeTraffic == 5) var color = "#7e0f00"
                 } else {
-                  if (this.busRouteTraffic[i].routeTraffic == 1) var color = "#31e631";
-                  else if (this.busRouteTraffic[i].routeTraffic == 2) var color = "#dddd1c";
-                  else if (this.busRouteTraffic[i].routeTraffic == 3) var color = "orange";
-                  else if (this.busRouteTraffic[i].routeTraffic == 4) var color = "orangered";
-                  else if (this.busRouteTraffic[i].routeTraffic == 5) var color = "brown"
+                  if (this.busRouteTraffic[i].routeTraffic == 1) var color = "#3acc00";
+                  else if (this.busRouteTraffic[i].routeTraffic == 2) var color = "#99c800";
+                  else if (this.busRouteTraffic[i].routeTraffic == 3) var color = "#d1bc00";
+                  else if (this.busRouteTraffic[i].routeTraffic == 4) var color = "#d68400";
+                  else if (this.busRouteTraffic[i].routeTraffic == 5) var color = "#c70000"
   
                 }
                 this.busMap.addLayer({
@@ -314,11 +316,10 @@ Vue.createApp({
             })
           }
         })
-        // .catch((error) => {
-        //   this.noSuchNumberError = true;
-        //   this.busRouteTraffic = undefined;
-        //   this.noInternet = true;
-        // });
+        .catch((error) => {
+          this.busRouteTraffic = undefined;
+          this.noInternet = true;
+        });
       } else {
         this.busRouteTraffic = undefined;
         this.noSuchNumberError = false;
@@ -536,7 +537,15 @@ Vue.createApp({
     },
     waitUntil(condition, callback) {
       setTimeout(() => {
-        if (condition) {
+        var b = true;
+        console.log(condition);
+        for (let item in condition) {
+          if (!item) {
+            b = false;
+            break;
+          }
+        }
+        if (b) {
           callback();
         } else {
           this.waitUntil(condition, callback);
@@ -568,10 +577,9 @@ Vue.createApp({
       localStorage.mapEnabled = "false";
     }
 
+    this.colorScheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? "dark" : "light";
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      if (this.busMap) {
         this.colorScheme = e.matches ? "dark" : "light";
-      }
     });
 
     var headerHeight = document.querySelector('header').offsetHeight;

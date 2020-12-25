@@ -193,7 +193,7 @@ ul {
     height: calc(2.75rem + 20px);
     background-color: #efefef;
     z-index: 3000;
-    box-shadow: 0 0px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
     overflow: hidden;
 }
 .loading {
@@ -322,10 +322,11 @@ ul {
     z-index: 2500;
     margin-left: -2rem;
 }
-.left svg {
+.left img {
     position: absolute;
-    top: calc(0.75rem - 6.25px);
-    left: 8.75px;
+    top: calc(1rem*1.5 - 20px);
+    left: calc(1rem/3);
+    width: 20px;
 }
 .left span {
     margin-left: 2rem;
@@ -402,19 +403,19 @@ ul {
     box-shadow: 0 0 1px rgba(83, 83, 83, 0.1);
 }
 .traffic.green .station-line {
-    background-color: rgb(49, 230, 49);
+    background-color: rgb(58, 204, 0);
 }
 .traffic.yellow .station-line {
-    background-color: rgb(221, 221, 28);
+    background-color: rgb(153, 200, 0);
 }
 .traffic.orange .station-line {
-    background-color: orange;
+    background-color: rgb(209, 188, 0);
 }
 .traffic.red .station-line {
-    background-color: orangered;
+    background-color: rgb(214, 132, 0);
 }
 .traffic.brown .station-line {
-    background-color: brown;
+    background-color: rgb(199, 0, 0);
 }
 .traffic.last .station-line {
     transition: background-color 0.25s ease !important;
@@ -426,13 +427,16 @@ ul {
     width: 18px;
 }
 .map-important-station {
-    padding: 2px 5px;
+    padding: 4px 8px;
     border-radius: 10px;
     border: 2px solid #fff;
     z-index: 1800;
+    color: white;
+    font-size: 14px;
+    box-shadow: 0 0 10px #00000011
 }
 .map-important-station.origin {
-    background-color: rgb(45, 219, 45);
+    background-color: rgb(37, 192, 37);
 }
 .map-important-station.destination {
     background-color: orangered;
@@ -507,16 +511,16 @@ ul {
         background-color: rgb(0, 116, 0);
     }
     .traffic.yellow .station-line {
-        background-color: rgb(124, 116, 0);
+        background-color: rgb(91, 124, 0);
     }
     .traffic.orange .station-line {
-        background-color: rgb(129, 71, 0);
+        background-color: rgb(129, 127, 0);
     }
     .traffic.red .station-line {
-        background-color: rgb(126, 0, 0);
+        background-color: rgb(126, 78, 0);
     }
     .traffic.brown .station-line {
-        background-color: rgb(70, 0, 0);
+        background-color: rgb(126, 15, 0);
     }
     .traffic.last .station-line {
         background-color: #333 !important;

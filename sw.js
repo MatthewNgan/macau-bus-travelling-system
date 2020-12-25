@@ -1,5 +1,5 @@
-const staticCacheName = 'site-static#59';
-const dynamicCacheName = 'site-dynamic#9';
+const staticCacheName = 'site-static#60';
+const dynamicCacheName = 'site-dynamic#10';
 const assets = [
     '/',
     '/index.html',
@@ -7,6 +7,9 @@ const assets = [
     '/style.css',
     '/images/icons/logo.png',
     '/images/icons/rounded-logo.png',
+    '/images/icons/blue-bus-icon.png',
+    '/images/icons/orange-bus-icon.png',
+    '/images/icons/bus-stop-inList.png',
     '/manifest.json',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',

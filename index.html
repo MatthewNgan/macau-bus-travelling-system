@@ -142,9 +142,7 @@
       <div class="col bus-info">
         <details v-for="(station,index) in busRouteInfo" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
           <summary class="traffic" :class="{last: index == busRouteInfo.length-1, green: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '1',yellow: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '2',orange: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '3',red: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '4',brown: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '5'}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-circle-fill station-dot" viewBox="0 0 16 16">
-              <circle cx="8" cy="8" r="7"/>
-            </svg>
+            <img src="/images/icons/bus-stop-inList.png" class="station-dot">
             <span class="station-line"></span>
             </span>
             <span class="station-name">{{ station.staCode }} {{ getName(station.staCode) }}</span>
@@ -169,9 +167,7 @@
             </template>
             <template v-for="bus in station.busInfo.filter((bus) => bus.status == '0')" :key="bus.busPlate">
               <li class="left">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12.5" height="12.5" fill="currentColor" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
-                </svg>
+                <img :src="`/images/icons/${busColor.toLowerCase()}-bus-icon.png`">
                 <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{ `${bus.busPlate.substring(0,2)}-${bus.busPlate.substring(2,4)}-${bus.busPlate.substring(4,6)}` }}</code></span>
                 <span class="time-remaining">前往下一站中</span>
               </li>
