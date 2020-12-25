@@ -425,6 +425,12 @@ ul {
 }
 .map-station {
     width: 18px;
+    opacity: 0;
+    transition: opacity 0.1s linear;
+}
+.map-station.shown {
+    width: 18px;
+    opacity: 1;
 }
 .map-important-station {
     padding: 4px 8px;
@@ -433,7 +439,8 @@ ul {
     z-index: 1800;
     color: white;
     font-size: 14px;
-    box-shadow: 0 0 10px #00000011
+    box-shadow: 0 0 10px #00000011;
+    display: block !important;
 }
 .map-important-station.origin {
     background-color: rgb(37, 192, 37);

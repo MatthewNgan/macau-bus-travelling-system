@@ -439,6 +439,17 @@ Vue.createApp({
       }));
       this.busMap.dragRotate.disable();
       this.busMap.touchZoomRotate.disableRotation();
+      this.busMap.on('zoom', () => {
+        if (this.busMap.getZoom() > 13.5) {
+          for (let mapStation of document.querySelectorAll('.map-station')) {
+            mapStation.classList.toggle('shown',true)
+          }
+        } else {
+          for (let mapStation of document.querySelectorAll('.map-station')) {
+            mapStation.classList.toggle('shown',false)
+          }
+        }
+      })
       
     },
     scrollToWarning() {
