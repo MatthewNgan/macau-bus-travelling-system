@@ -141,7 +141,7 @@
     <div v-if="busRouteInfo && busRouteData" class="row">
       <div class="col bus-info">
         <details v-for="(station,index) in busRouteInfo" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
-          <summary class="traffic" :class="{last: index == busRouteInfo.length-1, green: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '1',yellow: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '2',orange: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '3',red: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '4',brown: busRouteTraffic && busRouteTraffic[index] && busRouteTraffic[index].routeTraffic == '5'}">
+          <summary class="traffic" :class="{last: index == busRouteInfo.length-1, green: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '1',yellow: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '2',orange: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '3',red: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '4',brown: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) >= '5'}">
             <img src="/images/icons/bus-stop-inList.png" class="station-dot">
             <span class="station-line"></span>
             </span>

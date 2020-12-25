@@ -1,6 +1,131 @@
 Vue.createApp({
   data() {
     return {
+      bridgeCoords: {
+        '01': [[[
+          [113.5609692,22.2045011],
+          [113.5614145,22.2031452],
+          [113.562187,22.2006618],
+          [113.562482,22.1996387],
+          [113.5623479,22.199435],
+          [113.5622996,22.1992016],
+          [113.5623854,22.1988639],
+          [113.5626805,22.1985609],
+          [113.5628951,22.1981685],
+          [113.5630023,22.1975129],
+          [113.5630292,22.197339],
+          [113.5630882,22.1956205],
+          [113.5631043,22.1915327],
+          [113.5631204,22.1882047],
+          [113.5631311,22.1832424],
+          [113.5631418,22.1760793],
+          [113.5631204,22.172741],
+          [113.5631847,22.1688264],
+          [113.5631204,22.1665213],
+          [113.5631096,22.1661139],
+          [113.5630774,22.1656867],
+          [113.5629594,22.1654582],
+          [113.5628897,22.1651998],
+          [113.5626966,22.1648571],
+          [113.5625786,22.1646087],
+          [113.5626322,22.1643901],
+          [113.562777,22.1643354],
+          [113.5630989,22.1646583],
+          [113.5633832,22.1649663],
+          [113.5637534,22.1651551],
+          [113.5638714,22.1651055],
+          [113.5643274,22.1650011],
+          [113.5645849,22.1649316],
+          [113.5649389,22.1648372],
+          [113.5649979,22.165016],
+          [113.5645688,22.1651949],
+          [113.5644776,22.1653539],
+          [113.5645419,22.1656668],
+          [113.5646063,22.1658308],
+          [113.5646868,22.1660096],
+          [113.5647029,22.1663574],
+          [113.5645634,22.1664965],
+          [113.5643864,22.16672],
+          [113.5639465,22.1670479],
+          [113.5638446,22.1673162],
+          [113.5637265,22.1677236],
+          [113.5636783,22.1681806],
+          [113.5636675,22.1717276],
+          [113.5637212,22.1763277],
+          [113.5637105,22.1804408],
+          [113.5635388,22.1861533],
+          [113.5636032,22.1895011],
+          [113.5635066,22.1952828],
+          [113.5633671,22.1979649],
+          [113.5634637,22.1984317],
+          [113.563571,22.1988589],
+          [113.563571,22.1992761],
+          [113.5633993,22.1996039],
+          [113.5628843,22.1999317],
+          [113.5622191,22.201978],
+          [113.5612965,22.2045408],
+          [113.5612482,22.2045706],
+          [113.5610819,22.2045383],
+          [113.5609692,22.2045011],
+        ]],4500],
+        '02': [[[
+          [113.5438192,22.1866698],
+          [113.5442483,22.1847723],
+          [113.5446024,22.1831629],
+          [113.544656,22.1831306],
+          [113.5447097,22.1830189],
+          [113.5447365,22.1828599],
+          [113.5447955,22.1825569],
+          [113.5451227,22.1808928],
+          [113.545627,22.1786674],
+          [113.5459757,22.1769635],
+          [113.5466141,22.1741022],
+          [113.5471398,22.1717972],
+          [113.5475689,22.16982],
+          [113.5485989,22.1652644],
+          [113.548623,22.16517],
+          [113.5486847,22.1651055],
+          [113.5487464,22.1651129],
+          [113.5488027,22.1651253],
+          [113.5488135,22.1651849],
+          [113.5487545,22.1653315],
+          [113.5483977,22.1669386],
+          [113.5473812,22.1715885],
+          [113.5469842,22.1734564],
+          [113.5467803,22.1743406],
+          [113.5465765,22.1751851],
+          [113.5464263,22.1758856],
+          [113.5457933,22.1789605],
+          [113.5453802,22.1807935],
+          [113.5448867,22.1828103],
+          [113.5448545,22.1828326],
+          [113.5448331,22.1829046],
+          [113.5447821,22.1830971],
+          [113.5447365,22.183312],
+          [113.5447204,22.1835901],
+          [113.5445085,22.1844246],
+          [113.5439748,22.1867195],
+          [113.5439506,22.1867965],
+          [113.5438943,22.1869604],
+          [113.5438138,22.1869753],
+          [113.5438165,22.1868959],
+          [113.5438192,22.1866698]
+        ]],2540],
+        '03': [[[
+          [113.5320497,22.1793082],
+          [113.5393935,22.1653936],
+          [113.5397905,22.1654482],
+          [113.5394096,22.1666753],
+          [113.5377413,22.1698697],
+          [113.5334927,22.1785085],
+          [113.5330045,22.1792635],
+          [113.532849,22.1793877],
+          [113.5320657,22.1793132],
+          [113.5320497,22.1793082]
+        ]],2000],
+      },
+      crossBridgeTime: undefined,
+      routeCrossingBridge: {},
       busMap: undefined,
       busLayerGroup: [],
       routeLayerGroup: [],
@@ -89,9 +214,11 @@ Vue.createApp({
       changeDirectionIcon.disabled = true;
       const changeDirectionText = document.querySelector("#changedirection-text");
       changeDirectionText.disabled = true;
+      this.routeCrossingBridge = [];
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
+      this.setupMap();
     },
     disableMap() {
       this.mapEnabled = false;
@@ -115,10 +242,8 @@ Vue.createApp({
         .then(response => response.json())
         .then(data => {
           this.busRouteInfo = data.data.routeInfo;
-          this.noSuchNumberError = false;
         })
         .catch(() => {
-          this.noSuchNumberError = true;
           this.busRouteInfo = undefined;
           this.noInternet = true;
         });
@@ -127,67 +252,16 @@ Vue.createApp({
         .then(data => {
           this.busInfoLocations = data.data.busInfoList;
           this.busStationLocations = data.data.stationInfoList;
-          this.noSuchNumberError = false;
           this.currentPage = 'info';
           if (this.scroll) {
             this.scroll = !this.scroll;
           }
-          this.waitUntil([this.busRouteInfo != null,this.busStationLocations != null,this.busRouteTraffic != null], () => {
-            if (this.mapEnabled && this.busMap) {
-              if (this.stationLayerGroup != []) {
-                for (let marker of this.stationLayerGroup) {
-                  marker.remove();
-                }
-              }
-              this.stationLayerGroup = [];
-              for (let [index,station] of this.busStationLocations.slice().reverse().entries()) {
-                if (index === this.busStationLocations.length - 1) {
-                  var stationElement = document.createElement('div');
-                  stationElement.innerHTML = this.getName(this.busRouteInfo.slice().reverse()[index].staCode);
-                  stationElement.classList.add('map-important-station');
-                  stationElement.classList.add('origin');
-                } else if (index === 0) {
-                  var stationElement = document.createElement('div');
-                  stationElement.innerHTML = this.getName(this.busRouteInfo.slice().reverse()[index].staCode);
-                  stationElement.classList.add('map-important-station');
-                  stationElement.classList.add('destination');
-                } else {
-                  var stationElement = document.createElement('img');
-                  if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
-                  else stationElement.src = '/images/icons/bus-stop-dark.png'
-                  stationElement.classList.add('map-station');
-                }
-                stationElement.addEventListener('hover',() => {
-                  this.busMap.getCanvas().style.cursor = 'pointer';
-                })
-                var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteInfo.slice().reverse()[index].staCode} ${this.getName(this.busRouteInfo.slice().reverse()[index].staCode)}`);
-                var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
-                this.stationLayerGroup.push(stationMarker);
-              }
-              if (this.busLayerGroup != []) {
-                for (let marker of this.busLayerGroup) {
-                  marker.remove();
-                }
-              }
-              this.busLayerGroup = [];
-              for (let bus of this.busInfoLocations) {
-                var busElement = document.createElement('img');
-                if (this.busColor.toLowerCase() == 'blue') busElement.src = '/images/icons/blue-bus-icon.png'
-                else if (this.busColor.toLowerCase() == 'orange') busElement.src = '/images/icons/orange-bus-icon.png'
-                var busPopup = new mapboxgl.Popup({closeButton: false, offset: 12}).setHTML(`<code class="${this.busColor.toLowerCase()}">` + bus.busPlate + "</code>" + (bus.speed == "-1" ? "" : ` ${bus.speed}km/h`));
-                var busMarker = new mapboxgl.Marker(busElement).setLngLat([bus.longitude, bus.latitude]).setPopup(busPopup).addTo(this.busMap);
-                this.busLayerGroup.push(busMarker);
-              }
-            }
-          });
         })
         .catch(() => {
-          this.noSuchNumberError = true;
           this.noInternet = true;
         });
       } else {
         this.busRouteInfo = undefined;
-        this.noSuchNumberError = false;
       }
     },
     fetchDyMessage() {
@@ -222,15 +296,18 @@ Vue.createApp({
             const changeDirectionText = document.querySelector("#changedirection-text");
             if (changeDirectionText) changeDirectionText.disabled = false;
           }
-          this.busRouteChange = (data.data.routeInfo.filter(sta => sta.suspendState == "1").length != 0)
-          // this.busRouteChange = (data.data.routeChange == '1');
-          // this.fetchValid();
+          this.busRouteChange = (data.data.routeInfo.filter(sta => sta.suspendState == "1").length != 0);
+          for (let i = 0; i < this.busRouteData.length-2; i++) {
+            if (this.busRouteData.slice()[i].staCode[0] != this.busRouteData.slice()[i+1].staCode[0] && this.busRouteData.slice()[i].staCode[0] != 'C' && this.busRouteData.slice()[i+1].staCode[0] != 'C') {
+              this.routeCrossingBridge[i] = [this.busRouteData.slice()[i].staCode[0],this.busRouteData.slice()[i+1].staCode[0]];
+            }
+          }
         })
-        .catch(() => {
-          this.busRouteData = undefined;
-          this.noSuchNumberError = true;
-          this.noInternet = true;
-        });
+        // .catch(() => {
+        //   this.busRouteData = undefined;
+        //   this.noSuchNumberError = true;
+        //   this.noInternet = true;
+        // });
       }
     },
     fetchRoutes() {
@@ -245,76 +322,49 @@ Vue.createApp({
     },
     fetchTraffic(){
       if (this.busRoute != "") {
+        fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37011/its/Bridge/getTime.html?lang=zh_tw`)
+        .then(response => response.json())
+        .then(data => {
+          this.crossBridgeTime = data.data.timeArray;
+        })
         let url = `${this.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${"0".repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
         fetch(url).then(response => response.json()).then(data => {
-          this.busRouteTraffic = data.data;
           this.noSuchNumberError = false;
-          if (this.mapEnabled) {
-            if (this.routeLayerGroup != []) {
-              for (let i of this.routeLayerGroup) {
-                this.busMap.removeLayer(i);
-                this.busMap.removeSource(i);
+          let tempData = data.data.slice();
+          this.waitUntil(() => {
+            for (let bridgeRoute in this.routeCrossingBridge) {
+              let direction = undefined;
+              if (this.routeCrossingBridge[bridgeRoute][0] == "T") {
+                direction = 0;
+              } else {
+                direction = 1;
+              }
+              let onbridge = undefined;
+              for (let point of tempData.slice()[parseInt(bridgeRoute)].routeCoordinates.split(';')) {
+                if (point != '') {
+                  let loc = point.split(',')
+                  for (let id in this.bridgeCoords) {
+                    let poly = turf.polygon(this.bridgeCoords[id][0]);
+                    let pt = turf.point([parseFloat(loc[0]),parseFloat(loc[1])]);
+                    if (turf.booleanPointInPolygon(pt,poly)) {
+                      onbridge = id;
+                      break;
+                    }
+                  }
+                  if (onbridge) {
+                    break;
+                  }
+                }
+              }
+              let timeToCrossBridgeInSec = parseInt(this.crossBridgeTime.slice()[direction].times.filter(bridge => bridge.id == onbridge)[0].time);
+              if (timeToCrossBridgeInSec > -1) {
+                let speed = (this.bridgeCoords[onbridge].slice()[1] / timeToCrossBridgeInSec * 3.6) > 50 ? 50 : this.bridgeCoords[onbridge].slice()[1] / timeToCrossBridgeInSec * 3.6;
+                let traffic = 1 / (speed / 3.6 * 60 / 750);
+                tempData[parseInt(bridgeRoute)].routeTraffic = traffic.toString();
               }
             }
-            this.routeLayerGroup = [];
-            this.waitUntil([this.busRouteInfo != null,this.busStationLocations != null,this.busRouteTraffic != null],() => {
-              var allCoords = [];
-              for (let i = 0; i < this.busRouteTraffic.length-1; i++) {
-                console.log(i);
-                var routeCoordinates = [];
-                for (let routeCoordinate of this.busRouteTraffic[i].routeCoordinates.slice().split(';')) {
-                  routeCoordinates.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
-                  allCoords.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
-                }
-                routeCoordinates.pop();
-                this.busMap.addSource(i.toString(),{
-                  'type': 'geojson',
-                  'data': {
-                    'type': 'Feature',
-                    'properties': {},
-                    'geometry': {
-                      'type': 'LineString',
-                      'coordinates': routeCoordinates,
-                    },
-                  },
-                });
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                  if (this.busRouteTraffic[i].routeTraffic == 1) var color = "#007400";
-                  else if (this.busRouteTraffic[i].routeTraffic == 2) var color = "#5b7c00";
-                  else if (this.busRouteTraffic[i].routeTraffic == 3) var color = "#817f00";
-                  else if (this.busRouteTraffic[i].routeTraffic == 4) var color = "#7e4e00";
-                  else if (this.busRouteTraffic[i].routeTraffic == 5) var color = "#7e0f00"
-                } else {
-                  if (this.busRouteTraffic[i].routeTraffic == 1) var color = "#3acc00";
-                  else if (this.busRouteTraffic[i].routeTraffic == 2) var color = "#99c800";
-                  else if (this.busRouteTraffic[i].routeTraffic == 3) var color = "#d1bc00";
-                  else if (this.busRouteTraffic[i].routeTraffic == 4) var color = "#d68400";
-                  else if (this.busRouteTraffic[i].routeTraffic == 5) var color = "#c70000"
-  
-                }
-                this.busMap.addLayer({
-                  'id': i.toString(),
-                  'type': 'line',
-                  'source': i.toString(),
-                  'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                  },
-                  'paint': {
-                    'line-color': color,
-                    'line-width': 4,
-                  }
-                });
-                this.routeLayerGroup.push(i.toString());
-              }
-              if (!this.mapRefreshed) {
-                var routeLine = turf.lineString(allCoords);
-                var bbox = turf.bbox(routeLine);
-                this.busMap.fitBounds(bbox, {padding: 50});
-                this.mapRefreshed = true;
-              }
-            })
-          }
+            this.busRouteTraffic = tempData.slice();
+          },false)
         })
         .catch((error) => {
           this.busRouteTraffic = undefined;
@@ -325,21 +375,6 @@ Vue.createApp({
         this.noSuchNumberError = false;
       }
     },
-    // fetchValid() {
-    //   // console.log(this.busRouteChange);
-    //   if (this.busRoute != "" && this.busRouteChange) {
-    //     let url = `${this.corsProxy}https://bis.dsat.gov.mo:37011/its/RouteChangeMsg/getValid.html?lang=zh_tw&routeName=${this.busRoute}`
-    //     fetch(url)
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       this.busChangeValid = data.data;
-    //       // console.log(this.busChangeValid);
-    //     })
-    //     .catch(() => {
-    //       this.noInternet = true;
-    //     })
-    //   }
-    // },
     getArrivingBuses(index) {
       this.arrivingBuses = [];
       this.arrivingBuses[index] = [];
@@ -487,6 +522,8 @@ Vue.createApp({
       document.querySelector('#info-box').classList.remove('shown');
       this.currentPage = 'home';
       this.mapRefreshed = false;
+      this.routeCrossingBridge = [];
+      this.crossBridgeTime = undefined;
       if (this.mapEnabled) this.resetMap();
       for (let interval of this.intervals) {
         clearInterval(interval);
@@ -524,6 +561,169 @@ Vue.createApp({
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
+      this.setupMap();
+    },
+    setupMap() {
+      if (this.mapEnabled) {
+        if (this.routeLayerGroup != []) {
+          for (let i of this.routeLayerGroup) {
+            this.busMap.removeLayer(i);
+            this.busMap.removeSource(i);
+          }
+        }
+        this.routeLayerGroup = [];
+        if (this.stationLayerGroup != []) {
+          for (let marker of this.stationLayerGroup) {
+            marker.remove();
+          }
+        }
+        this.stationLayerGroup = [];
+        if (this.busLayerGroup != []) {
+          for (let marker of this.busLayerGroup) {
+            marker.remove();
+          }
+        }
+        this.busLayerGroup = [];
+        this.waitUntil(() => {
+          for (let [index,station] of this.busStationLocations.slice().reverse().entries()) {
+            if (index === this.busStationLocations.length - 1) {
+              var stationElement = document.createElement('div');
+              stationElement.innerHTML = this.getName(this.busRouteInfo.slice().reverse()[index].staCode);
+              stationElement.classList.add('map-important-station');
+              stationElement.classList.add('origin');
+            } else if (index === 0) {
+              var stationElement = document.createElement('div');
+              stationElement.innerHTML = this.getName(this.busRouteInfo.slice().reverse()[index].staCode);
+              stationElement.classList.add('map-important-station');
+              stationElement.classList.add('destination');
+            } else {
+              var stationElement = document.createElement('img');
+              if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
+              else stationElement.src = '/images/icons/bus-stop-dark.png'
+              stationElement.classList.add('map-station');
+            }
+            stationElement.addEventListener('hover',() => {
+              this.busMap.getCanvas().style.cursor = 'pointer';
+            })
+            var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteInfo.slice().reverse()[index].staCode} ${this.getName(this.busRouteInfo.slice().reverse()[index].staCode)}`);
+            var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
+            this.stationLayerGroup.push(stationMarker);
+          }
+          for (let bus of this.busInfoLocations) {
+            var busElement = document.createElement('img');
+            if (this.busColor.toLowerCase() == 'blue') busElement.src = '/images/icons/blue-bus-icon.png'
+            else if (this.busColor.toLowerCase() == 'orange') busElement.src = '/images/icons/orange-bus-icon.png'
+            var busPopup = new mapboxgl.Popup({closeButton: false, offset: 12}).setHTML(`<code class="${this.busColor.toLowerCase()}">` + bus.busPlate + "</code>" + (bus.speed == "-1" ? "" : ` ${bus.speed}km/h`));
+            var busMarker = new mapboxgl.Marker(busElement).setLngLat([bus.longitude, bus.latitude]).setPopup(busPopup).addTo(this.busMap);
+            this.busLayerGroup.push(busMarker);
+          }
+          var allCoords = [];
+          for (let i = 0; i < this.busRouteTraffic.length-1; i++) {
+            if (typeof(this.busRouteTraffic[i].routeCoordinates) == 'string') {
+              var routeCoordinates = [];
+              for (let routeCoordinate of this.busRouteTraffic[i].routeCoordinates.slice().split(';')) {
+                routeCoordinates.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
+                allCoords.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
+              }
+              routeCoordinates.pop();
+              this.busMap.addSource(i.toString(),{
+                'type': 'geojson',
+                'data': {
+                  'type': 'Feature',
+                  'properties': {},
+                  'geometry': {
+                    'type': 'LineString',
+                    'coordinates': routeCoordinates,
+                  },
+                },
+              });
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 1) var color = "#007400";
+                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 2) var color = "#5b7c00";
+                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 3) var color = "#817f00";
+                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 4) var color = "#7e4e00";
+                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 5) var color = "#7e0f00"
+              } else {
+                if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 1) var color = "#3acc00";
+                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 2) var color = "#99c800";
+                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 3) var color = "#d1bc00";
+                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 4) var color = "#d68400";
+                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 5) var color = "#c70000"
+  
+              }
+              this.busMap.addLayer({
+                'id': i.toString(),
+                'type': 'line',
+                'source': i.toString(),
+                'layout': {
+                  'line-join': 'round',
+                  'line-cap': 'round'
+                },
+                'paint': {
+                  'line-color': color,
+                  'line-width': 4,
+                }
+              });
+              this.routeLayerGroup.push(i.toString());
+            } else {
+              for (let [index,route] of this.busRouteTraffic[i].routeCoordinates.entries()) {
+                var routeCoordinates = [];
+                let id = i.toString() + '-' + index.toString();
+                for (let routeCoordinate of route.slice().split(';')) {
+                  routeCoordinates.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
+                  allCoords.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
+                }
+                routeCoordinates.pop();
+                this.busMap.addSource(id,{
+                  'type': 'geojson',
+                  'data': {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                      'type': 'LineString',
+                      'coordinates': routeCoordinates,
+                    },
+                  },
+                });
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                  if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 1) var color = "#007400";
+                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 2) var color = "#5b7c00";
+                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 3) var color = "#817f00";
+                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 4) var color = "#7e4e00";
+                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) >= 5) var color = "#7e0f00"
+                } else {
+                  if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 1) var color = "#3acc00";
+                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 2) var color = "#99c800";
+                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 3) var color = "#d1bc00";
+                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 4) var color = "#d68400";
+                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) >= 5) var color = "#c70000"
+    
+                }
+                this.busMap.addLayer({
+                  'id': id,
+                  'type': 'line',
+                  'source': id,
+                  'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                  },
+                  'paint': {
+                    'line-color': color,
+                    'line-width': 4,
+                  }
+                });
+                this.routeLayerGroup.push(id.toString());
+              }
+            }
+          }
+          if (!this.mapRefreshed) {
+            var routeLine = turf.lineString(allCoords);
+            var bbox = turf.bbox(routeLine);
+            this.busMap.fitBounds(bbox, {padding: 50});
+            this.mapRefreshed = true;
+          }
+        })
+      }
     },
     openInfoBox() {
       this.currentPage = 'message';
@@ -535,11 +735,12 @@ Vue.createApp({
         this.getArrivingBuses(index);
       }
     },
-    waitUntil(condition, callback) {
+    waitUntil(callback,a=true) {
       setTimeout(() => {
+        let condition = [this.busRouteInfo != null, this.busStationLocations != null, this.busInfoLocations != null, this.crossBridgeTime != null]
+        if (a) condition.push(this.busRouteTraffic != null);
         var b = true;
-        console.log(condition);
-        for (let item in condition) {
+        for (let item of condition) {
           if (!item) {
             b = false;
             break;
@@ -548,7 +749,7 @@ Vue.createApp({
         if (b) {
           callback();
         } else {
-          this.waitUntil(condition, callback);
+          this.waitUntil(callback,a);
         }
       },500);
     }
