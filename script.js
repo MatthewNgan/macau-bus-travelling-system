@@ -215,6 +215,7 @@ Vue.createApp({
       const changeDirectionText = document.querySelector("#changedirection-text");
       changeDirectionText.disabled = true;
       this.routeCrossingBridge = [];
+      this.busRouteTraffic = undefined;
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
@@ -328,6 +329,7 @@ Vue.createApp({
           this.crossBridgeTime = data.data.timeArray;
         })
         let url = `${this.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${"0".repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
+        console.log(this.busDirection);
         fetch(url).then(response => response.json()).then(data => {
           this.noSuchNumberError = false;
           let tempData = data.data.slice();
@@ -430,9 +432,9 @@ Vue.createApp({
         style: 'mapbox://styles/' + mapStyle, // stylesheet location
         center: [113.565,22.165], // starting position [lng, lat]
         zoom: 11.25, // starting zoom
-        minZoom: 11,
+        minZoom: 10.5,
         maxZoom: 16.75,
-        maxBounds: [[113.51,22.1],[113.62,22.22]]
+        maxBounds: [[113.4,22],[113.75,22.3]]
       });
       this.busMap.addControl(new MapboxLanguage({
         defaultLanguage: 'mul'
@@ -743,6 +745,7 @@ Vue.createApp({
       let details = document.querySelectorAll('details');
       if (details[index].hasAttribute("open")) {
         this.getArrivingBuses(index);
+        this.zoomToStation(index);
       }
     },
     waitUntil(callback,a=true) {
@@ -762,6 +765,15 @@ Vue.createApp({
           this.waitUntil(callback,a);
         }
       },500);
+    },
+    zoomToStation(index) {
+      if (this.mapEnabled && this.busMap) {
+        let stationLoc = [this.busStationLocations.slice()[index].longitude,this.busStationLocations.slice()[index].latitude];
+        this.busMap.flyTo({
+          center: stationLoc,
+          zoom: 16,
+        })
+      }
     }
   },
   updated() {

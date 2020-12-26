@@ -62,13 +62,13 @@
     50% { background-color:rgba(32, 117, 32, 0.75); }
 }
 @keyframes blink-yellow {
-    from, to { background-color:rgba(117, 180, 0, 1); }
-    50% { background-color:rgba(117, 180, 0, 0.75); }
+    from, to { background-color:rgba(87, 134, 0, 1); }
+    50% { background-color:rgba(87, 134, 0, 0.75); }
 }
 @keyframes blink-orange {
     from, to { background-color:rgba(161, 152, 24, 1); }
     50% { background-color:rgba(161, 152, 24, 0.75); }
-}
+} 
 @keyframes blink-red {
     from, to { background-color:rgba(131, 86, 28, 1); }
     50% { background-color:rgba(131, 86, 28, 0.75); }
@@ -466,7 +466,7 @@ ul {
     width: 100%;
 }
 #bus-map {
-    height: 50vh;
+    height: 35vh;
     width: 100%;
 }
 @media (prefers-color-scheme: dark) {

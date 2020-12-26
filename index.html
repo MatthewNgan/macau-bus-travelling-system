@@ -33,7 +33,7 @@
 <div id="app">
   <header class="shadow-sm fixed-top">
     <img src="/images/icons/logo.png" class="logo" alt="Logo">
-    <h1 class="display-3">巴士報站</h1><small class="text-muted version">v66</small>
+    <h1 class="display-3">巴士報站</h1><small class="text-muted version">v67</small>
     <div class="options">
       <button class="btn btn-success" @click="enableMap" v-if="!mapEnabled">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-map-fill" viewBox="0 0 16 16">
@@ -151,7 +151,7 @@
           <ul class="arriving-list">
             <li v-for="arrivingBus in arrivingBuses[index].slice().reverse()" v-if="arrivingBuses[index]">
               <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{ arrivingBus.plate }}</code> 距離本站 {{ arrivingBus.distanceToThis }} 站</span> 
-              <span v-if="arrivingBus.durationGet" class="time-remaining live" :class="{green: arrivingBus.routeTraffic == '1',yellow: arrivingBus.routeTraffic == '2',orange: arrivingBus.routeTraffic == '3',red: arrivingBus.routeTraffic == '4',brown: arrivingBus.routeTraffic == '5'}">
+              <span v-if="arrivingBus.durationGet" class="time-remaining live" :class="{green: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 1,yellow: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 2,orange: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 3,red: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 4,brown: Math.ceil(parseFloat(arrivingBus.routeTraffic)) >= 5}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16">
                   <path fill-rule="evenodd" d="M3.05 3.05a7 7 0 0 0 0 9.9.5.5 0 0 1-.707.707 8 8 0 0 1 0-11.314.5.5 0 0 1 .707.707zm2.122 2.122a4 4 0 0 0 0 5.656.5.5 0 0 1-.708.708 5 5 0 0 1 0-7.072.5.5 0 0 1 .708.708zm5.656-.708a.5.5 0 0 1 .708 0 5 5 0 0 1 0 7.072.5.5 0 1 1-.708-.708 4 4 0 0 0 0-5.656.5.5 0 0 1 0-.708zm2.122-2.12a.5.5 0 0 1 .707 0 8 8 0 0 1 0 11.313.5.5 0 0 1-.707-.707 7 7 0 0 0 0-9.9.5.5 0 0 1 0-.707z"/>
                   <path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
