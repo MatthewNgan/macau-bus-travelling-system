@@ -484,14 +484,19 @@ Vue.createApp({
         element.classList.add("no-scroll");
       }
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
-        if (document.querySelector(".bus-title")) {
-          var thisTop = document.querySelector(".route-input").offsetTop;
-          if (this.mapEnabled) var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#bus-map").offsetHeight;
-          else var titleHeight = document.querySelector(".bus-title").offsetHeight
-          document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
-        } else {
-          document.querySelector(".route-input").classList.toggle("stuck", false);
-        }
+        // if (document.querySelector(".bus-title")) {
+        //   var thisTop = document.querySelector(".route-input").offsetTop;
+        //   if (this.mapEnabled) var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#bus-map").offsetHeight;
+        //   else var titleHeight = document.querySelector(".bus-title").offsetHeight
+        //   document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
+          if (this.busMap && this.mapEnabled) {
+            document.querySelector("#bus-map").style.height = `calc(50vh - ${document.querySelector(".bus-title").offsetTop}px)`;
+            document.querySelector(".mapboxgl-canvas").style.height = `calc(50vh - ${document.querySelector(".bus-title").offsetTop}px)`;
+            this.busMap.resize();
+          }
+        // } else {
+        //   document.querySelector(".route-input").classList.toggle("stuck", false);
+        // }
       });
       this.setupStationMarkersOnMap();
       var dataInterval = setInterval(() => {
@@ -510,6 +515,9 @@ Vue.createApp({
     resetMap() {
       this.busMap.setCenter([113.565,22.165]);
       this.busMap.setZoom(10.5);
+      document.querySelector("#bus-map").style.height = `50vh`;
+      document.querySelector(".mapboxgl-canvas").style.height = `50vh`;
+      this.busMap.resize();
       if (this.stationLayerGroup != []) {
         for (let marker of this.stationLayerGroup) {
           marker.remove();
