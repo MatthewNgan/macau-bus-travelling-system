@@ -193,7 +193,7 @@ Vue.createApp({
         for (let i = 0; i < route.routeCoordinates.split(";").length-2; i++) {
           let lon1 = route.routeCoordinates.split(";")[i].split(",")[0]; let lat1 = route.routeCoordinates.split(";")[i].split(",")[1];
           let lon2 = route.routeCoordinates.split(";")[i+1].split(",")[0]; let lat2 = route.routeCoordinates.split(";")[i+1].split(",")[1];
-          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseInt(route.routeTraffic);
+          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(route.routeTraffic);
         }
       }
       return Math.ceil(totaldistance / 750);
