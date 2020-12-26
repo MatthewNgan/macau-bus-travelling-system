@@ -240,7 +240,6 @@ Vue.createApp({
     },
     fetchData() {
       if (this.busRoute != "") {
-        this.busRouteInfo = undefined;
         fetch(
         `${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/bus?routeName=${this.busRoute}&dir=${this.busDirection}`)
         .then(response => response.json())
@@ -410,13 +409,8 @@ Vue.createApp({
       }
     },
     getName(code) {
-      if (
-      this.busRouteData != undefined &&
-      this.busRouteData.filter(station => code == station.staCode)[0] !=
-      undefined)
-      {
-        return this.busRouteData.filter(station => code == station.staCode)[0].
-        staName;
+      if (this.busRouteData != undefined && this.busRouteData.slice().filter(station => code == station.staCode)[0] != undefined) {
+        return this.busRouteData.slice().filter(station => code == station.staCode)[0].staName;
       }
     },
     initMap() {
@@ -503,7 +497,7 @@ Vue.createApp({
       var dataInterval = setInterval(() => {
         this.fetchData();
         this.setupBusMarkersOnMap();
-      }, 10000);
+      }, 15000);
       var indexInterval = setInterval(() => {
         this.getArrivingBuses(this.currentlyOpenedIndex);
       },5000);
@@ -603,13 +597,13 @@ Vue.createApp({
     },
     setupBusMarkersOnMap() {
       if (this.mapEnabled) {
-        if (this.busLayerGroup != []) {
-          for (let marker of this.busLayerGroup) {
-            marker.remove();
-          }
-        }
-        this.busLayerGroup = [];
         this.waitUntil(() => {
+          if (this.busLayerGroup != []) {
+            for (let marker of this.busLayerGroup) {
+              marker.remove();
+            }
+          }
+          this.busLayerGroup = [];
           for (let bus of this.busInfoLocations) {
             var busElement = document.createElement('img');
             if (this.busColor.toLowerCase() == 'blue') busElement.src = '/images/icons/blue-bus-icon.png'
@@ -625,14 +619,14 @@ Vue.createApp({
     },
     setupRoutesOnMap() {
       if (this.mapEnabled && this.busMap) {
-        if (this.routeLayerGroup != []) {
-          for (let i of this.routeLayerGroup) {
-            this.busMap.removeLayer(i);
-            this.busMap.removeSource(i);
-          }
-        }
-        this.routeLayerGroup = [];
         this.waitUntil(() => {
+          if (this.routeLayerGroup != []) {
+            for (let i of this.routeLayerGroup) {
+              this.busMap.removeLayer(i);
+              this.busMap.removeSource(i);
+            }
+          }
+          this.routeLayerGroup = [];
           var allCoords = [];
           for (let i = 0; i < this.busRouteTraffic.length-1; i++) {
             if (typeof(this.busRouteTraffic[i].routeCoordinates) == 'string') {
@@ -742,42 +736,44 @@ Vue.createApp({
       }
     },
     setupStationMarkersOnMap() {
-      if (this.stationLayerGroup != []) {
-        for (let marker of this.stationLayerGroup) {
-          marker.remove();
-        }
-      }
-      this.stationLayerGroup = [];
-      this.waitUntil(() => {
-        for (let [index,station] of this.busStationLocations.slice().reverse().entries()) {
-          if (index === this.busStationLocations.length - 1) {
-            var stationElement = document.createElement('div');
-            var stationTextElement = document.createElement('span');
-            stationTextElement.innerHTML = this.busRouteData.slice().reverse()[index].staName;
-            stationElement.classList.add('map-important-station');
-            stationElement.classList.add('origin');
-            stationElement.appendChild(stationTextElement);
-          } else if (index === 0) {
-            var stationElement = document.createElement('div');
-            var stationTextElement = document.createElement('span');
-            stationTextElement.innerHTML = this.busRouteData.slice().reverse()[index].staName;
-            stationElement.classList.add('map-important-station');
-            stationElement.classList.add('destination');
-            stationElement.appendChild(stationTextElement);
-          } else {
-            var stationElement = document.createElement('img');
-            if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
-            else stationElement.src = '/images/icons/bus-stop-dark.png'
-            stationElement.classList.add('map-station');
+      if (this.mapEnabled && this.busMap) {
+        this.waitUntil(() => {
+          if (this.stationLayerGroup != []) {
+            for (let marker of this.stationLayerGroup) {
+              marker.remove();
+            }
           }
-          stationElement.addEventListener('hover',() => {
-            this.busMap.getCanvas().style.cursor = 'pointer';
-          })
-          var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteData.slice().reverse()[index].staCode} ${this.busRouteData.slice().reverse()[index].staName}`);
-          var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
-          this.stationLayerGroup.push(stationMarker);
-        }
-      })
+          this.stationLayerGroup = [];
+          for (let [index,station] of this.busStationLocations.slice().reverse().entries()) {
+            if (index === this.busStationLocations.length - 1) {
+              var stationElement = document.createElement('div');
+              var stationTextElement = document.createElement('span');
+              stationTextElement.innerHTML = this.busRouteData.slice().reverse()[index].staName;
+              stationElement.classList.add('map-important-station');
+              stationElement.classList.add('origin');
+              stationElement.appendChild(stationTextElement);
+            } else if (index === 0) {
+              var stationElement = document.createElement('div');
+              var stationTextElement = document.createElement('span');
+              stationTextElement.innerHTML = this.busRouteData.slice().reverse()[index].staName;
+              stationElement.classList.add('map-important-station');
+              stationElement.classList.add('destination');
+              stationElement.appendChild(stationTextElement);
+            } else {
+              var stationElement = document.createElement('img');
+              if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
+              else stationElement.src = '/images/icons/bus-stop-dark.png'
+              stationElement.classList.add('map-station');
+            }
+            stationElement.addEventListener('hover',() => {
+              this.busMap.getCanvas().style.cursor = 'pointer';
+            })
+            var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteData.slice().reverse()[index].staCode} ${this.busRouteData.slice().reverse()[index].staName}`);
+            var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
+            this.stationLayerGroup.push(stationMarker);
+          }
+        })
+      }
     },
     toggleIndex(index) {
       let details = document.querySelectorAll('details');
