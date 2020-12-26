@@ -219,7 +219,9 @@ Vue.createApp({
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
-      this.setupMap();
+      this.setupBusMarkersOnMap();
+      this.setupStationMarkersOnMap();
+      this.setupRoutesOnMap();
     },
     disableMap() {
       this.mapEnabled = false;
@@ -238,6 +240,7 @@ Vue.createApp({
     },
     fetchData() {
       if (this.busRoute != "") {
+        this.busRouteInfo = undefined;
         fetch(
         `${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/bus?routeName=${this.busRoute}&dir=${this.busDirection}`)
         .then(response => response.json())
@@ -329,7 +332,6 @@ Vue.createApp({
           this.crossBridgeTime = data.data.timeArray;
         })
         let url = `${this.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${"0".repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
-        console.log(this.busDirection);
         fetch(url).then(response => response.json()).then(data => {
           this.noSuchNumberError = false;
           let tempData = data.data.slice();
@@ -368,7 +370,7 @@ Vue.createApp({
             this.busRouteTraffic = tempData.slice();
           },false)
         })
-        .catch((error) => {
+        .catch(() => {
           this.busRouteTraffic = undefined;
           this.noInternet = true;
         });
@@ -431,8 +433,8 @@ Vue.createApp({
         container: 'bus-map',
         style: 'mapbox://styles/' + mapStyle, // stylesheet location
         center: [113.565,22.165], // starting position [lng, lat]
-        zoom: 11.25, // starting zoom
-        minZoom: 10.5,
+        zoom: 10.5, // starting zoom
+        minZoom: 10,
         maxZoom: 16.75,
         maxBounds: [[113.4,22],[113.75,22.3]]
       });
@@ -451,22 +453,27 @@ Vue.createApp({
             mapStation.classList.toggle('shown',false)
           }
         }
+        if (this.busMap.getZoom() > 12) {
+          for (let mapImportantStationText of document.querySelectorAll('.map-important-station span')) {
+            mapImportantStationText.classList.toggle('shown',true);
+          }
+          for (let busMarker of document.querySelectorAll('.bus-marker')) {
+            busMarker.classList.toggle('small',false);
+          }
+        } else {
+          for (let mapImportantStationText of document.querySelectorAll('.map-important-station span')) {
+            mapImportantStationText.classList.toggle('shown',false);
+          }
+          for (let busMarker of document.querySelectorAll('.bus-marker')) {
+            busMarker.classList.toggle('small',true);
+          }
+        }
       })
       
     },
-    scrollToWarning() {
-      var mainRouteInfo = document.querySelector('.main-route-info');
-      var suspendedParent = document.querySelectorAll('.suspended')[this.currentScrollToWarning].parentNode;
-      var title = document.querySelector('.bus-title');
-      if (this.mapEnabled) {
-        var busMap = document.querySelector('#bus-map');
-        mainRouteInfo.scrollTop = suspendedParent.offsetTop + busMap.offsetHeight + title.offsetHeight;
-      } else {
-        mainRouteInfo.scrollTop = suspendedParent.offsetTop + title.offsetHeight;
-      }
-      var suspendedStations = this.busRouteData.filter(station => station.suspendState == "1");
-      if (this.currentScrollToWarning == suspendedStations.length-1) this.currentScrollToWarning = 0;
-      else this.currentScrollToWarning++;
+    openInfoBox() {
+      this.currentPage = 'message';
+      document.querySelector('#info-box').classList.add('shown');
     },
     requestRoute(route,color) {
       if (this.mapEnabled && !this.busMap) {
@@ -492,20 +499,23 @@ Vue.createApp({
           document.querySelector(".route-input").classList.toggle("stuck", false);
         }
       });
+      this.setupStationMarkersOnMap();
       var dataInterval = setInterval(() => {
         this.fetchData();
-      }, 15000);
+        this.setupBusMarkersOnMap();
+      }, 10000);
       var indexInterval = setInterval(() => {
         this.getArrivingBuses(this.currentlyOpenedIndex);
       },5000);
       var trafficInterval = setInterval(() => {
         this.fetchTraffic();
+        this.setupRoutesOnMap();
       },60000);
       this.intervals = [dataInterval, indexInterval, trafficInterval];
     },
     resetMap() {
       this.busMap.setCenter([113.565,22.165]);
-      this.busMap.setZoom(11.25);
+      this.busMap.setZoom(10.5);
       if (this.stationLayerGroup != []) {
         for (let marker of this.stationLayerGroup) {
           marker.remove();
@@ -573,23 +583,26 @@ Vue.createApp({
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
-      this.setupMap();
+      this.setupBusMarkersOnMap();
+      this.setupStationMarkersOnMap();
+      this.setupRoutesOnMap();
     },
-    setupMap() {
+    scrollToWarning() {
+      var mainRouteInfo = document.querySelector('.main-route-info');
+      var suspendedParent = document.querySelectorAll('.suspended')[this.currentScrollToWarning].parentNode;
+      var title = document.querySelector('.bus-title');
       if (this.mapEnabled) {
-        if (this.routeLayerGroup != []) {
-          for (let i of this.routeLayerGroup) {
-            this.busMap.removeLayer(i);
-            this.busMap.removeSource(i);
-          }
-        }
-        this.routeLayerGroup = [];
-        if (this.stationLayerGroup != []) {
-          for (let marker of this.stationLayerGroup) {
-            marker.remove();
-          }
-        }
-        this.stationLayerGroup = [];
+        var busMap = document.querySelector('#bus-map');
+        mainRouteInfo.scrollTop = suspendedParent.offsetTop + busMap.offsetHeight + title.offsetHeight;
+      } else {
+        mainRouteInfo.scrollTop = suspendedParent.offsetTop + title.offsetHeight;
+      }
+      var suspendedStations = this.busRouteData.filter(station => station.suspendState == "1");
+      if (this.currentScrollToWarning == suspendedStations.length-1) this.currentScrollToWarning = 0;
+      else this.currentScrollToWarning++;
+    },
+    setupBusMarkersOnMap() {
+      if (this.mapEnabled) {
         if (this.busLayerGroup != []) {
           for (let marker of this.busLayerGroup) {
             marker.remove();
@@ -597,38 +610,29 @@ Vue.createApp({
         }
         this.busLayerGroup = [];
         this.waitUntil(() => {
-          for (let [index,station] of this.busStationLocations.slice().reverse().entries()) {
-            if (index === this.busStationLocations.length - 1) {
-              var stationElement = document.createElement('div');
-              stationElement.innerHTML = this.getName(this.busRouteInfo.slice().reverse()[index].staCode);
-              stationElement.classList.add('map-important-station');
-              stationElement.classList.add('origin');
-            } else if (index === 0) {
-              var stationElement = document.createElement('div');
-              stationElement.innerHTML = this.getName(this.busRouteInfo.slice().reverse()[index].staCode);
-              stationElement.classList.add('map-important-station');
-              stationElement.classList.add('destination');
-            } else {
-              var stationElement = document.createElement('img');
-              if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
-              else stationElement.src = '/images/icons/bus-stop-dark.png'
-              stationElement.classList.add('map-station');
-            }
-            stationElement.addEventListener('hover',() => {
-              this.busMap.getCanvas().style.cursor = 'pointer';
-            })
-            var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteInfo.slice().reverse()[index].staCode} ${this.getName(this.busRouteInfo.slice().reverse()[index].staCode)}`);
-            var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
-            this.stationLayerGroup.push(stationMarker);
-          }
           for (let bus of this.busInfoLocations) {
             var busElement = document.createElement('img');
             if (this.busColor.toLowerCase() == 'blue') busElement.src = '/images/icons/blue-bus-icon.png'
             else if (this.busColor.toLowerCase() == 'orange') busElement.src = '/images/icons/orange-bus-icon.png'
+            busElement.classList.add('bus-marker');
+            if (this.busMap.getZoom() <= 12 ) busElement.classList.add('small');
             var busPopup = new mapboxgl.Popup({closeButton: false, offset: 12}).setHTML(`<code class="${this.busColor.toLowerCase()}">` + bus.busPlate + "</code>" + (bus.speed == "-1" ? "" : ` ${bus.speed}km/h`));
             var busMarker = new mapboxgl.Marker(busElement).setLngLat([bus.longitude, bus.latitude]).setPopup(busPopup).addTo(this.busMap);
             this.busLayerGroup.push(busMarker);
           }
+        })
+      }
+    },
+    setupRoutesOnMap() {
+      if (this.mapEnabled && this.busMap) {
+        if (this.routeLayerGroup != []) {
+          for (let i of this.routeLayerGroup) {
+            this.busMap.removeLayer(i);
+            this.busMap.removeSource(i);
+          }
+        }
+        this.routeLayerGroup = [];
+        this.waitUntil(() => {
           var allCoords = [];
           for (let i = 0; i < this.busRouteTraffic.length-1; i++) {
             if (typeof(this.busRouteTraffic[i].routeCoordinates) == 'string') {
@@ -661,7 +665,7 @@ Vue.createApp({
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 3) var color = "#d1bc00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 4) var color = "#d68400";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 5) var color = "#c70000"
-  
+
               }
               this.busMap.addLayer({
                 'id': i.toString(),
@@ -709,7 +713,7 @@ Vue.createApp({
                   else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 3) var color = "#d1bc00";
                   else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 4) var color = "#d68400";
                   else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) >= 5) var color = "#c70000"
-    
+
                 }
                 this.busMap.addLayer({
                   'id': id,
@@ -737,9 +741,43 @@ Vue.createApp({
         })
       }
     },
-    openInfoBox() {
-      this.currentPage = 'message';
-      document.querySelector('#info-box').classList.add('shown');
+    setupStationMarkersOnMap() {
+      if (this.stationLayerGroup != []) {
+        for (let marker of this.stationLayerGroup) {
+          marker.remove();
+        }
+      }
+      this.stationLayerGroup = [];
+      this.waitUntil(() => {
+        for (let [index,station] of this.busStationLocations.slice().reverse().entries()) {
+          if (index === this.busStationLocations.length - 1) {
+            var stationElement = document.createElement('div');
+            var stationTextElement = document.createElement('span');
+            stationTextElement.innerHTML = this.busRouteData.slice().reverse()[index].staName;
+            stationElement.classList.add('map-important-station');
+            stationElement.classList.add('origin');
+            stationElement.appendChild(stationTextElement);
+          } else if (index === 0) {
+            var stationElement = document.createElement('div');
+            var stationTextElement = document.createElement('span');
+            stationTextElement.innerHTML = this.busRouteData.slice().reverse()[index].staName;
+            stationElement.classList.add('map-important-station');
+            stationElement.classList.add('destination');
+            stationElement.appendChild(stationTextElement);
+          } else {
+            var stationElement = document.createElement('img');
+            if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
+            else stationElement.src = '/images/icons/bus-stop-dark.png'
+            stationElement.classList.add('map-station');
+          }
+          stationElement.addEventListener('hover',() => {
+            this.busMap.getCanvas().style.cursor = 'pointer';
+          })
+          var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteData.slice().reverse()[index].staCode} ${this.busRouteData.slice().reverse()[index].staName}`);
+          var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
+          this.stationLayerGroup.push(stationMarker);
+        }
+      })
     },
     toggleIndex(index) {
       let details = document.querySelectorAll('details');

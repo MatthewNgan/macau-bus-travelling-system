@@ -423,6 +423,13 @@ ul {
     height: calc((1.5rem + 20px)/2);
     box-shadow: none !important;
 }
+.bus-marker {
+    width: 20px;
+    transition: width 0.1s ease, height 0.1s ease;
+}
+.bus-marker.small {
+    width: 12px;
+}
 .map-station {
     width: 18px;
     opacity: 0;
@@ -441,6 +448,14 @@ ul {
     font-size: 14px;
     box-shadow: 0 0 10px #00000011;
     display: block !important;
+    min-width: 20px;
+    min-height: 20px;
+}
+.map-important-station span {
+    display: none;
+}
+.map-important-station span.shown {
+    display: block;
 }
 .map-important-station.origin {
     background-color: rgb(37, 192, 37);
