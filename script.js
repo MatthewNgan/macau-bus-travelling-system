@@ -154,7 +154,7 @@ Vue.createApp({
       colorScheme: 'light',
       intervals: [],
       noSuchNumberError: false,
-      isScrolling: false,
+      isScrolling: undefined,
       routesGenerated: {},
       currentlyOpenedIndex: undefined,
       currentScrollToWarning: 0,
@@ -494,8 +494,8 @@ Vue.createApp({
         // } else {
         //   document.querySelector(".route-input").classList.toggle("stuck", false);
         // }
-        window.clearTimeout(this.isScrolling);
-        this.isScrolling = setTimeout(function() {
+        if (this.isScrolling) clearTimeout(this.isScrolling);
+        this.isScrolling = setTimeout(() => {
           if (this.busMap && this.mapEnabled) {
             if (document.querySelector(".bus-title").offsetTop > 0) {
               document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
@@ -504,7 +504,7 @@ Vue.createApp({
               document.querySelector(".bus-info").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - ${document.querySelector("#bus-map").offsetHeight}px - ${document.querySelector(".route-input").offsetHeight}px)`
             }
           }
-        }, 66);
+        }, 250);
       });
       var dataInterval = setInterval(() => {
         this.fetchData();
@@ -887,5 +887,3 @@ if ('serviceWorker' in navigator) {
       console.log('ServiceWorker not registered');
     })
 }
-
-
