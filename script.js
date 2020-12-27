@@ -871,6 +871,7 @@ Vue.createApp({
       var home = document.querySelector('#home');
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     });
+    window.addEventListener("touchmove", function(event) {event.preventDefault();}, {passive: false} );
     this.fetchRoutes();
     this.fetchDyMessage();
   }
