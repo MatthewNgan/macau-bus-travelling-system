@@ -197,7 +197,7 @@ Vue.createApp({
           totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(route.routeTraffic);
         }
       }
-      return Math.ceil(totaldistance / 750);
+      return Math.ceil(totaldistance / 12.5);
     },
     changeDirection() {
       if (this.busDirection == 0) {
@@ -305,11 +305,10 @@ Vue.createApp({
             }
           }
         })
-        // .catch(() => {
-        //   this.busRouteData = undefined;
-        //   this.noSuchNumberError = true;
-        //   this.noInternet = true;
-        // });
+        .catch(() => {
+          this.busRouteData = undefined;
+          this.noInternet = true;
+        });
       }
     },
     fetchRoutes() {
@@ -360,7 +359,7 @@ Vue.createApp({
               }
               let timeToCrossBridgeInSec = parseInt(this.crossBridgeTime.slice()[direction].times.filter(bridge => bridge.id == onbridge)[0].time);
               if (timeToCrossBridgeInSec > -1) {
-                let speed = (this.bridgeCoords[onbridge].slice()[1] / timeToCrossBridgeInSec * 3.6) > 50 ? 50 : this.bridgeCoords[onbridge].slice()[1] / timeToCrossBridgeInSec * 3.6;
+                let speed = (this.bridgeCoords[onbridge].slice()[1] / timeToCrossBridgeInSec * 3.6) > 52 ? 52 : this.bridgeCoords[onbridge].slice()[1] / timeToCrossBridgeInSec * 3.6;
                 let traffic = 1 / (speed / 3.6 * 60 / 750);
                 tempData[parseInt(bridgeRoute)].routeTraffic = traffic.toString();
               }
@@ -386,18 +385,13 @@ Vue.createApp({
         for (let i = 0; i < index; i++) {
           for (let comingBus of stationBefore[i].busInfo) {
             if (count < 3) {
-              // if (comingBus.speed > 35) var routeTraffic = 1;
-              // else if (comingBus.speed > 25) var routeTraffic = 2;
-              // else if (comingBus.speed > 15) var routeTraffic = 3;
-              // else if (comingBus.speed > 10) var routeTraffic = 4;
-              // else var routeTraffic = 5;
               var routeTraffic = this.busRouteTraffic[index-i-1].routeTraffic;
               this.arrivingBuses[index].push({
                 'plate': `${comingBus.busPlate.substring(0,2)}-${comingBus.busPlate.substring(2,4)}-${comingBus.busPlate.substring(4,6)}`,
                 'speed': comingBus.speed,
                 'distanceToThis': i + 1,
                 'durationGet': true,
-                'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude])+i,
+                'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude]) + i*48,
                 'routeTraffic': routeTraffic,
               });
               count++;
@@ -499,9 +493,9 @@ Vue.createApp({
         }
         if (this.busMap && this.mapEnabled && document.querySelector(".bus-info-container")) {
           document.querySelector(".bus-info-container").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - 60vh + ${document.querySelector(".bus-title").offsetTop}px - ${document.querySelector(".route-input").offsetHeight}px)`;
+          document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
         }
         if (this.isScrolling) clearTimeout(this.isScrolling);
-        document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
         this.isScrolling = setTimeout(() => {
           if (this.busMap && this.mapEnabled && document.querySelector(".bus-info-container")) {
             document.querySelector(".mapboxgl-canvas").style.height = `calc(50vh - ${document.querySelector(".bus-title").offsetTop}px)`;
@@ -515,7 +509,7 @@ Vue.createApp({
       }, 15000);
       var indexInterval = setInterval(() => {
         this.getArrivingBuses(this.currentlyOpenedIndex);
-      },5000);
+      },1000);
       var trafficInterval = setInterval(() => {
         this.fetchTraffic();
         this.setupRoutesOnMap();
@@ -793,7 +787,7 @@ Vue.createApp({
               });
               this.currentPopup = this.busStationLocations.slice().length - index - 1;
               document.querySelectorAll('.bus-info details')[this.busStationLocations.slice().length - index - 1].open = true;
-              document.querySelectorAll('.bus-info').scrollTop = (1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize) + 20)*(this.busStationLocations.slice().length - index - 1);
+              document.querySelector('.bus-info-container').scrollTop = (1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize) + 20)*(this.busStationLocations.slice().length - index - 1);
             });
             var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteData.slice().reverse()[index].staCode} ${this.busRouteData.slice().reverse()[index].staName}`);
             var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
