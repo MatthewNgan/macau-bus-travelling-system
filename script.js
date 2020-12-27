@@ -154,6 +154,7 @@ Vue.createApp({
       colorScheme: 'light',
       intervals: [],
       noSuchNumberError: false,
+      isScrolling: false,
       routesGenerated: {},
       currentlyOpenedIndex: undefined,
       currentScrollToWarning: 0,
@@ -493,15 +494,17 @@ Vue.createApp({
         // } else {
         //   document.querySelector(".route-input").classList.toggle("stuck", false);
         // }
-        if (this.busMap && this.mapEnabled) {
-          if (document.querySelector(".bus-title").offsetTop > 0) {
-            document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
-            document.querySelector(".mapboxgl-canvas").style.height = `calc(50vh - ${document.querySelector(".bus-title").offsetTop}px)`;
-            this.busMap.resize();
-            this.busMap.render();
-            document.querySelector(".bus-info").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - ${document.querySelector("#bus-map").offsetHeight}px - ${document.querySelector(".route-input").offsetHeight}px)`
+        window.clearTimeout(this.isScrolling);
+        this.isScrolling = setTimeout(function() {
+          if (this.busMap && this.mapEnabled) {
+            if (document.querySelector(".bus-title").offsetTop > 0) {
+              document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
+              document.querySelector(".mapboxgl-canvas").style.height = `calc(50vh - ${document.querySelector(".bus-title").offsetTop}px)`;
+              this.busMap.resize();
+              document.querySelector(".bus-info").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - ${document.querySelector("#bus-map").offsetHeight}px - ${document.querySelector(".route-input").offsetHeight}px)`
+            }
           }
-        }
+        }, 66);
       });
       var dataInterval = setInterval(() => {
         this.fetchData();
