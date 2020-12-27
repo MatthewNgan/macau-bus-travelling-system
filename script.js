@@ -425,11 +425,11 @@ Vue.createApp({
       this.busMap = new mapboxgl.Map({
         container: 'bus-map',
         style: 'mapbox://styles/' + mapStyle, // stylesheet location
-        center: [113.565,22.165], // starting position [lng, lat]
-        zoom: 10.5, // starting zoom
+        center: [113.5622406,22.166422], // starting position [lng, lat]
+        zoom: 11, // starting zoom
         minZoom: 10,
         maxZoom: 16.75,
-        maxBounds: [[113.4,22],[113.75,22.3]]
+        maxBounds: [[113.3157349,21.9111969],[113.7963867,22.4199152]]
       });
       this.busMap.addControl(new MapboxLanguage({
         defaultLanguage: 'mul'
@@ -501,9 +501,9 @@ Vue.createApp({
           document.querySelector(".bus-info-container").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - 60vh + ${document.querySelector(".bus-title").offsetTop}px - ${document.querySelector(".route-input").offsetHeight}px)`;
         }
         if (this.isScrolling) clearTimeout(this.isScrolling);
+        document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
         this.isScrolling = setTimeout(() => {
           if (this.busMap && this.mapEnabled && document.querySelector(".bus-info-container")) {
-            document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
             document.querySelector(".mapboxgl-canvas").style.height = `calc(50vh - ${document.querySelector(".bus-title").offsetTop}px)`;
             this.busMap.resize();
           }
@@ -523,8 +523,8 @@ Vue.createApp({
       this.intervals = [dataInterval, indexInterval, trafficInterval];
     },
     resetMap() {
-      this.busMap.setCenter([113.565,22.165]);
-      this.busMap.setZoom(10.5);
+      this.busMap.setCenter([113.5622406,22.166422]);
+      this.busMap.setZoom(11);
       document.querySelector("#bus-map").style.height = `50vh`;
       document.querySelector(".mapboxgl-canvas").style.height = `50vh`;
       this.busMap.resize();
@@ -792,7 +792,8 @@ Vue.createApp({
                 if (detail != e) detail.removeAttribute("open");
               });
               this.currentPopup = this.busStationLocations.slice().length - index - 1;
-              document.querySelectorAll('.bus-info details')[this.busStationLocations.slice().length - index - 1].open = true
+              document.querySelectorAll('.bus-info details')[this.busStationLocations.slice().length - index - 1].open = true;
+              document.querySelectorAll('.bus-info').scrollTop = (1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize) + 20)*(this.busStationLocations.slice().length - index - 1);
             });
             var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteData.slice().reverse()[index].staCode} ${this.busRouteData.slice().reverse()[index].staName}`);
             var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
