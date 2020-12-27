@@ -498,6 +498,7 @@ Vue.createApp({
             document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
             document.querySelector(".mapboxgl-canvas").style.height = `calc(50vh - ${document.querySelector(".bus-title").offsetTop}px)`;
             this.busMap.resize();
+            this.busMap.render();
             document.querySelector(".bus-info").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - ${document.querySelector("#bus-map").offsetHeight}px - ${document.querySelector(".route-input").offsetHeight}px)`
           }
         }
@@ -871,7 +872,6 @@ Vue.createApp({
       var home = document.querySelector('#home');
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     });
-    window.addEventListener("touchmove", function(event) {event.preventDefault();}, {passive: false} );
     this.fetchRoutes();
     this.fetchDyMessage();
   }
