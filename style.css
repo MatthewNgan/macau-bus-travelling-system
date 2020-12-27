@@ -373,6 +373,13 @@ ul {
     -webkit-overflow-scrolling: auto;
     overflow: hidden;
 }
+.option-buttons {
+    display: flex;
+    flex-direction: row;
+}
+.option-buttons > * {
+    margin-left: 10px;
+}
 .suspended {
     position: absolute;
     right: 1.5rem;
