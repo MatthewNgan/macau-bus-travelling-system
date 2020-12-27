@@ -112,6 +112,9 @@ body > * {
 .bus:hover {
     filter: brightness(0.8);
 }
+.bus-info {
+    overflow: hidden;
+}
 .bus-info ul {
     list-style: none;
 }
@@ -233,7 +236,7 @@ ul {
     background-repeat: no-repeat;
     background-position: center;
 }
-.bus-info {
+.bus-info-container {
     overflow: hidden;
     background-color: #efefef;
     position: relative;
@@ -353,6 +356,11 @@ ul {
     padding: 10px 0;
     padding-top: 0;
     scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.main-route-info::-webkit-scrollbar {
+    display: none;
 }
 .main-route-info .bus {
     margin-bottom: 0 !important;
@@ -430,12 +438,12 @@ ul {
 .bus-marker.small {
     width: 12px;
 }
-.main-info-container {
+#bus-map ~ .main-info-container {
     height: 70vh;
     overflow: hidden;
     margin-top: 60vh;
 }
-.bus-info {
+#bus-map ~ .main-info-container .bus-info-container {
     height: calc(55vh - 20px - 2.75rem);
     overflow: auto;
 }
@@ -518,7 +526,7 @@ ul {
         background-color: #222;
         border: 1px solid #444;
     }
-    .bus-info {
+    .bus-info-container {
         background-color: #333;
     }
     .bus-title, .overlay, .route-input {
