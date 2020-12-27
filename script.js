@@ -149,6 +149,7 @@ Vue.createApp({
       busStationLocations: undefined,
       busRouteChange: false,
       busChangeValid: undefined,
+      currentPopup: undefined,
       arrivingBuses: [],
       colorScheme: 'light',
       intervals: [],
@@ -484,16 +485,23 @@ Vue.createApp({
         element.classList.add("no-scroll");
       }
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
-        if (document.querySelector(".bus-title")) {
-          var thisTop = document.querySelector(".route-input").offsetTop;
-          if (this.mapEnabled) var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#bus-map").offsetHeight;
-          else var titleHeight = document.querySelector(".bus-title").offsetHeight
-          document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
-        } else {
-          document.querySelector(".route-input").classList.toggle("stuck", false);
+        // if (document.querySelector(".bus-title")) {
+        //   var thisTop = document.querySelector(".route-input").offsetTop;
+        //   if (this.mapEnabled) var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#bus-map").offsetHeight;
+        //   else var titleHeight = document.querySelector(".bus-title").offsetHeight
+        //   document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
+        // } else {
+        //   document.querySelector(".route-input").classList.toggle("stuck", false);
+        // }
+        if (this.busMap && this.mapEnabled) {
+          if (document.querySelector(".bus-title").offsetTop > 0) {
+            document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
+            document.querySelector(".mapboxgl-canvas").style.height = `calc(50vh - ${document.querySelector(".bus-title").offsetTop}px)`;
+            this.busMap.resize();
+            document.querySelector(".bus-info").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - ${document.querySelector("#bus-map").offsetHeight}px - ${document.querySelector(".route-input").offsetHeight}px)`
+          }
         }
       });
-      this.setupStationMarkersOnMap();
       var dataInterval = setInterval(() => {
         this.fetchData();
         this.setupBusMarkersOnMap();
@@ -510,6 +518,9 @@ Vue.createApp({
     resetMap() {
       this.busMap.setCenter([113.565,22.165]);
       this.busMap.setZoom(10.5);
+      document.querySelector("#bus-map").style.height = `50vh`;
+      document.querySelector(".mapboxgl-canvas").style.height = `50vh`;
+      this.busMap.resize();
       if (this.stationLayerGroup != []) {
         for (let marker of this.stationLayerGroup) {
           marker.remove();
@@ -767,7 +778,15 @@ Vue.createApp({
             }
             stationElement.addEventListener('hover',() => {
               this.busMap.getCanvas().style.cursor = 'pointer';
-            })
+            });
+            stationElement.addEventListener('click',(e) => {
+              const details = document.querySelectorAll('details')
+              details.forEach((detail) => {
+                if (detail != e) detail.removeAttribute("open");
+              });
+              this.currentPopup = this.busStationLocations.slice().length - index - 1;
+              document.querySelectorAll('.bus-info details')[this.busStationLocations.slice().length - index - 1].open = true
+            });
             var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteData.slice().reverse()[index].staCode} ${this.busRouteData.slice().reverse()[index].staName}`);
             var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
             this.stationLayerGroup.push(stationMarker);
@@ -780,6 +799,10 @@ Vue.createApp({
       if (details[index].hasAttribute("open")) {
         this.getArrivingBuses(index);
         this.zoomToStation(index);
+        if (this.currentPopup != index) {
+          if (document.querySelectorAll('.map-station')[this.busStationLocations.slice().length - index - 2])
+          document.querySelectorAll('.map-station')[this.busStationLocations.slice().length - index - 2].click();
+        }
       }
     },
     waitUntil(callback,a=true) {

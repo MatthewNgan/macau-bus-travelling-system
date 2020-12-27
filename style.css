@@ -430,6 +430,15 @@ ul {
 .bus-marker.small {
     width: 12px;
 }
+.main-info-container {
+    height: 70vh;
+    overflow: hidden;
+    margin-top: 60vh;
+}
+.bus-info {
+    height: calc(55vh - 20px - 2.75rem);
+    overflow: auto;
+}
 .map-station {
     width: 18px;
     opacity: 0;
@@ -481,8 +490,9 @@ ul {
     width: 100%;
 }
 #bus-map {
-    height: 35vh;
-    width: 100%;
+    height: 60vh;
+    width: calc(100% - 5vw);
+    position: fixed;
 }
 @media (prefers-color-scheme: dark) {
     * {
