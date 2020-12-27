@@ -485,7 +485,7 @@ Vue.createApp({
         element.classList.add("no-scroll");
       }
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
-        document.querySelector(".bus-info").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - ${document.querySelector("#bus-map").offsetHeight}px - ${document.querySelector(".route-input").offsetHeight}px)`
+        document.querySelector(".bus-info").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - 60vh + ${document.querySelector(".bus-title").offsetTop}px - ${document.querySelector(".route-input").offsetHeight}px)`
         if (this.isScrolling) clearTimeout(this.isScrolling);
         this.isScrolling = setTimeout(() => {
           if (this.busMap && this.mapEnabled) {
