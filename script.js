@@ -159,13 +159,12 @@ Vue.createApp({
       currentlyOpenedIndex: undefined,
       currentScrollToWarning: 0,
       corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
-      // corsProxy: "",
 	  };
   },
   methods: {
     calculateDistance(lon1,lat1,lon2,lat2){
-      const R = 6371e3; // metres
-      const radlat1 = lat1 * Math.PI/180; // φ, λ in radians
+      const R = 6371e3;
+      const radlat1 = lat1 * Math.PI/180;
       const radlat2 = lat2 * Math.PI/180;
       const latD = (lat2-lat1) * Math.PI/180;
       const lonD = (lon2-lon1) * Math.PI/180;
@@ -175,7 +174,7 @@ Vue.createApp({
                 Math.sin(lonD/2) * Math.sin(lonD/2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-      const d = R * c; // in metres
+      const d = R * c;
       return d;
     },
     calculateTime(nextStop,targetStop,loc){
@@ -486,14 +485,7 @@ Vue.createApp({
         element.classList.add("no-scroll");
       }
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
-        // if (document.querySelector(".bus-title")) {
-        //   var thisTop = document.querySelector(".route-input").offsetTop;
-        //   if (this.mapEnabled) var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#bus-map").offsetHeight;
-        //   else var titleHeight = document.querySelector(".bus-title").offsetHeight
-        //   document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
-        // } else {
-        //   document.querySelector(".route-input").classList.toggle("stuck", false);
-        // }
+        document.querySelector(".bus-info").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - ${document.querySelector("#bus-map").offsetHeight}px - ${document.querySelector(".route-input").offsetHeight}px)`
         if (this.isScrolling) clearTimeout(this.isScrolling);
         this.isScrolling = setTimeout(() => {
           if (this.busMap && this.mapEnabled) {
@@ -501,7 +493,6 @@ Vue.createApp({
               document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
               document.querySelector(".mapboxgl-canvas").style.height = `calc(50vh - ${document.querySelector(".bus-title").offsetTop}px)`;
               this.busMap.resize();
-              document.querySelector(".bus-info").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - ${document.querySelector("#bus-map").offsetHeight}px - ${document.querySelector(".route-input").offsetHeight}px)`
             }
           }
         }, 250);
@@ -839,10 +830,8 @@ Vue.createApp({
   },
   updated() {
     const details = document.querySelectorAll("details");
-    // Add the onclick listeners.
     details.forEach((targetDetail) => {
       targetDetail.addEventListener("click", () => {
-        // Close all the details that are not targetDetail.
         details.forEach((detail) => {
           if (detail !== targetDetail) {
             detail.removeAttribute("open");
