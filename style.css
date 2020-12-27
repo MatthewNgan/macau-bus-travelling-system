@@ -358,6 +358,7 @@ ul {
     scroll-behavior: smooth;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: auto;
 }
 .main-route-info::-webkit-scrollbar {
     display: none;
