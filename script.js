@@ -434,9 +434,9 @@ var app = Vue.createApp({
       if (window.location.href.includes("127.0.0.1")) {
         mapboxAccessToken = 'pk.eyJ1IjoibWF0dGhld25nYW4iLCJhIjoiY2tqMTNzNzJuMWtjaDJ5bTBucjNrM3I3NiJ9.DOqgKmjCq8zL50KNIvZNlg';
       }
-      var mapStyle = 'mapbox/light-v9';
+      var mapStyle = 'matthewngan/ckjzsnvju0uqx17o6891qzch5';
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        mapStyle = 'mapbox/dark-v9';
+        mapStyle = 'matthewngan/ckjzsftuo0uik17o62fm4oahc';
       }
       mapboxgl.accessToken = mapboxAccessToken;
       this.busMap = new mapboxgl.Map({
@@ -445,12 +445,9 @@ var app = Vue.createApp({
         center: [113.5622406,22.166422], // starting position [lng, lat]
         zoom: 11, // starting zoom
         minZoom: 10,
-        maxZoom: 16.75,
+        maxZoom: 18.5,
         maxBounds: [[113.3157349,21.9111969],[113.7963867,22.4199152]]
       });
-      this.busMap.addControl(new MapboxLanguage({
-        defaultLanguage: 'mul'
-      }));
       this.busMap.dragRotate.disable();
       this.busMap.touchZoomRotate.disableRotation();
       this.busMap.on('zoom', () => {
@@ -458,15 +455,9 @@ var app = Vue.createApp({
           for (let mapStation of document.querySelectorAll('.map-station')) {
             mapStation.classList.toggle('shown',true)
           }
-          for (let routeLayer of this.routeLayerGroup) {
-            this.busMap.setPaintProperty(routeLayer,'line-width',4)
-          }
         } else {
           for (let mapStation of document.querySelectorAll('.map-station')) {
             mapStation.classList.toggle('shown',false)
-          }
-          for (let routeLayer of this.routeLayerGroup) {
-            this.busMap.setPaintProperty(routeLayer,'line-width',2)
           }
         }
         if (this.busMap.getZoom() > 14) {
@@ -476,12 +467,18 @@ var app = Vue.createApp({
           for (let busMarker of document.querySelectorAll('.bus-marker')) {
             busMarker.classList.toggle('small',false);
           }
+          for (let routeLayer of this.routeLayerGroup) {
+            this.busMap.setPaintProperty(routeLayer,'line-width',4)
+          }
         } else {
           for (let mapImportantStationText of document.querySelectorAll('.map-important-station span')) {
             mapImportantStationText.classList.toggle('shown',false);
           }
           for (let busMarker of document.querySelectorAll('.bus-marker')) {
             busMarker.classList.toggle('small',true);
+          }
+          for (let routeLayer of this.routeLayerGroup) {
+            this.busMap.setPaintProperty(routeLayer,'line-width',2)
           }
         }
       })
@@ -648,7 +645,7 @@ var app = Vue.createApp({
             if (this.busColor.toLowerCase() == 'blue') busElement.src = '/images/icons/blue-bus-icon.png'
             else if (this.busColor.toLowerCase() == 'orange') busElement.src = '/images/icons/orange-bus-icon.png'
             busElement.classList.add('bus-marker');
-            if (this.busMap.getZoom() <= 12 ) busElement.classList.add('small');
+            if (this.busMap.getZoom() <= 14) busElement.classList.add('small');
             var busPopup = new mapboxgl.Popup({closeButton: false, offset: 12}).setHTML(`<code class="${this.busColor.toLowerCase()}">` + bus.busPlate + "</code>" + (bus.speed == "-1" ? "" : ` ${bus.speed}km/h`));
             var busMarker = new mapboxgl.Marker(busElement).setLngLat([bus.longitude, bus.latitude]).setPopup(busPopup).addTo(this.busMap);
             this.busLayerGroup.push(busMarker);
@@ -710,7 +707,7 @@ var app = Vue.createApp({
                 },
                 'paint': {
                   'line-color': color,
-                  'line-width': 4,
+                  'line-width': this.busMap.getZoom() > 14 ? 4 : 2,
                 }
               });
               this.routeLayerGroup.push(i.toString());
@@ -754,6 +751,8 @@ var app = Vue.createApp({
               if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
               else stationElement.src = '/images/icons/bus-stop-dark.png'
               stationElement.classList.add('map-station');
+              if (this.busMap.getZoom() <= 13.5) stationElement.classList.toggle('shown',false);
+              else stationElement.classList.toggle('shown',true);
             }
             stationElement.addEventListener('hover',() => {
               this.busMap.getCanvas().style.cursor = 'pointer';
