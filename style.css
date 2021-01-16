@@ -453,7 +453,7 @@ ul {
     margin-top: 60vh;
 }
 #bus-map ~ .main-info-container .bus-info-container {
-    height: calc(55vh - 20px - 2.75rem);
+    height: calc(25vh - 8.5rem - 20px);
     overflow: auto;
 }
 .map-station {
@@ -466,7 +466,7 @@ ul {
     opacity: 1;
 }
 .map-important-station {
-    padding: 4px 8px;
+    padding: 4px 6px;
     border-radius: 10px;
     border: 2px solid #fff;
     z-index: 1800;
@@ -474,8 +474,8 @@ ul {
     font-size: 14px;
     box-shadow: 0 0 10px #00000011;
     display: block !important;
-    min-width: 20px;
-    min-height: 20px;
+    min-width: 16px;
+    min-height: 16px;
 }
 .map-important-station span {
     display: none;

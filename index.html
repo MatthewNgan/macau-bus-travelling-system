@@ -33,7 +33,7 @@
 <div id="app">
   <header class="shadow-sm fixed-top">
     <img src="/images/icons/logo.png" class="logo" alt="Logo">
-    <h1 class="display-3">巴士報站</h1><small class="text-muted version">v0.2.1</small>
+    <h1 class="display-3">巴士報站</h1><small class="text-muted version">v0.3</small>
     <div class="options">
       <button class="btn btn-success" @click="enableMap" v-if="!mapEnabled">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-map-fill" viewBox="0 0 16 16">
@@ -61,7 +61,7 @@
     <div class="info-content">
       <ul>
         <li v-for="message in messages">
-          {{ message }}
+          {{message}}
         </li>
       </ul>
     </div>
@@ -69,7 +69,7 @@
   <div id="home" v-if="!noInternet">
     <div class="container">
       <div class="row" v-if="busList">
-        <button v-for="bus in busList.routeList" :class="{blue: bus.color.toLowerCase() == 'blue', orange: bus.color.toLowerCase() == 'orange'}" class="bus col-2 btn" @click="requestRoute(bus.routeName,bus.color)">{{ bus.routeName }}</button>
+        <button v-for="bus in busList.routeList" :class="{blue: bus.color.toLowerCase() == 'blue', orange: bus.color.toLowerCase() == 'orange'}" class="bus col-2 btn" @click="requestRoute(bus.routeName,bus.color)">{{bus.routeName}}</button>
       </div>
       <div v-else class="text-center loading">
         載入中...
@@ -79,11 +79,11 @@
   <div class="main-route-info overlay overlay-2" id="main-route-info" :class="{'shown': currentPage == 'info'}" v-if="!noInternet">
     <div class="row ml-0 bus-title" v-if="busRouteData">
       <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="bus col-auto">
-        <h5>{{ busRoute }}</h5>
+        <h5>{{busRoute}}</h5>
       </div>
       <div class="h3 header col">
         <span class="destination">
-          {{ busRouteData[0].staName }}&nbsp;
+          {{busRouteData[0].staName}}&nbsp;
         </span>
         <span class="destination">
           <svg v-if="busAvailableDirection == '2'" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
@@ -93,7 +93,7 @@
           <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
           </svg>
-          &nbsp;{{ busRouteData.slice().reverse()[0].staName }}
+          &nbsp;{{busRouteData.slice().reverse()[0].staName}}
         </span>
       </div>
     </div>
@@ -107,11 +107,11 @@
         </button>
         <div class="col row route-input-title" v-if="busRouteData && !mapEnabled">
           <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="input-bus col-auto">
-            {{ busRoute }}
+            {{busRoute}}
           </div>
           <div class="header h5 col">
             <span class="destination">
-              {{ busRouteData[0].staName }}&nbsp;
+              {{busRouteData[0].staName}}&nbsp;
             </span>
             <span class="destination">
               <svg v-if="busAvailableDirection == '2'" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
@@ -121,7 +121,7 @@
               <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
               </svg>
-              &nbsp;{{ busRouteData.slice().reverse()[0].staName }}
+              &nbsp;{{busRouteData.slice().reverse()[0].staName}}
             </span>
           </div>
         </div>
@@ -144,42 +144,8 @@
       <div v-if="busRouteData && busRouteInfo" class="row">
         <div class="col bus-info-container">
           <div class="bus-info">
-            <details v-for="(station,index) in busRouteData" @toggle="currentlyOpenedIndex = index;toggleIndex(index)" :key="index">
-              <summary class="traffic" :class="{last: index == busRouteData.length-1, green: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '1',yellow: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '2',orange: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '3',red: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '4',brown: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) >= '5'}">
-                <img src="/images/icons/bus-stop-inList.png" class="station-dot">
-                <span class="station-line"></span>
-                </span>
-                <span class="station-name">{{ station.staCode }} {{ station.staName }}</span>
-                <span v-if="busRouteData[index] && busRouteData[index].suspendState == '1'" class="suspended">暫不停靠此站</span>
-              </summary>
-              <ul class="arriving-list">
-                <li v-for="arrivingBus in arrivingBuses[index].slice().reverse()" v-if="arrivingBuses[index]">
-                  <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{ arrivingBus.plate }}</code> 距離本站 {{ arrivingBus.distanceToThis }} 站</span> 
-                  <span v-if="arrivingBus.durationGet" class="time-remaining live" :class="{green: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 1,yellow: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 2,orange: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 3,red: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 4,brown: Math.ceil(parseFloat(arrivingBus.routeTraffic)) >= 5}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M3.05 3.05a7 7 0 0 0 0 9.9.5.5 0 0 1-.707.707 8 8 0 0 1 0-11.314.5.5 0 0 1 .707.707zm2.122 2.122a4 4 0 0 0 0 5.656.5.5 0 0 1-.708.708 5 5 0 0 1 0-7.072.5.5 0 0 1 .708.708zm5.656-.708a.5.5 0 0 1 .708 0 5 5 0 0 1 0 7.072.5.5 0 1 1-.708-.708 4 4 0 0 0 0-5.656.5.5 0 0 1 0-.708zm2.122-2.12a.5.5 0 0 1 .707 0 8 8 0 0 1 0 11.313.5.5 0 0 1-.707-.707 7 7 0 0 0 0-9.9.5.5 0 0 1 0-.707z"/>
-                      <path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
-                    </svg> <span v-if="arrivingBus.duration > 20">{{ Math.ceil((arrivingBus.duration) / 60) }} 分鐘</span><span v-else>即將進站</span>
-                  </span>
-                  <span v-else>ETA 加載中<span>
-                </li>
-                <template v-if="busRouteInfo[index]" v-for="bus in busRouteInfo[index].busInfo.filter((bus) => bus.status == '1')" :key="bus.busPlate">
-                  <li>
-                    <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{ `${bus.busPlate.substring(0,2)}-${bus.busPlate.substring(2,4)}-${bus.busPlate.substring(4,6)}` }}</code></span>
-                    <span v-if="index > 0" class="time-remaining">己進站</span><span v-else>即將發車</span>
-                  </li>
-                </template>
-                <template v-if="busRouteInfo[index]" v-for="bus in busRouteInfo[index].busInfo.filter((bus) => bus.status == '0')" :key="bus.busPlate">
-                  <li class="left">
-                    <img :src="`/images/icons/${busColor.toLowerCase()}-bus-icon.png`">
-                    <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{ `${bus.busPlate.substring(0,2)}-${bus.busPlate.substring(2,4)}-${bus.busPlate.substring(4,6)}` }}</code></span>
-                    <span class="time-remaining">前往下一站中</span>
-                  </li>
-                </template>
-                <li v-if="busRouteInfo[index] && busRouteInfo[index].busInfo.filter((bus) => bus.status == '1').length==0 && (!arrivingBuses[index] || arrivingBuses[index].length == 0)">
-                  尚未發車
-                </li>
-              </ul>
+            <details v-for="(station,index) in busRouteData" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
+              <route-station-on-list :bus-route-info="busRouteInfo" :bus-route-data="busRouteData" :bus-color="busColor" :bus-route-traffic="busRouteTraffic" :arriving-buses="arrivingBuses" :station="station" :index="index"></route-station-on-list>
             </details>
           </div>
         </div>
@@ -200,8 +166,8 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-<!-- <script src="https://unpkg.com/vue@3.0.4/dist/vue.global.js"></script> -->
-<script src="https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue@3.0.4/dist/vue.global.js"></script>
+<!-- <script src="https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js"></script> -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 <script  src="./script.js"></script>
 

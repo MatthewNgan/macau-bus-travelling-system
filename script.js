@@ -1,4 +1,4 @@
-Vue.createApp({
+var app = Vue.createApp({
   data() {
     return {
       bridgeCoords: {
@@ -145,6 +145,13 @@ Vue.createApp({
       busRouteInfo: undefined,
       busRouteData: undefined,
       busRouteTraffic: undefined,
+      dataReady: {
+        busInfoLocations: false,
+        busRouteInfo: false,
+        busRouteTraffic: false,
+        busStationLocations: false,
+        crosBridgeTime: false,
+      },
       busInfoLocations: undefined,
       busStationLocations: undefined,
       busRouteChange: false,
@@ -239,11 +246,15 @@ Vue.createApp({
     },
     fetchData() {
       if (this.busRoute != "") {
+        this.dataReady.busInfoLocations = false;
+        this.dataReady.busRouteInfo = false;
+        this.dataReady.busStationLocations = false;
         fetch(
         `${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/bus?routeName=${this.busRoute}&dir=${this.busDirection}`)
         .then(response => response.json())
         .then(data => {
           this.busRouteInfo = data.data.routeInfo;
+          this.dataReady.busRouteInfo = true;
         })
         .catch(() => {
           this.busRouteInfo = undefined;
@@ -258,6 +269,8 @@ Vue.createApp({
           if (this.scroll) {
             this.scroll = !this.scroll;
           }
+          this.dataReady.busInfoLocations = true;
+          this.dataReady.busStationLocations = true;
         })
         .catch(() => {
           this.noInternet = true;
@@ -323,16 +336,25 @@ Vue.createApp({
     },
     fetchTraffic(){
       if (this.busRoute != "") {
+        this.dataReady.busRouteTraffic = false;
+        this.dataReady.crossBridgeTime = false;
         fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37011/its/Bridge/getTime.html?lang=zh_tw`)
         .then(response => response.json())
         .then(data => {
           this.crossBridgeTime = data.data.timeArray;
+          this.dataReady.crossBridgeTime = true;
         })
         let url = `${this.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${"0".repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
         fetch(url).then(response => response.json()).then(data => {
           this.noSuchNumberError = false;
           let tempData = data.data.slice();
           this.waitUntil(() => {
+            let jamRouteIndex = this.busRouteInfo.findIndex((sta) => sta.staCode.includes("M84"));
+            if (jamRouteIndex > -1) {
+              jamRouteIndex -= 1;
+              tempData[jamRouteIndex].routeTraffic = parseInt(tempData[jamRouteIndex].routeTraffic)+2;
+
+            }
             for (let bridgeRoute in this.routeCrossingBridge) {
               let direction = undefined;
               if (this.routeCrossingBridge[bridgeRoute][0] == "T") {
@@ -365,6 +387,7 @@ Vue.createApp({
               }
             }
             this.busRouteTraffic = tempData.slice();
+            this.dataReady.busRouteTraffic = true;
           },false)
         })
         .catch(() => {
@@ -435,12 +458,18 @@ Vue.createApp({
           for (let mapStation of document.querySelectorAll('.map-station')) {
             mapStation.classList.toggle('shown',true)
           }
+          for (let routeLayer of this.routeLayerGroup) {
+            this.busMap.setPaintProperty(routeLayer,'line-width',4)
+          }
         } else {
           for (let mapStation of document.querySelectorAll('.map-station')) {
             mapStation.classList.toggle('shown',false)
           }
+          for (let routeLayer of this.routeLayerGroup) {
+            this.busMap.setPaintProperty(routeLayer,'line-width',2)
+          }
         }
-        if (this.busMap.getZoom() > 12) {
+        if (this.busMap.getZoom() > 14) {
           for (let mapImportantStationText of document.querySelectorAll('.map-important-station span')) {
             mapImportantStationText.classList.toggle('shown',true);
           }
@@ -492,7 +521,7 @@ Vue.createApp({
           document.querySelector(".route-input").classList.toggle("stuck", false);
         }
         if (this.busMap && this.mapEnabled && document.querySelector(".bus-info-container")) {
-          document.querySelector(".bus-info-container").style.height = `calc(85vh - ${document.querySelector(".bus-title").offsetHeight}px - 60vh + ${document.querySelector(".bus-title").offsetTop}px - ${document.querySelector(".route-input").offsetHeight}px)`;
+          document.querySelector(".bus-info-container").style.height = `calc(25vh - ${document.querySelector(".bus-title").offsetHeight}px + ${document.querySelector(".bus-title").offsetTop}px - ${document.querySelector(".route-input").offsetHeight}px)`;
           document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
         }
         if (this.isScrolling) clearTimeout(this.isScrolling);
@@ -519,8 +548,8 @@ Vue.createApp({
     resetMap() {
       this.busMap.setCenter([113.5622406,22.166422]);
       this.busMap.setZoom(11);
-      document.querySelector("#bus-map").style.height = `50vh`;
-      document.querySelector(".mapboxgl-canvas").style.height = `50vh`;
+      document.querySelector("#bus-map").style.height = `60vh`;
+      document.querySelector(".mapboxgl-canvas").style.height = `60vh`;
       this.busMap.resize();
       if (this.stationLayerGroup != []) {
         for (let marker of this.stationLayerGroup) {
@@ -594,14 +623,12 @@ Vue.createApp({
       this.setupRoutesOnMap();
     },
     scrollToWarning() {
-      var mainRouteInfo = document.querySelector('.main-route-info');
+      var mainRouteInfo = document.querySelector('.bus-info-container');
       var suspendedParent = document.querySelectorAll('.suspended')[this.currentScrollToWarning].parentNode;
-      var title = document.querySelector('.bus-title');
       if (this.mapEnabled) {
-        var busMap = document.querySelector('#bus-map');
-        mainRouteInfo.scrollTop = suspendedParent.offsetTop + busMap.offsetHeight + title.offsetHeight;
+        mainRouteInfo.scrollTop = suspendedParent.offsetTop;
       } else {
-        mainRouteInfo.scrollTop = suspendedParent.offsetTop + title.offsetHeight;
+        mainRouteInfo.scrollTop = suspendedParent.offsetTop;
       }
       var suspendedStations = this.busRouteData.filter(station => station.suspendState == "1");
       if (this.currentScrollToWarning == suspendedStations.length-1) this.currentScrollToWarning = 0;
@@ -664,13 +691,13 @@ Vue.createApp({
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 2) var color = "#5b7c00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 3) var color = "#817f00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 4) var color = "#7e4e00";
-                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 5) var color = "#7e0f00"
+                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) >= 5) var color = "#7e0f00"
               } else {
                 if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 1) var color = "#3acc00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 2) var color = "#99c800";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 3) var color = "#d1bc00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 4) var color = "#d68400";
-                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 5) var color = "#c70000"
+                else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) >= 5) var color = "#c70000"
 
               }
               this.busMap.addLayer({
@@ -687,55 +714,6 @@ Vue.createApp({
                 }
               });
               this.routeLayerGroup.push(i.toString());
-            } else {
-              for (let [index,route] of this.busRouteTraffic[i].routeCoordinates.entries()) {
-                var routeCoordinates = [];
-                let id = i.toString() + '-' + index.toString();
-                for (let routeCoordinate of route.slice().split(';')) {
-                  routeCoordinates.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
-                  allCoords.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
-                }
-                routeCoordinates.pop();
-                this.busMap.addSource(id,{
-                  'type': 'geojson',
-                  'data': {
-                    'type': 'Feature',
-                    'properties': {},
-                    'geometry': {
-                      'type': 'LineString',
-                      'coordinates': routeCoordinates,
-                    },
-                  },
-                });
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                  if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 1) var color = "#007400";
-                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 2) var color = "#5b7c00";
-                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 3) var color = "#817f00";
-                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 4) var color = "#7e4e00";
-                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) >= 5) var color = "#7e0f00"
-                } else {
-                  if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 1) var color = "#3acc00";
-                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 2) var color = "#99c800";
-                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 3) var color = "#d1bc00";
-                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) == 4) var color = "#d68400";
-                  else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic[index])) >= 5) var color = "#c70000"
-
-                }
-                this.busMap.addLayer({
-                  'id': id,
-                  'type': 'line',
-                  'source': id,
-                  'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                  },
-                  'paint': {
-                    'line-color': color,
-                    'line-width': 4,
-                  }
-                });
-                this.routeLayerGroup.push(id.toString());
-              }
             }
           }
           if (!this.mapRefreshed) {
@@ -809,8 +787,8 @@ Vue.createApp({
     },
     waitUntil(callback,a=true) {
       setTimeout(() => {
-        let condition = [this.busRouteInfo != null, this.busStationLocations != null, this.busInfoLocations != null, this.crossBridgeTime != null]
-        if (a) condition.push(this.busRouteTraffic != null);
+        let condition = [this.dataReady.busRouteInfo, this.dataReady.busStationLocations, this.dataReady.busInfoLocations, this.dataReady.crossBridgeTime]
+        if (a) condition.push(this.dataReady.busRouteTraffic);
         var b = true;
         for (let item of condition) {
           if (!item) {
@@ -874,8 +852,54 @@ Vue.createApp({
     this.fetchRoutes();
     this.fetchDyMessage();
   }
-}).
-mount("#app");
+})
+
+app.component('route-station-on-list', {
+  props: ['busRouteData','busRouteInfo','busColor','busRouteTraffic','arrivingBuses','index','station'],
+  computed: {
+    busImgUrl() {
+      return `/images/icons/${this.busColor.toLowerCase()}-bus-icon.png`;
+    }
+  },
+  template: `
+    <summary class="traffic" :class="{last: index == busRouteData.length-1, green: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '1',yellow: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '2',orange: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '3',red: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '4',brown: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) >= '5'}">
+      <img src="/images/icons/bus-stop-inList.png" class="station-dot">
+      <span class="station-line"></span>
+      <span class="station-name">{{station.staCode}} {{station.staName}}</span>
+      <span v-if="busRouteData[index] && busRouteData[index].suspendState == '1'" class="suspended">暫不停靠此站</span>
+    </summary>
+    <ul class="arriving-list">
+      <li v-for="arrivingBus in arrivingBuses[index].slice().reverse()" v-if="arrivingBuses[index]">
+        <span><code :class="busColor.toLowerCase()">{{arrivingBus.plate}}</code> 距離本站 {{arrivingBus.distanceToThis}} 站</span> 
+        <span v-if="arrivingBus.durationGet" class="time-remaining live" :class="{green: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 1,yellow: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 2,orange: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 3,red: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 4,brown: Math.ceil(parseFloat(arrivingBus.routeTraffic)) >= 5}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M3.05 3.05a7 7 0 0 0 0 9.9.5.5 0 0 1-.707.707 8 8 0 0 1 0-11.314.5.5 0 0 1 .707.707zm2.122 2.122a4 4 0 0 0 0 5.656.5.5 0 0 1-.708.708 5 5 0 0 1 0-7.072.5.5 0 0 1 .708.708zm5.656-.708a.5.5 0 0 1 .708 0 5 5 0 0 1 0 7.072.5.5 0 1 1-.708-.708 4 4 0 0 0 0-5.656.5.5 0 0 1 0-.708zm2.122-2.12a.5.5 0 0 1 .707 0 8 8 0 0 1 0 11.313.5.5 0 0 1-.707-.707 7 7 0 0 0 0-9.9.5.5 0 0 1 0-.707z"/>
+            <path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+          </svg> <span v-if="arrivingBus.duration > 20">{{Math.ceil((arrivingBus.duration) / 60)}} 分鐘</span><span v-else>即將進站</span>
+        </span>
+        <span v-else>ETA 加載中</span>
+      </li>
+      <template v-if="busRouteInfo[index]" v-for="bus in busRouteInfo[index].busInfo.filter((bus) => bus.status == '1')" :key="bus.busPlate">
+        <li>
+          <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{bus.busPlate.substring(0,2)}}-{{bus.busPlate.substring(2,4)}}-{{bus.busPlate.substring(4,6)}}</code></span>
+          <span v-if="index > 0" class="time-remaining">己進站</span><span v-else>即將發車</span>
+        </li>
+      </template>
+      <template v-if="busRouteInfo[index]" v-for="bus in busRouteInfo[index].busInfo.filter((bus) => bus.status == '0')" :key="bus.busPlate">
+        <li class="left">
+          <img :src="busImgUrl">
+          <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{bus.busPlate.substring(0,2)}}-{{bus.busPlate.substring(2,4)}}-{{bus.busPlate.substring(4,6)}}</code></span>
+          <span class="time-remaining">前往下一站中</span>
+        </li>
+      </template>
+      <li v-if="busRouteInfo[index] && busRouteInfo[index].busInfo.filter((bus) => bus.status == '1').length==0 && (!arrivingBuses[index] || arrivingBuses[index].length == 0)">
+        尚未發車
+      </li>
+    </ul>
+  `
+})
+
+app.mount("#app");
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js')
