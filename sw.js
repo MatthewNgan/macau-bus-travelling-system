@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static#b0.3.8';
+const staticCacheName = 'site-static#b0.3.8.1';
 const dynamicCacheName = 'site-dynamic#11';
 const assets = [
     '/',
@@ -13,7 +13,7 @@ const assets = [
     '/manifest.json',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
-    'https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js',
+    'https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js',
 ];
 self.addEventListener('install', e => {
     // console.log('ServiceWorker has been installed');
