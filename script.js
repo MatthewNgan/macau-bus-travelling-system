@@ -500,7 +500,7 @@ var app = Vue.createApp({
             mapImportantStationText.classList.toggle('shown',true);
           }
           for (let busMarker of document.querySelectorAll('.bus-marker')) {
-            busMarker.classList.toggle('small',false);
+            busMarker.style.width = (this.busMap.getZoom() + 1.5).toString() + 'px';
           }
           for (let routeLayer of this.routeLayerGroup) {
             this.busMap.setPaintProperty(routeLayer,'line-width',4)
@@ -510,7 +510,7 @@ var app = Vue.createApp({
             mapImportantStationText.classList.toggle('shown',false);
           }
           for (let busMarker of document.querySelectorAll('.bus-marker')) {
-            busMarker.classList.toggle('small',true);
+            busMarker.style.width = '14px';
           }
           for (let routeLayer of this.routeLayerGroup) {
             this.busMap.setPaintProperty(routeLayer,'line-width',2)
@@ -678,7 +678,7 @@ var app = Vue.createApp({
             if (this.busColor.toLowerCase() == 'blue') busElement.src = '/images/icons/blue-bus-icon.png'
             else if (this.busColor.toLowerCase() == 'orange') busElement.src = '/images/icons/orange-bus-icon.png'
             busElement.classList.add('bus-marker');
-            if (this.busMap.getZoom() <= 14) busElement.classList.add('small');
+            if (this.busMap.getZoom() <= 14) busElement.style.width = '12px';
             var busPopup = new mapboxgl.Popup({closeButton: false, offset: 12}).setHTML(`<code class="${this.busColor.toLowerCase()}">` + bus.busPlate + "</code>" + (bus.speed == "-1" ? "" : ` ${bus.speed}km/h`));
             var busMarker = new mapboxgl.Marker(busElement).setLngLat([bus.longitude, bus.latitude]).setPopup(busPopup).addTo(this.busMap);
             this.busLayerGroup.push(busMarker);

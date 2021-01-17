@@ -442,10 +442,6 @@ ul {
 }
 .bus-marker {
     width: 20px;
-    transition: width 0.1s ease, height 0.1s ease;
-}
-.bus-marker.small {
-    width: 12px;
 }
 #bus-map ~ .main-info-container {
     height: 70vh;
