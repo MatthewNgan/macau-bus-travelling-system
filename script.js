@@ -137,7 +137,7 @@ var app = Vue.createApp({
       noInternet: false,
       currentPage: 'home',
       messages: undefined,
-      bigStations: ['M1','M9','M16','M100','M132','M134','M135','M142','M143','M144','M146','M153','M144','M172','M239','T304','T332','T355','T356','T402','T560','C669','C688','C689'],
+      bigStations: ['M1','M9','M16','M69','M100','M132','M134','M135','M142','M143','M144','M146','M153','M144','M172','M239','T304','T332','T355','T356','T402','T560','C669','C688','C689'],
       busList: undefined,
       busRoute: "",
       busColor: "",
@@ -799,7 +799,7 @@ var app = Vue.createApp({
               });
               this.currentPopup = this.busStationLocations.slice().length - index - 1;
               document.querySelectorAll('.bus-info details')[this.busStationLocations.slice().length - index - 1].open = true;
-              document.querySelector('.bus-info-container').scrollTop = (1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize) + 20)*(this.busStationLocations.slice().length - index - 1);
+              document.querySelector('.bus-info-container').scroll({top: (1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize) + 20)*(this.busStationLocations.slice().length - index - 1), behavior: 'smooth'});
             });
             var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteData.slice().reverse()[index].staCode} ${this.busRouteData.slice().reverse()[index].staName}`);
             var stationMarker = new mapboxgl.Marker(stationElement).setLngLat([parseFloat(station.longitude), parseFloat(station.latitude)]).setPopup(stationPopup).addTo(this.busMap);
