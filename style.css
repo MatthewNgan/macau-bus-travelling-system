@@ -59,23 +59,23 @@
 }
 @keyframes blink-green {
     from, to { background-color:rgba(32, 117, 32, 1); }
-    100% { background-color:rgba(32, 117, 32, 0.375); }
+    50% { background-color:rgba(32, 117, 32, 0.375); }
 }
 @keyframes blink-yellow {
     from, to { background-color:rgba(87, 134, 0, 1); }
-    100% { background-color:rgba(87, 134, 0, 0.375); }
+    50% { background-color:rgba(87, 134, 0, 0.375); }
 }
 @keyframes blink-orange {
     from, to { background-color:rgba(161, 152, 24, 1); }
-    100% { background-color:rgba(161, 152, 24, 0.375); }
+    50% { background-color:rgba(161, 152, 24, 0.375); }
 } 
 @keyframes blink-red {
     from, to { background-color:rgba(131, 86, 28, 1); }
-    100% { background-color:rgba(131, 86, 28, 0.375); }
+    50% { background-color:rgba(131, 86, 28, 0.375); }
 }
 @keyframes blink-brown {
     from, to { background-color:rgba(100, 15, 0, 1); }
-    100% { background-color:rgba(100, 15, 0, 0.375); }
+    50% { background-color:rgba(100, 15, 0, 0.375); }
 }
 .time-remaining {
     padding-left: .75rem;
@@ -411,10 +411,10 @@ ul {
 }
 .traffic .station-line {
     position: absolute;
-    width: 5px;
+    width: 3.5px;
     height: calc(1.5rem + 20px);
     top: calc((1.5rem + 20px)/2);
-    left: calc(12.5px + (1rem/1.5/2));
+    left: calc(13.25px + (1rem/1.5/2));
     z-index: 2100;
     transition: background-color 0.2s linear;
     box-shadow: 0 0 1px rgba(83, 83, 83, 0.1);
@@ -472,6 +472,7 @@ ul {
     display: block !important;
     min-width: 16px;
     min-height: 16px;
+    background-color: #1c7dca;
 }
 .map-important-station span {
     display: none;

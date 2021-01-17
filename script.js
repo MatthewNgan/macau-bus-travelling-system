@@ -137,6 +137,7 @@ var app = Vue.createApp({
       noInternet: false,
       currentPage: 'home',
       messages: undefined,
+      bigStations: ['M1','M9','M16','M132','M134','M135','M142','M143','M172','M239','T304','T332','T355','T356','T402','T560','C669','C688','C689'],
       busList: undefined,
       busRoute: "",
       busColor: "",
@@ -246,8 +247,8 @@ var app = Vue.createApp({
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
-      this.setupBusMarkersOnMap();
       this.setupStationMarkersOnMap();
+      this.setupBusMarkersOnMap();
       this.setupRoutesOnMap();
     },
     disableMap() {
@@ -648,8 +649,8 @@ var app = Vue.createApp({
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
-      this.setupBusMarkersOnMap();
       this.setupStationMarkersOnMap();
+      this.setupBusMarkersOnMap();
       this.setupRoutesOnMap();
     },
     scrollToWarning() {
@@ -774,6 +775,12 @@ var app = Vue.createApp({
               stationElement.classList.add('map-important-station');
               stationElement.classList.add('destination');
               stationElement.appendChild(stationTextElement);
+            } else if (this.bigStations.includes(this.busRouteData.slice().reverse()[index].staCode.split('/')[0])) {
+              var stationElement = document.createElement('div');
+              var stationTextElement = document.createElement('span');
+              stationTextElement.innerHTML = this.busRouteData.slice().reverse()[index].staName;
+              stationElement.classList.add('map-important-station');
+              stationElement.appendChild(stationTextElement);
             } else {
               var stationElement = document.createElement('img');
               if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
@@ -807,8 +814,8 @@ var app = Vue.createApp({
         this.getArrivingBuses(index);
         this.zoomToStation(index);
         if (this.currentPopup != index) {
-          if (document.querySelectorAll('.map-station')[this.busStationLocations.slice().length - index - 2])
-          document.querySelectorAll('.map-station')[this.busStationLocations.slice().length - index - 2].click();
+          if (document.querySelectorAll('.map-station, .map-important-station')[this.busStationLocations.slice().length - index - 1])
+          document.querySelectorAll('.map-station, .map-important-station')[this.busStationLocations.slice().length - index - 1].click();
         }
       }
     },
