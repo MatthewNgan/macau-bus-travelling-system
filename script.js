@@ -137,7 +137,7 @@ var app = Vue.createApp({
       noInternet: false,
       currentPage: 'home',
       messages: undefined,
-      bigStations: ['M1','M9','M16','M69','M100','M132','M134','M135','M142','M143','M144','M146','M153','M144','M172','M239','T304','T332','T355','T356','T402','T560','C669','C688','C689'],
+      bigStations: ['C690','M1','M132','M134','M144','M161','M167','M170','M172','M184','M219','M222','M224','M239','M272','M50','9','T308','T365','M16','T326','T349','C689','T343','M135','M7','T339','M10','M137','M111','M88','M800','T551','T419'],
       busList: undefined,
       busRoute: "",
       busColor: "",
