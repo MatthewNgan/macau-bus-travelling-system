@@ -655,11 +655,7 @@ var app = Vue.createApp({
     scrollToWarning() {
       var mainRouteInfo = document.querySelector('.bus-info-container');
       var suspendedParent = document.querySelectorAll('.suspended')[this.currentScrollToWarning].parentNode;
-      if (this.mapEnabled) {
-        mainRouteInfo.scrollTop = suspendedParent.offsetTop;
-      } else {
-        mainRouteInfo.scrollTop = suspendedParent.offsetTop;
-      }
+      mainRouteInfo.scroll({top: suspendedParent.offsetTop, behavior: 'smooth'});
       var suspendedStations = this.busRouteData.filter(station => station.suspendState == "1");
       if (this.currentScrollToWarning == suspendedStations.length-1) this.currentScrollToWarning = 0;
       else this.currentScrollToWarning++;
