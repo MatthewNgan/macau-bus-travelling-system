@@ -239,10 +239,18 @@ var app = Vue.createApp({
       this.busLayerGroup = [];
       this.stationLayerGroup = [];
       this.routeLayerGroup = [];
+      document.querySelector(".bus-info-container").style.height = `unset`;
     },
     enableMap() {
       this.mapEnabled = true;
       localStorage.mapEnabled = true;
+      setTimeout(() => {
+        this.mapRefreshed = false;
+        this.initMap();
+        this.setupBusMarkersOnMap();
+        this.setupStationMarkersOnMap();
+        this.setupRoutesOnMap();
+      }, 250);
     },
     fetchData() {
       if (this.busRoute != "") {
