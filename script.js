@@ -175,12 +175,10 @@ var app = Vue.createApp({
       const radlat2 = lat2 * Math.PI/180;
       const latD = (lat2-lat1) * Math.PI/180;
       const lonD = (lon2-lon1) * Math.PI/180;
-
       const a = Math.sin(latD/2) * Math.sin(latD/2) +
                 Math.cos(radlat1) * Math.cos(radlat2) *
                 Math.sin(lonD/2) * Math.sin(lonD/2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
       const d = R * c;
       return d;
     },
@@ -195,7 +193,11 @@ var app = Vue.createApp({
       }
       let index = currentRoutes.findIndex(point => point.x == parseFloat(loc[0]) && point.y == parseFloat(loc[1]));
       for (let i = index; i < this.busRouteTraffic[nextStop-1].routeCoordinates.split(";").length-2; i++) {
-        totaldistance += this.calculateDistance(this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[0],this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1],this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[0],this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[1])*parseFloat(this.busRouteTraffic[nextStop-1].routeTraffic);
+        let lon1 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[0];
+        let lat1 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1]
+        let lon2 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[0];
+        let lat2 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[1];
+        totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(this.busRouteTraffic[nextStop-1].routeTraffic);
       }
       for (let route of this.busRouteTraffic.slice(nextStop,targetStop)) {
         for (let i = 0; i < route.routeCoordinates.split(";").length-2; i++) {
@@ -222,6 +224,25 @@ var app = Vue.createApp({
       this.routeCrossingBridge = [];
       this.busRouteTraffic = undefined;
       this.busRouteInfo = undefined;
+      if (this.busLayerGroup != []) {
+        for (let marker of this.busLayerGroup) {
+          marker.remove();
+        }
+      }
+      this.busLayerGroup = []
+      if (this.stationLayerGroup != []) {
+        for (let marker of this.stationLayerGroup) {
+          marker.remove();
+        }
+      }
+      this.stationLayerGroup = []
+      if (this.routeLayerGroup != []) {
+        for (let i of this.routeLayerGroup) {
+          this.busMap.removeLayer(i);
+          this.busMap.removeSource(i);
+        }
+      }
+      this.routeLayerGroup = [];
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
@@ -250,7 +271,7 @@ var app = Vue.createApp({
         this.setupBusMarkersOnMap();
         this.setupStationMarkersOnMap();
         this.setupRoutesOnMap();
-      }, 250);
+      }, 150);
     },
     fetchData() {
       if (this.busRoute != "") {
@@ -361,7 +382,13 @@ var app = Vue.createApp({
             if (jamRouteIndex > -1) {
               jamRouteIndex -= 1;
               tempData[jamRouteIndex].routeTraffic = parseInt(tempData[jamRouteIndex].routeTraffic)+2;
-
+            }
+            if (this.busRoute == "32") {
+              let cloneRouteIndex = this.busRouteInfo.findIndex((sta) => sta.staCode.includes("M254/1"));
+              if (cloneRouteIndex > -1) {
+                cloneRouteIndex -= 1;
+                tempData[cloneRouteIndex].routeTraffic = parseInt(tempData[cloneRouteIndex].routeTraffic) / 5
+              }
             }
             for (let bridgeRoute in this.routeCrossingBridge) {
               let direction = undefined;
@@ -609,7 +636,6 @@ var app = Vue.createApp({
     routeChanged() {
       if (this.busRoute.toLowerCase() != "701x") this.busRoute = this.busRoute.toUpperCase();
       else this.busRoute = this.busRoute.toLowerCase();
-
       this.busAvailableDirection = "2";
       this.currentlyOpenedIndex = undefined;
       this.busDirection = 0;
@@ -619,7 +645,6 @@ var app = Vue.createApp({
       details.forEach(detail => {
         detail.removeAttribute("open");
       });
-
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
@@ -703,7 +728,6 @@ var app = Vue.createApp({
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 3) var color = "#d1bc00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 4) var color = "#d68400";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) >= 5) var color = "#c70000"
-
               }
               this.busMap.addLayer({
                 'id': i.toString(),
@@ -841,26 +865,29 @@ var app = Vue.createApp({
     } else {
       localStorage.mapEnabled = "false";
     }
-
     this.colorScheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? "dark" : "light";
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         this.colorScheme = e.matches ? "dark" : "light";
     });
-
     var headerHeight = document.querySelector('header').offsetHeight;
     var home = document.querySelector('#home');
     home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
-
     window.addEventListener('resize',() => {
       var headerHeight = document.querySelector('header').offsetHeight;
       var home = document.querySelector('#home');
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     });
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener('change',
+      () => {
+        this.disableMap();
+        this.enableMap();
+      }
+    );
+    
     this.fetchRoutes();
     this.fetchDyMessage();
   }
 })
-
 app.component('route-station-on-list', {
   props: ['busRouteData','busRouteInfo','busColor','busRouteTraffic','arrivingBuses','index','station'],
   computed: {
@@ -905,9 +932,7 @@ app.component('route-station-on-list', {
     </ul>
   `
 })
-
 app.mount("#app");
-
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js')
     .catch(() => {

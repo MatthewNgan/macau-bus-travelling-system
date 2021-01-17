@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static#b0.3.2';
+const staticCacheName = 'site-static#b0.3.3';
 const dynamicCacheName = 'site-dynamic#11';
 const assets = [
     '/',
@@ -15,7 +15,6 @@ const assets = [
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
     'https://unpkg.com/vue@3.0.4/dist/vue.global.prod.js',
 ];
-
 self.addEventListener('install', e => {
     // console.log('ServiceWorker has been installed');
     e.waitUntil(
@@ -24,7 +23,6 @@ self.addEventListener('install', e => {
         })
     );
 });
-
 self.addEventListener('activate', e => {
     // console.log('ServiceWorker has been activated');
     e.waitUntil(
@@ -36,7 +34,6 @@ self.addEventListener('activate', e => {
         })
     );
 });
-
 self.addEventListener('fetch', e => {
     // console.log('Fetch event', e)
     e.respondWith(
