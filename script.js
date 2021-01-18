@@ -132,6 +132,7 @@ var app = Vue.createApp({
       stationLayerGroup: [],
       mapEnabled: false,
       mapRefreshed: false,
+      mapLoaded: false,
       isStuck: false,
       scroll: true,
       noInternet: false,
@@ -260,6 +261,7 @@ var app = Vue.createApp({
         this.busMap.remove();
       }
       this.busMap = undefined;
+      this.mapLoaded = false;
       this.busLayerGroup = [];
       this.stationLayerGroup = [];
       this.routeLayerGroup = [];
@@ -500,7 +502,7 @@ var app = Vue.createApp({
           }
         }
         if (this.busMap.getZoom() > 14) {
-          for (let mapImportantStationText of document.querySelectorAll('.map-important-station span')) {
+          for (let mapImportantStationText of document.querySelectorAll('.destination span, .origin span')) {
             mapImportantStationText.classList.toggle('shown',true);
           }
           for (let busMarker of document.querySelectorAll('.bus-marker')) {
@@ -510,7 +512,7 @@ var app = Vue.createApp({
             this.busMap.setPaintProperty(routeLayer,'line-width',4)
           }
         } else {
-          for (let mapImportantStationText of document.querySelectorAll('.map-important-station span')) {
+          for (let mapImportantStationText of document.querySelectorAll('.destination span, .origin span')) {
             mapImportantStationText.classList.toggle('shown',false);
           }
           for (let busMarker of document.querySelectorAll('.bus-marker')) {
@@ -521,7 +523,7 @@ var app = Vue.createApp({
           }
         }
       })
-      
+      this.busMap.on('load', () => this.mapLoaded = true);
     },
     openInfoBox() {
       this.currentPage = 'message';
@@ -781,10 +783,7 @@ var app = Vue.createApp({
               stationElement.appendChild(stationTextElement);
             } else if (this.bigStations.includes(this.busRouteData.slice().reverse()[index].staCode.split('/')[0])) {
               var stationElement = document.createElement('div');
-              var stationTextElement = document.createElement('span');
-              stationTextElement.innerHTML = this.busRouteData.slice().reverse()[index].staName;
               stationElement.classList.add('map-important-station');
-              stationElement.appendChild(stationTextElement);
             } else {
               var stationElement = document.createElement('img');
               if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
@@ -825,7 +824,7 @@ var app = Vue.createApp({
     },
     waitUntil(callback,a=true) {
       setTimeout(() => {
-        let condition = [this.dataReady.busRouteInfo, this.dataReady.busStationLocations, this.dataReady.busInfoLocations, this.dataReady.crossBridgeTime]
+        let condition = [this.mapLoaded, this.dataReady.busRouteInfo, this.dataReady.busStationLocations, this.dataReady.busInfoLocations, this.dataReady.crossBridgeTime]
         if (a) condition.push(this.dataReady.busRouteTraffic);
         var b = true;
         for (let item of condition) {
