@@ -194,11 +194,13 @@ var app = Vue.createApp({
       }
       let index = currentRoutes.findIndex(point => point.x == parseFloat(loc[0]) && point.y == parseFloat(loc[1]));
       for (let i = index; i < this.busRouteTraffic[nextStop-1].routeCoordinates.split(";").length-2; i++) {
-        let lon1 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[0];
-        let lat1 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1]
-        let lon2 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[0];
-        let lat2 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[1];
-        totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(this.busRouteTraffic[nextStop-1].routeTraffic);
+        if (this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i] && this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1]) {
+          let lon1 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[0];
+          let lat1 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1]
+          let lon2 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[0];
+          let lat2 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[1];
+          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(this.busRouteTraffic[nextStop-1].routeTraffic);
+        }
       }
       for (let route of this.busRouteTraffic.slice(nextStop,targetStop)) {
         for (let i = 0; i < route.routeCoordinates.split(";").length-2; i++) {
@@ -272,6 +274,7 @@ var app = Vue.createApp({
         this.setupBusMarkersOnMap();
         this.setupStationMarkersOnMap();
         this.setupRoutesOnMap();
+        document.querySelector(".bus-info-container").style.height = `calc(25vh - ${document.querySelector(".bus-title").offsetHeight}px + ${document.querySelector(".bus-title").offsetTop}px - ${document.querySelector(".route-input").offsetHeight}px)`;
       }, 150);
     },
     fetchData() {
@@ -654,9 +657,10 @@ var app = Vue.createApp({
       this.setupRoutesOnMap();
     },
     scrollToWarning() {
-      var mainRouteInfo = document.querySelector('.bus-info-container');
+      var mainRouteInfo = (this.busMap && this.mapEnabled) ? document.querySelector('.bus-info-container') : document.querySelector('.main-route-info');
       var suspendedParent = document.querySelectorAll('.suspended')[this.currentScrollToWarning].parentNode;
-      mainRouteInfo.scroll({top: suspendedParent.offsetTop, behavior: 'smooth'});
+      console.log(suspendedParent.offsetTop,mainRouteInfo.scrollTop);
+      mainRouteInfo.scroll({top: (this.busMap && this.mapEnabled) ? suspendedParent.offsetTop : suspendedParent.offsetTop + document.querySelector('.bus-title').offsetHeight, behavior: 'smooth'});
       var suspendedStations = this.busRouteData.filter(station => station.suspendState == "1");
       if (this.currentScrollToWarning == suspendedStations.length-1) this.currentScrollToWarning = 0;
       else this.currentScrollToWarning++;

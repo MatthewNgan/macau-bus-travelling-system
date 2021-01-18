@@ -237,7 +237,7 @@ ul {
     background-position: center;
 }
 .bus-info-container {
-    overflow: hidden;
+    overflow: auto;
     background-color: #efefef;
     position: relative;
     z-index: 2000;
@@ -255,12 +255,12 @@ ul {
     align-items: center;
     background-color: #efefef;
     position: sticky;
-    top: -1px;
+    top: 0;
     z-index: 2000;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2)
 }
 .bus-title .bus {
-    padding: 25px 15px !important;
+    padding: 15px !important;
 }
 .bus-title h5 {
     color: #111 !important;
@@ -364,9 +364,9 @@ ul {
 .main-route-info::-webkit-scrollbar {
     display: none;
 }
-.main-route-info .bus {
+/* .main-route-info .bus {
     margin-bottom: 0 !important;
-}
+} */
 .no-scroll {
     touch-action: none;
     overscroll-behavior: none;
