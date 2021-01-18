@@ -33,7 +33,7 @@
 <div id="app">
   <header class="shadow-sm fixed-top">
     <img src="/images/icons/logo.png" class="logo" alt="Logo">
-    <h1 class="display-3">巴士報站</h1><small class="version"><code class="text-muted">v0.3.8.5</code></small>
+    <h1 class="display-3">巴士報站</h1><small class="version"><code class="text-muted">v0.3.8.6</code></small>
     <div class="options">
       <button class="info btn" id="toggleInfoBox" v-if="messages" @click="openInfoBox">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
@@ -177,6 +177,14 @@
 <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js"></script>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 <script  src="./script.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VG1QX7H6B3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-VG1QX7H6B3');
+</script>
 </body>
 </html>
