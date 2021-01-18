@@ -87,7 +87,7 @@
         </span>
       </div>
       <span v-if="busRoute.toLowerCase() == 'ap1x'" class="col-auto text-muted">機場<br>快線</span>
-      <span v-else-if="busRoute.toLowerCase().include('ap')" class="col-auto text-muted">機場<br>專線</span>
+      <span v-else-if="busRoute.toLowerCase().includes('ap')" class="col-auto text-muted">機場<br>專線</span>
       <span v-else-if="busRoute.toLowerCase().includes('x')" class="col-auto text-muted">快線</span>
       <span v-else-if="busRoute.toLowerCase().includes('s')" class="col-auto text-muted">特班車</span>
       <span v-else-if="busRoute.toLowerCase().includes('h')" class="col-auto text-muted">醫院<br>專線</span>
