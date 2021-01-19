@@ -835,8 +835,9 @@ var app = Vue.createApp({
     },
     waitUntil(callback,a=true) {
       setTimeout(() => {
-        let condition = [this.mapLoaded, this.dataReady.busRouteInfo, this.dataReady.busStationLocations, this.dataReady.busInfoLocations, this.dataReady.crossBridgeTime]
+        let condition = [this.dataReady.busRouteInfo, this.dataReady.busStationLocations, this.dataReady.busInfoLocations, this.dataReady.crossBridgeTime]
         if (a) condition.push(this.dataReady.busRouteTraffic);
+        if (this.mapEnabled) condition.push(this.mapLoaded);
         var b = true;
         for (let item of condition) {
           if (!item) {
