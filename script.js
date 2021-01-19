@@ -457,6 +457,7 @@ var app = Vue.createApp({
                 'durationGet': true,
                 'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude]) + i*48,
                 'routeTraffic': routeTraffic,
+                'location': [this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude],
               });
               count++;
             }
@@ -681,7 +682,17 @@ var app = Vue.createApp({
             if (this.busColor.toLowerCase() == 'blue') busElement.src = '/images/icons/blue-bus-icon.png'
             else if (this.busColor.toLowerCase() == 'orange') busElement.src = '/images/icons/orange-bus-icon.png'
             busElement.classList.add('bus-marker');
-            if (this.busMap.getZoom() <= 14) busElement.style.width = '12px';
+            for (let sta of this.busRouteInfo) {
+              for (let lbus of sta.busInfo) {
+                if (lbus.busPlate == bus.busPlate && lbus.status == "0") {
+                  busElement.classList.add('moving',true);
+                  break;
+                };
+              }
+              if (busElement.classList.contains('moving')) break;
+            }
+            if (this.busMap.getZoom() <= 14) busElement.style.width = '14px';
+            else busElement.style.width = (this.busMap.getZoom() + 1.5).toString() + 'px';
             var busPopup = new mapboxgl.Popup({closeButton: false, offset: 12}).setHTML(`<code class="${this.busColor.toLowerCase()}">` + bus.busPlate + "</code>" + (bus.speed == "-1" ? "" : ` ${bus.speed}km/h`));
             var busMarker = new mapboxgl.Marker(busElement).setLngLat([bus.longitude, bus.latitude]).setPopup(busPopup).addTo(this.busMap);
             this.busLayerGroup.push(busMarker);
@@ -815,7 +826,7 @@ var app = Vue.createApp({
       let details = document.querySelectorAll('details');
       if (details[index] && details[index].hasAttribute("open")) {
         this.getArrivingBuses(index);
-        this.zoomToStation(index);
+        this.focusStation(index);
         if (this.currentPopup != index) {
           if (document.querySelectorAll('.map-station, .map-important-station')[this.busStationLocations.slice().length - index - 1])
           document.querySelectorAll('.map-station, .map-important-station')[this.busStationLocations.slice().length - index - 1].click();
@@ -840,14 +851,22 @@ var app = Vue.createApp({
         }
       },500);
     },
-    zoomToStation(index) {
-      if (this.mapEnabled && this.busMap) {
-        let stationLoc = [this.busStationLocations.slice()[index].longitude,this.busStationLocations.slice()[index].latitude];
-        this.busMap.flyTo({
-          center: stationLoc,
-          zoom: 16,
-        })
-      }
+    focusStation(index) {
+      setTimeout(() => {
+        if (this.mapEnabled && this.busMap) {
+          let stationLoc = [this.busStationLocations.slice()[index].longitude,this.busStationLocations.slice()[index].latitude];
+          if (this.arrivingBuses[index] && this.arrivingBuses[index][0]) {
+            let closestBusLoc = this.arrivingBuses[index][0].location;
+            let bbox = turf.bbox(turf.lineString([stationLoc, closestBusLoc]));
+            this.busMap.fitBounds(bbox, {padding: 30});
+          } else {
+            this.busMap.flyTo({
+              center: stationLoc,
+              zoom: 16,
+            })
+          }
+        }
+      },150)
     }
   },
   updated() {

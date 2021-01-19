@@ -57,6 +57,10 @@
     justify-content: space-between;
     padding-right: 1.5rem;
 }
+@keyframes breathe {
+    from, to { opacity: 1; }
+    50% { opacity: 0.25; }
+}
 @keyframes blink-green {
     from, to { background-color:rgba(32, 117, 32, 1); }
     50% { background-color:rgba(32, 117, 32, 0.375); }
@@ -442,6 +446,10 @@ ul {
 }
 .bus-marker {
     width: 20px;
+    z-index: 3000;
+}
+.bus-marker.moving {
+    animation: breathe 2s linear infinite;
 }
 #bus-map ~ .main-info-container {
     height: 70vh;
@@ -456,6 +464,7 @@ ul {
     width: 18px;
     opacity: 0;
     transition: opacity 0.1s linear;
+    z-index: 2500;
 }
 .map-station.shown {
     width: 18px;
@@ -465,7 +474,7 @@ ul {
     padding: 4px 6px;
     border-radius: 10px;
     border: 2px solid #fff;
-    z-index: 1800;
+    z-index: 2500;
     color: white;
     font-size: 14px;
     box-shadow: 0 0 10px #00000011;
@@ -481,16 +490,18 @@ ul {
     display: block;
 }
 .map-important-station.origin {
+    z-index: 3200;
     background-color: rgb(37, 192, 37);
 }
 .map-important-station.destination {
+    z-index: 3200;
     background-color: orangered;
 }
 .mapboxgl-marker:hover {
     cursor: pointer;
 }
 .mapboxgl-popup {
-    z-index: 1850;
+    z-index: 3500;
 }
 .mapboxgl-popup-content {
     padding: 10px 15px;
@@ -552,6 +563,18 @@ ul {
     }
     .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
         border-right-color: #444 !important;
+    }
+    .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+        border-bottom-color: #444 !important;
+    }
+    .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+        border-top-color: #444 !important;
+    }
+    .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {
+        border-bottom-color: #444 !important;
+    }
+    .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {
+        border-top-color: #444 !important;
     }
     .traffic .station-dot circle {
         color: white;
