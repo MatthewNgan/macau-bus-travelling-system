@@ -33,7 +33,7 @@
 <div id="app">
   <header class="shadow-sm fixed-top">
     <img src="/images/icons/logo.png" class="logo" alt="Logo">
-    <h1 class="display-3">巴士報站</h1><small class="version"><code class="text-muted">v0.3.9.1-fix</code></small>
+    <h1 class="display-3">巴士報站</h1><small class="version"><code class="text-muted">v0.3.9.2</code></small>
     <div class="options">
       <button class="info btn" id="toggleInfoBox" v-if="messages" @click="openInfoBox">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
@@ -71,7 +71,7 @@
       <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="bus col-auto">
         <h5>{{busRoute}}</h5>
       </div>
-      <div class="h4 header col">
+      <div class="h4 header col" v-if="busRoute != 'MT3'">
         <span class="destination">
           {{busRouteData[0].staName}}&nbsp;
         </span>
@@ -86,6 +86,11 @@
           &nbsp;{{busRouteData.slice().reverse()[0].staName}}
         </span>
       </div>
+      <div class="h4 header col" v-else>
+        <span class="destination">
+          高利亞海軍上將/<br>政府綜合服務大樓
+        </span>
+      </div>
       <span v-if="busRoute.toLowerCase() == 'ap1x'" class="col-auto text-muted">機場<br>快線</span>
       <span v-else-if="busRoute.toLowerCase().includes('ap')" class="col-auto text-muted">機場<br>專線</span>
       <span v-else-if="busRoute.toLowerCase().includes('x')" class="col-auto text-muted">快線</span>
@@ -96,13 +101,13 @@
     </div>
     <div id="bus-map" v-if="mapEnabled"></div>
     <div class="main-info-container">
-      <div class="route-input">
+      <div class="route-navbar">
         <button @click="returnHome" class="col-auto btn btn-secondary" aria-label="Return Button">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
           </svg>
         </button>
-        <div class="col row route-input-title" v-if="busRouteData && !mapEnabled">
+        <div class="col row route-navbar-title" v-if="busRouteData && !mapEnabled">
           <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="input-bus col-auto">
             {{busRoute}}
           </div>

@@ -191,7 +191,7 @@ ul {
     margin-top: 1rem;
     padding-left: calc(2rem + 5px);;
 }
-.route-input {
+.route-navbar {
     display: flex;
     padding: 10px 5px;
     position: sticky;
@@ -207,7 +207,7 @@ ul {
     padding: 5rem;
     text-align: center;
 }
-.route-input > * {
+.route-navbar > * {
     margin: 0 5px;
 }
 .input-bus {
@@ -272,11 +272,11 @@ ul {
 .bus-title .h3 {
     font-size: calc(1.3rem + .6vw);
 }
-.route-input .h5 {
+.route-navbar .h5 {
     font-size: 1rem;
     display: none;
 }
-.route-input.stuck .h5 {
+.route-navbar.stuck .h5 {
     display: flex;
 }
 .header {
@@ -287,7 +287,7 @@ ul {
     margin-bottom: 0 !important;
     max-width: 100%;
 }
-.route-input-title {
+.route-navbar-title {
     align-items: center;
     display: flex;
     justify-content: center;
@@ -295,7 +295,7 @@ ul {
     opacity: 0;
     overflow: hidden;
 }
-.route-input.stuck .route-input-title {
+.route-navbar.stuck .route-navbar-title {
     opacity: 1;
 }
 .align-middle {
@@ -306,14 +306,14 @@ ul {
 #changedirection-icon {
     display: none;
 }
-.route-input.stuck #changedirection-icon {
+.route-navbar.stuck #changedirection-icon {
     display: block;
     margin-right: 5px;
 }
 #changedirection-text {
     display: block;
 }
-.route-input.stuck #changedirection-text {
+.route-navbar.stuck #changedirection-text {
     display: none;
 }
 .destination {
@@ -457,7 +457,7 @@ ul {
     margin-top: 60vh;
 }
 #bus-map ~ .main-info-container .bus-info-container {
-    height: calc(25vh - 8.5rem - 20px);
+    height: calc(25vh - 2rem - 40px);
     overflow: auto;
 }
 .map-station {
@@ -546,7 +546,7 @@ ul {
     .bus-info-container {
         background-color: #333;
     }
-    .bus-title, .overlay, .route-input {
+    .bus-title, .overlay, .route-navbar {
         background-color: #333;
     }
     .mapboxgl-popup-content {

@@ -3,125 +3,27 @@ var app = Vue.createApp({
     return {
       bridgeCoords: {
         '01': [[[
-          [113.5609692,22.2045011],
-          [113.5614145,22.2031452],
-          [113.562187,22.2006618],
-          [113.562482,22.1996387],
-          [113.5623479,22.199435],
-          [113.5622996,22.1992016],
-          [113.5623854,22.1988639],
-          [113.5626805,22.1985609],
-          [113.5628951,22.1981685],
-          [113.5630023,22.1975129],
-          [113.5630292,22.197339],
-          [113.5630882,22.1956205],
-          [113.5631043,22.1915327],
-          [113.5631204,22.1882047],
-          [113.5631311,22.1832424],
-          [113.5631418,22.1760793],
-          [113.5631204,22.172741],
-          [113.5631847,22.1688264],
-          [113.5631204,22.1665213],
-          [113.5631096,22.1661139],
-          [113.5630774,22.1656867],
-          [113.5629594,22.1654582],
-          [113.5628897,22.1651998],
-          [113.5626966,22.1648571],
-          [113.5625786,22.1646087],
-          [113.5626322,22.1643901],
-          [113.562777,22.1643354],
-          [113.5630989,22.1646583],
-          [113.5633832,22.1649663],
-          [113.5637534,22.1651551],
-          [113.5638714,22.1651055],
-          [113.5643274,22.1650011],
-          [113.5645849,22.1649316],
-          [113.5649389,22.1648372],
-          [113.5649979,22.165016],
-          [113.5645688,22.1651949],
-          [113.5644776,22.1653539],
-          [113.5645419,22.1656668],
-          [113.5646063,22.1658308],
-          [113.5646868,22.1660096],
-          [113.5647029,22.1663574],
-          [113.5645634,22.1664965],
-          [113.5643864,22.16672],
-          [113.5639465,22.1670479],
-          [113.5638446,22.1673162],
-          [113.5637265,22.1677236],
-          [113.5636783,22.1681806],
-          [113.5636675,22.1717276],
-          [113.5637212,22.1763277],
-          [113.5637105,22.1804408],
-          [113.5635388,22.1861533],
-          [113.5636032,22.1895011],
-          [113.5635066,22.1952828],
-          [113.5633671,22.1979649],
-          [113.5634637,22.1984317],
-          [113.563571,22.1988589],
-          [113.563571,22.1992761],
-          [113.5633993,22.1996039],
-          [113.5628843,22.1999317],
-          [113.5622191,22.201978],
-          [113.5612965,22.2045408],
-          [113.5612482,22.2045706],
-          [113.5610819,22.2045383],
-          [113.5609692,22.2045011],
+          [113.5608566,22.2047643],
+          [113.5626161,22.1991966],
+          [113.5631847,22.1668194],
+          [113.5639894,22.1667598],
+          [113.5635924,22.1992066],
+          [113.5614681,22.2048289],
+          [113.5608566,22.2047643]
         ]],4500],
         '02': [[[
-          [113.5438192,22.1866698],
-          [113.5442483,22.1847723],
-          [113.5446024,22.1831629],
-          [113.544656,22.1831306],
-          [113.5447097,22.1830189],
-          [113.5447365,22.1828599],
-          [113.5447955,22.1825569],
-          [113.5451227,22.1808928],
-          [113.545627,22.1786674],
-          [113.5459757,22.1769635],
-          [113.5466141,22.1741022],
-          [113.5471398,22.1717972],
-          [113.5475689,22.16982],
-          [113.5485989,22.1652644],
-          [113.548623,22.16517],
-          [113.5486847,22.1651055],
-          [113.5487464,22.1651129],
-          [113.5488027,22.1651253],
-          [113.5488135,22.1651849],
-          [113.5487545,22.1653315],
-          [113.5483977,22.1669386],
-          [113.5473812,22.1715885],
-          [113.5469842,22.1734564],
-          [113.5467803,22.1743406],
-          [113.5465765,22.1751851],
-          [113.5464263,22.1758856],
-          [113.5457933,22.1789605],
-          [113.5453802,22.1807935],
-          [113.5448867,22.1828103],
-          [113.5448545,22.1828326],
-          [113.5448331,22.1829046],
-          [113.5447821,22.1830971],
-          [113.5447365,22.183312],
-          [113.5447204,22.1835901],
-          [113.5445085,22.1844246],
-          [113.5439748,22.1867195],
-          [113.5439506,22.1867965],
-          [113.5438943,22.1869604],
-          [113.5438138,22.1869753],
-          [113.5438165,22.1868959],
-          [113.5438192,22.1866698]
+          [113.5437709,22.18665],
+          [113.548556,22.1652893],
+          [113.5487866,22.165329],
+          [113.5441303,22.1866698],
+          [113.5437709,22.18665]
         ]],2540],
         '03': [[[
-          [113.5320497,22.1793082],
-          [113.5393935,22.1653936],
-          [113.5397905,22.1654482],
-          [113.5394096,22.1666753],
-          [113.5377413,22.1698697],
-          [113.5334927,22.1785085],
-          [113.5330045,22.1792635],
-          [113.532849,22.1793877],
-          [113.5320657,22.1793132],
-          [113.5320497,22.1793082]
+          [113.5322535,22.1784935],
+          [113.5388947,22.165945],
+          [113.5396671,22.1664617],
+          [113.5337448,22.1786227],
+          [113.5322535,22.1784935]
         ]],2000],
       },
       crossBridgeTime: undefined,
@@ -138,7 +40,7 @@ var app = Vue.createApp({
       noInternet: false,
       currentPage: 'home',
       messages: undefined,
-      bigStations: ['C690','M1','M132','M134','M144','M161','M167','M170','M172','M184','M219','M222','M224','M239','M272','M50','9','T308','T365','M16','T326','T349','C689','T343','M135','M7','T339','M10','M137','M111','M88','M800','T551','T419'],
+      mainStations: ['C690','M1','M132','M134','M144','M161','M167','M170','M172','M184','M219','M222','M224','M239','M272','M50','9','T308','T365','M16','T326','T349','C689','T343','M135','M7','T339','M10','M137','M111','M88','M800','T551','T419'],
       busList: undefined,
       busRoute: "",
       busColor: "",
@@ -276,7 +178,7 @@ var app = Vue.createApp({
         this.setupBusMarkersOnMap();
         this.setupStationMarkersOnMap();
         this.setupRoutesOnMap();
-        document.querySelector(".bus-info-container").style.height = `calc(25vh - ${document.querySelector(".bus-title").offsetHeight}px + ${document.querySelector(".bus-title").offsetTop}px - ${document.querySelector(".route-input").offsetHeight}px)`;
+        document.querySelector(".bus-info-container").style.height = `calc(25vh - ${document.querySelector(".bus-title").offsetHeight}px + ${document.querySelector(".bus-title").offsetTop}px - ${document.querySelector(".route-navbar").offsetHeight}px)`;
       }, 150);
     },
     fetchData() {
@@ -441,9 +343,9 @@ var app = Vue.createApp({
       }
     },
     getArrivingBuses(index) {
-      this.arrivingBuses = [];
-      this.arrivingBuses[index] = [];
-      if (this.busRouteInfo) {
+      if (this.dataReady.busInfoLocations && this.dataReady.busRouteTraffic) {
+        this.arrivingBuses = [];
+        this.arrivingBuses[index] = [];
         let stationBefore = this.busRouteInfo.slice(0, index).reverse();
         var count = 0;
         for (let i = 0; i < index; i++) {
@@ -458,6 +360,7 @@ var app = Vue.createApp({
                 'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude]) + (comingBus.status == '1' ? (i+1) : i )*48,
                 'routeTraffic': routeTraffic,
                 'location': [this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude],
+                'currentStation': index - i,
               });
               count++;
             }
@@ -507,7 +410,7 @@ var app = Vue.createApp({
             mapImportantStationText.classList.toggle('shown',true);
           }
           for (let busMarker of document.querySelectorAll('.bus-marker')) {
-            busMarker.style.width = (this.busMap.getZoom() + 1.5).toString() + 'px';
+            busMarker.style.width = (this.busMap.getZoom() + 3).toString() + 'px';
           }
           for (let routeLayer of this.routeLayerGroup) {
             this.busMap.setPaintProperty(routeLayer,'line-width',4)
@@ -552,15 +455,15 @@ var app = Vue.createApp({
       }
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
         if (!this.busMap && !this.mapEnabled && document.querySelector(".bus-title")) {
-          var thisTop = document.querySelector(".route-input").offsetTop;
+          var thisTop = document.querySelector(".route-navbar").offsetTop;
           if (this.mapEnabled) var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#bus-map").offsetHeight;
           else var titleHeight = document.querySelector(".bus-title").offsetHeight
-          document.querySelector(".route-input").classList.toggle("stuck", thisTop > titleHeight);
+          document.querySelector(".route-navbar").classList.toggle("stuck", thisTop > titleHeight);
         } else {
-          document.querySelector(".route-input").classList.toggle("stuck", false);
+          document.querySelector(".route-navbar").classList.toggle("stuck", false);
         }
         if (this.busMap && this.mapEnabled && document.querySelector(".bus-info-container")) {
-          document.querySelector(".bus-info-container").style.height = `calc(25vh - ${document.querySelector(".bus-title").offsetHeight}px + ${document.querySelector(".bus-title").offsetTop}px - ${document.querySelector(".route-input").offsetHeight}px)`;
+          document.querySelector(".bus-info-container").style.height = `calc(25vh - ${document.querySelector(".bus-title").offsetHeight}px + ${document.querySelector(".bus-title").offsetTop}px - ${document.querySelector(".route-navbar").offsetHeight}px)`;
           document.querySelector("#bus-map").style.height = `calc(60vh - ${document.querySelector(".bus-title").offsetTop}px)`;
         }
         if (this.isScrolling) clearTimeout(this.isScrolling);
@@ -616,7 +519,7 @@ var app = Vue.createApp({
       for (let element of document.querySelectorAll("#app, #home, #home *")) {
         element.classList.remove("no-scroll");
       }
-      document.querySelector(".route-input").classList.remove('stuck');
+      document.querySelector(".route-navbar").classList.remove('stuck');
       document.querySelector('#info-box').classList.remove('shown');
       this.currentPage = 'home';
       this.mapRefreshed = false;
@@ -792,7 +695,7 @@ var app = Vue.createApp({
               stationElement.classList.add('map-important-station');
               stationElement.classList.add('destination');
               stationElement.appendChild(stationTextElement);
-            } else if (this.bigStations.includes(this.busRouteData.slice().reverse()[index].staCode.split('/')[0])) {
+            } else if (this.mainStations.includes(this.busRouteData.slice().reverse()[index].staCode.split('/')[0])) {
               var stationElement = document.createElement('div');
               stationElement.classList.add('map-important-station');
             } else {
@@ -856,14 +759,24 @@ var app = Vue.createApp({
       setTimeout(() => {
         if (this.mapEnabled && this.busMap) {
           let stationLoc = [this.busStationLocations.slice()[index].longitude,this.busStationLocations.slice()[index].latitude];
-          if (this.arrivingBuses[index] && this.arrivingBuses[index][0]) {
+          if (this.arrivingBuses[index] && this.arrivingBuses[index][0] && this.arrivingBuses[index][0].currentStation >= 0) {
             let closestBusLoc = this.arrivingBuses[index][0].location;
-            let bbox = turf.bbox(turf.lineString([stationLoc, closestBusLoc]));
-            this.busMap.fitBounds(bbox, {padding: 30});
+            let closestStationIndex = this.arrivingBuses[index][0].currentStation - 1;
+            let routeCoords = [closestBusLoc];
+            for (let p of this.busRouteTraffic.slice(closestStationIndex, index)) {
+              for (let line of p.routeCoordinates.split(";")) {
+                if (line.includes(",")) {
+                  routeCoords.push([parseFloat(line.split(",")[0]),parseFloat(line.split(",")[1])]);
+                }
+              }
+            }
+            routeCoords.push(stationLoc);
+            let bbox = turf.bbox(turf.lineString(routeCoords));
+            this.busMap.fitBounds(bbox, {padding: 25, maxZoom: 15.5});
           } else {
             this.busMap.flyTo({
               center: stationLoc,
-              zoom: 16,
+              zoom: 15.5,
             })
           }
         }
@@ -935,7 +848,7 @@ app.component('route-station-on-list', {
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M3.05 3.05a7 7 0 0 0 0 9.9.5.5 0 0 1-.707.707 8 8 0 0 1 0-11.314.5.5 0 0 1 .707.707zm2.122 2.122a4 4 0 0 0 0 5.656.5.5 0 0 1-.708.708 5 5 0 0 1 0-7.072.5.5 0 0 1 .708.708zm5.656-.708a.5.5 0 0 1 .708 0 5 5 0 0 1 0 7.072.5.5 0 1 1-.708-.708 4 4 0 0 0 0-5.656.5.5 0 0 1 0-.708zm2.122-2.12a.5.5 0 0 1 .707 0 8 8 0 0 1 0 11.313.5.5 0 0 1-.707-.707 7 7 0 0 0 0-9.9.5.5 0 0 1 0-.707z"/>
             <path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
-          </svg> <span v-if="arrivingBus.duration > 30">{{Math.round((arrivingBus.duration) / 60)}} 分鐘</span><span v-else>即將進站</span>
+          </svg> <span v-if="arrivingBus.duration > 30">{{arrivingBus.duration <= 3600 ? (Math.round((arrivingBus.duration) / 60)) + " 分鐘" : "多於 " + Math.floor((arrivingBus.duration) / 3600) + " 小時"}}</span><span v-else>即將進站</span>
         </span>
         <span v-else>ETA 加載中</span>
       </li>
