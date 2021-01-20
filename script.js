@@ -455,7 +455,7 @@ var app = Vue.createApp({
                 'speed': comingBus.speed,
                 'distanceToThis': i + 1,
                 'durationGet': true,
-                'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude]) + (comingBus.status == '1' ? i : (i-1))*48,
+                'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude]) + (comingBus.status == '1' ? (i+1) : i )*48,
                 'routeTraffic': routeTraffic,
                 'location': [this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude],
               });
