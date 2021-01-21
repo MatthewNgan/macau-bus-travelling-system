@@ -386,10 +386,12 @@ var app = Vue.createApp({
               }
             }
             for (let busElement of document.querySelectorAll('.bus-marker')) {
-              if (!busElement.id.includes(this.arrivingBuses[index][0].busPlate)) {
-                busElement.style.opacity = 0;
+              if (!busElement.id.includes(this.arrivingBuses[index][0].plate)) {
+                busElement.style.setProperty("opacity", "0", "important");
+                busElement.style.setProperty("animation", "none", "important");
               } else {
                 busElement.style.removeProperty('opacity');
+                busElement.style.removeProperty('animation');
               }
             }
           } else {
@@ -427,11 +429,6 @@ var app = Vue.createApp({
           }
         }
         this.arrivingBuses[index].sort((x,y) => (x.duration > y.duration) ? 1 : ((x.duration < y.duration) ? -1 : 0));
-      }
-    },
-    getName(code) {
-      if (this.busRouteData != undefined && this.busRouteData.slice().filter(station => code == station.staCode)[0] != undefined) {
-        return this.busRouteData.slice().filter(station => code == station.staCode)[0].staName;
       }
     },
     initMap() {
@@ -659,6 +656,7 @@ var app = Vue.createApp({
             var busPopup = new mapboxgl.Popup({closeButton: false, offset: 12}).setHTML(`<code class="${this.busColor.toLowerCase()}">` + bus.busPlate + "</code>" + (bus.speed == "-1" ? "" : ` ${bus.speed}km/h`));
             var busMarker = new mapboxgl.Marker(busElement).setLngLat([bus.longitude, bus.latitude]).setPopup(busPopup).addTo(this.busMap);
             this.busLayerGroup.push(busMarker);
+            this.getArrivingBuses(this.currentlyOpenedIndex);
             this.focusStation();
           }
         })
@@ -833,6 +831,7 @@ var app = Vue.createApp({
           }
           for (let busElement of document.querySelectorAll('.bus-marker')) {
             busElement.style.removeProperty('opacity');
+            busElement.style.removeProperty('animation');
           }
         }
       }, 50)
