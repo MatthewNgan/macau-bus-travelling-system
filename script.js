@@ -387,11 +387,9 @@ var app = Vue.createApp({
             }
             for (let busElement of document.querySelectorAll('.bus-marker')) {
               if (!busElement.id.includes(this.arrivingBuses[index][0].plate)) {
-                busElement.style.setProperty("opacity", "0", "important");
-                busElement.style.setProperty("animation", "none", "important");
+                busElement.style.setProperty("display", "none", "important");
               } else {
-                busElement.style.removeProperty('opacity');
-                busElement.style.removeProperty('animation');
+                busElement.style.removeProperty('display');
               }
             }
           } else {
@@ -830,8 +828,7 @@ var app = Vue.createApp({
             this.stationLayerGroup[i].getElement().style.removeProperty('opacity');
           }
           for (let busElement of document.querySelectorAll('.bus-marker')) {
-            busElement.style.removeProperty('opacity');
-            busElement.style.removeProperty('animation');
+            busElement.style.removeProperty('display');
           }
         }
       }, 50)
