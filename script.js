@@ -1,7 +1,7 @@
 var app = Vue.createApp({
   data() {
     return {
-      appVersion: 'v1.0.1-c',
+      appVersion: 'v1.0.2',
       bridgeCoords: {
         '01': [[[
           [113.5608566,22.2047643],
@@ -88,7 +88,7 @@ var app = Vue.createApp({
       const d = R * c;
       return d;
     },
-    calculateTime(nextStop,targetStop,loc){
+    calculateTime(nextStop,targetStop,loc,bus){
       let totaldistance = 0;
       let currentRoutes = [];
       for (let i = 0; i < this.busRouteTraffic[nextStop-1].routeCoordinates.split(";").length-1; i++) {
@@ -107,12 +107,14 @@ var app = Vue.createApp({
           totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(this.busRouteTraffic[nextStop-1].routeTraffic);
         }
       }
+      totaldistance += + (bus.status == '1' ? 375 : 0)*parseFloat(this.busRouteTraffic[nextStop-1].routeTraffic);
       for (let route of this.busRouteTraffic.slice(nextStop,targetStop)) {
         for (let i = 0; i < route.routeCoordinates.split(";").length-2; i++) {
           let lon1 = route.routeCoordinates.split(";")[i].split(",")[0]; let lat1 = route.routeCoordinates.split(";")[i].split(",")[1];
           let lon2 = route.routeCoordinates.split(";")[i+1].split(",")[0]; let lat2 = route.routeCoordinates.split(";")[i+1].split(",")[1];
           totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(route.routeTraffic);
         }
+        totaldistance += 375 * parseFloat(route.routeTraffic);
       }
       return Math.ceil(totaldistance / 12.5);
     },
@@ -418,7 +420,7 @@ var app = Vue.createApp({
                 'speed': comingBus.speed,
                 'distanceToThis': i + 1,
                 'durationGet': true,
-                'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude]) + (comingBus.status == '1' ? (i+1) : i )*48,
+                'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude],comingBus),
                 'routeTraffic': routeTraffic,
                 'location': [this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude],
                 'currentStation': index - i,
@@ -788,15 +790,15 @@ var app = Vue.createApp({
       }
     },
     toggleIndex(index) {
+      this.currentlyOpenedIndex = index;
       let details = document.querySelectorAll('details');
+      if (this.currentPopup) this.stationLayerGroup.slice().reverse()[this.currentPopup].getPopup().remove();
       if (details[index] && details[index].hasAttribute("open")) {
         this.getArrivingBuses(index);
         this.focusingStation = true;
         this.focusStation(index);
-        if (this.currentPopup != index) {
-          if (document.querySelectorAll('.map-station, .map-important-station')[this.busStationLocations.slice().length - index - 1])
-          document.querySelectorAll('.map-station, .map-important-station')[this.busStationLocations.slice().length - index - 1].click();
-        }
+        this.stationLayerGroup.slice().reverse()[index].getPopup().addTo(this.busMap);
+        this.currentPopup = index;
       }
     },
     waitUntil(callback,a=true) {

@@ -156,7 +156,7 @@
       <div class="row">
         <div class="col bus-info-container">
           <div class="bus-info" v-if="busRouteData && busRouteInfo">
-            <details v-for="(station,index) in busRouteData" @toggle="currentlyOpenedIndex = index;toggleIndex(index)">
+            <details v-for="(station,index) in busRouteData" @toggle="toggleIndex(index)">
               <route-station-on-list :bus-route-info="busRouteInfo" :bus-route-data="busRouteData" :bus-color="busColor" :bus-route-traffic="busRouteTraffic" :arriving-buses="arrivingBuses" :station="station" :index="index"></route-station-on-list>
             </details>
           </div>
