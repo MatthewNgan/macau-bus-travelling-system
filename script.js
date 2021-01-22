@@ -1,6 +1,7 @@
 var app = Vue.createApp({
   data() {
     return {
+      appVersion: 'v1.0.1-b'
       bridgeCoords: {
         '01': [[[
           [113.5608566,22.2047643],
@@ -725,6 +726,7 @@ var app = Vue.createApp({
             this.busMap.fitBounds(bbox, {padding: 50});
             this.mapRefreshed = true;
           }
+          this.focusStation();
         })
       }
     },
