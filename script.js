@@ -1,7 +1,7 @@
 var app = Vue.createApp({
   data() {
     return {
-      appVersion: 'v1.0.3',
+      appVersion: 'v1.0.3-a',
       bridgeCoords: {
         '01': [[[
           [113.5608566,22.2047643],

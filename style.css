@@ -5,6 +5,7 @@
 .logo {
     border-radius: calc((1.525rem + 3.3vw)/4);
     height: calc(1.525rem + 3.3vw);
+    max-height: 4rem;
 }
 .options {
     margin-left: auto;
