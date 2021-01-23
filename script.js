@@ -1,7 +1,7 @@
 var app = Vue.createApp({
   data() {
     return {
-      appVersion: 'v1.0.2',
+      appVersion: 'v1.0.3',
       bridgeCoords: {
         '01': [[[
           [113.5608566,22.2047643],
@@ -41,7 +41,7 @@ var app = Vue.createApp({
       noInternet: false,
       currentPage: 'home',
       messages: undefined,
-      mainStations: ['C690','M1','M132','M134','M144','M161','M167','M170','M172','M184','M219','M222','M224','M239','M272','M50','9','T308','T365','M16','T326','T349','C689','T343','M135','M7','T339','M10','M137','M111','M88','M800','T551','T419'],
+      mainStations: ['C690','M1','M132','M134','M144','M161','M167','M170','M172','M184','M219','M222','M224','M239','M272','M50','M9','T308','T365','M16','T326','T349','C689','T343','M135','M7','T339','M10','M137','M111','M88','M800','T551','T419'],
       busList: undefined,
       busRoute: "",
       busColor: "",
@@ -399,7 +399,16 @@ var app = Vue.createApp({
             this.busMap.flyTo({
               center: stationLoc,
               zoom: 15.5,
-            })
+            });
+            for (let i = 1; i <= this.routeLayerGroup.length; i++) {
+              this.busMap.setPaintProperty(this.routeLayerGroup[i-1],'line-opacity', 1)
+            }
+            for (let i = 0; i < this.stationLayerGroup.length; i++) {
+              this.stationLayerGroup.slice().reverse()[i].getElement().style.removeProperty('opacity');
+            }
+            for (let busElement of document.querySelectorAll('.bus-marker')) {
+              busElement.style.removeProperty('display');
+            }
           }
         },150)
       }
@@ -792,7 +801,7 @@ var app = Vue.createApp({
     toggleIndex(index) {
       this.currentlyOpenedIndex = index;
       let details = document.querySelectorAll('details');
-      if (this.currentPopup) this.stationLayerGroup.slice().reverse()[this.currentPopup].getPopup().remove();
+      if (this.currentPopup != undefined) this.stationLayerGroup.slice().reverse()[this.currentPopup].getPopup().remove();
       if (details[index] && details[index].hasAttribute("open")) {
         this.getArrivingBuses(index);
         this.focusingStation = true;
@@ -882,49 +891,18 @@ var app = Vue.createApp({
     this.fetchDyMessage();
   }
 })
-app.component('route-station-on-list', {
+app.component('station-block', {
   props: ['busRouteData','busRouteInfo','busColor','busRouteTraffic','arrivingBuses','index','station'],
   computed: {
     busImgUrl() {
       return `/images/icons/${this.busColor.toLowerCase()}-bus-icon.png`;
     }
   },
-  template: `
-    <summary class="traffic" :class="{last: index == busRouteData.length-1, green: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '1',yellow: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '2',orange: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '3',red: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '4',brown: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) >= '5'}">
-      <img src="/images/icons/bus-stop-inList.png" class="station-dot">
-      <span class="station-line"></span>
-      <span class="station-name">{{station.staCode}} {{station.staName}}</span>
-      <span v-if="busRouteData[index] && busRouteData[index].suspendState == '1'" class="suspended">暫不停靠此站</span>
-    </summary>
-    <ul class="arriving-list">
-      <li v-for="arrivingBus in arrivingBuses[index].slice().reverse()" v-if="arrivingBuses[index]">
-        <span><code :class="busColor.toLowerCase()">{{arrivingBus.plate}}</code> 距離本站 {{arrivingBus.distanceToThis}} 站</span> 
-        <span v-if="arrivingBus.durationGet" class="time-remaining live" :class="{green: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 1,yellow: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 2,orange: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 3,red: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 4,brown: Math.ceil(parseFloat(arrivingBus.routeTraffic)) >= 5}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M3.05 3.05a7 7 0 0 0 0 9.9.5.5 0 0 1-.707.707 8 8 0 0 1 0-11.314.5.5 0 0 1 .707.707zm2.122 2.122a4 4 0 0 0 0 5.656.5.5 0 0 1-.708.708 5 5 0 0 1 0-7.072.5.5 0 0 1 .708.708zm5.656-.708a.5.5 0 0 1 .708 0 5 5 0 0 1 0 7.072.5.5 0 1 1-.708-.708 4 4 0 0 0 0-5.656.5.5 0 0 1 0-.708zm2.122-2.12a.5.5 0 0 1 .707 0 8 8 0 0 1 0 11.313.5.5 0 0 1-.707-.707 7 7 0 0 0 0-9.9.5.5 0 0 1 0-.707z"/>
-            <path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
-          </svg> <span v-if="arrivingBus.duration > 30">{{arrivingBus.duration <= 3600 ? (Math.round((arrivingBus.duration) / 60)) + " 分鐘" : "多於 " + Math.floor((arrivingBus.duration) / 3600) + " 小時"}}</span><span v-else>即將進站</span>
-        </span>
-        <span v-else>ETA 加載中</span>
-      </li>
-      <template v-if="busRouteInfo[index]" v-for="bus in busRouteInfo[index].busInfo.filter((bus) => bus.status == '1')" :key="bus.busPlate">
-        <li>
-          <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{bus.busPlate.substring(0,2)}}-{{bus.busPlate.substring(2,4)}}-{{bus.busPlate.substring(4,6)}}</code></span>
-          <span v-if="index > 0" class="time-remaining">己進站</span><span v-else>即將發車</span>
-        </li>
-      </template>
-      <template v-if="busRouteInfo[index]" v-for="bus in busRouteInfo[index].busInfo.filter((bus) => bus.status == '0')" :key="bus.busPlate">
-        <li class="left">
-          <img :src="busImgUrl">
-          <span><code :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}">{{bus.busPlate.substring(0,2)}}-{{bus.busPlate.substring(2,4)}}-{{bus.busPlate.substring(4,6)}}</code></span>
-          <span class="time-remaining">前往下一站中</span>
-        </li>
-      </template>
-      <li v-if="busRouteInfo[index] && busRouteInfo[index].busInfo.filter((bus) => bus.status == '1').length==0 && (!arrivingBuses[index] || arrivingBuses[index].length == 0)">
-        尚未發車
-      </li>
-    </ul>
-  `
+  template: "#station-block-template",
+})
+app.component('info-overlay-header', {
+  props: ['busRouteData','busAvailableDirection','busRoute','busColor'],
+  template: "#info-overlay-header-template",
 })
 app.mount("#app");
 if ('serviceWorker' in navigator) {
