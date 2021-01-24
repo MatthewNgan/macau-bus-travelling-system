@@ -28,9 +28,9 @@
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
   <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
   <link rel="stylesheet" href="/style.css">
-  <script type="text/x-template" id="route-view-template">
-    <div class="route-view overlay overlay-2" id="route-view">
-      <info-overlay-header :bus-route-data="busRouteData" :bus-available-direction="busAvailableDirection" :bus-route="busRoute" :bus-color="busColor" v-if="busRouteData"></info-overlay-header>
+  <script type="text/x-template" id="route-modal-template">
+    <div class="route-modal modal modal-2" id="route-modal">
+      <route-modal-header :bus-route-data="busRouteData" :bus-available-direction="busAvailableDirection" :bus-route="busRoute" :bus-color="busColor" v-if="busRouteData"></route-modal-header>
       <div id="bus-map" v-if="mapEnabled">
         <div class="loading">
           載入中...
@@ -38,7 +38,7 @@
       </div>
       <div class="main-info-container">
         <div class="route-navbar">
-          <button @click="returnHome" class="col-auto btn btn-secondary" aria-label="Return Button">
+          <button @click="$parent.returnHome($parent.currentModal)" class="col-auto btn btn-secondary" aria-label="Return Button">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
             </svg>
@@ -101,7 +101,7 @@
       </div>
     </div>
   </script>
-  <script type="text/x-template" id="info-overlay-header-template">
+  <script type="text/x-template" id="route-modal-header-template">
     <div class="row ml-0 bus-title">
       <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="bus col-auto">
         <h5>{{busRoute}}</h5>
@@ -186,8 +186,8 @@
       </button>
     </div>
   </header>
-  <div id="route-info" :class="{'shadow-shown': currentPage != 'home'}" @click="returnHome" v-if="!noInternet"></div>
-  <div id="info-box" class="info-box overlay overlay-2">
+  <div id="shadow" :class="{'shadow-shown': currentModal != undefined}" @click="returnHome(currentModal)" v-if="!noInternet"></div>
+  <div id="info-box" class="info-box modal modal-2">
     <div class="header">
       <h5>溫馨提示</h5>
     </div>
@@ -209,8 +209,8 @@
       </div>
     </div>
   </div>
-  <route-view :class="{'shown': currentPage == 'route-info-view'}" v-if="!noInternet" ref="routeView"></route-view>
-  <div class="no-internet-error overlay overlay-2" :class="{shown: noInternet}">
+  <route-modal :class="{'shown': currentModal == 'route-info-modal'}" v-if="!noInternet" ref="route-info-modal"></route-modal>
+  <div class="no-internet-error modal modal-2" :class="{shown: noInternet}">
     <div class="container text-center">
       <h1>
         OOPS!
@@ -221,8 +221,8 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-<!-- <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.js"></script> -->
-<script src="https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/vue@3.0.5/dist/vue.global.js"></script>
+<!-- <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js"></script> -->
 <script src="./script.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-VG1QX7H6B3"></script>

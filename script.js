@@ -1,13 +1,14 @@
 var app = Vue.createApp({
   data() {
     return {
-      appVersion: 'v1.1',
-      // appVersion: 'test-2',
-      busList: undefined,
       // corsProxy: "",
       corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
+      // appVersion: 'v1.1',
+      appVersion: 'test-3',
+      busList: undefined,
       colorScheme: 'light',
-      currentPage: 'home',
+      currentView: 'route',
+      currentModal: undefined,
       messages: undefined,
       noInternet: false,
       intervals: [],
@@ -85,25 +86,21 @@ var app = Vue.createApp({
         this.$parent.noInternet = true;
       });
     },
-    returnHome() {
+    returnHome(view) {
       bodyScrollLock.clearAllBodyScrollLocks();
       document.querySelector(".route-navbar").classList.remove('stuck');
       document.querySelector('#info-box').classList.remove('shown');
       for (let interval of this.intervals) {
         clearInterval(interval);
       }
-      this.currentPage = 'home';
+      this.currentModal = undefined;
+      this.$refs[view].returnHome();
     },
     requestRoute(route,color) {
-      this.$refs.routeView.requestRoute(route,color);
+      this.$refs['route-info-modal'].requestRoute(route,color);
     }
   },
   mounted() {
-    if (localStorage.mapEnabled) {
-      this.mapEnabled = localStorage.mapEnabled === "true";
-    } else {
-      localStorage.mapEnabled = "false";
-    }
     this.colorScheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? "dark" : "light";
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         this.colorScheme = e.matches ? "dark" : "light";
@@ -120,7 +117,7 @@ var app = Vue.createApp({
     this.fetchDyMessage();
   }
 });
-app.component('route-view', {
+app.component('route-modal', {
   computed: {
     corsProxy() {
       return this.$parent.corsProxy;
@@ -244,7 +241,7 @@ app.component('route-view', {
     },
     disableMap() {
       this.mapEnabled = false;
-      localStorage.mapEnabled = false;
+      localStorage.routeMapEnabled = false;
       if (this.busMap) {
         this.busMap.remove();
       }
@@ -257,7 +254,7 @@ app.component('route-view', {
     },
     enableMap() {
       this.mapEnabled = true;
-      localStorage.mapEnabled = true;
+      localStorage.routeMapEnabled = true;
       setTimeout(() => {
         this.mapRefreshed = false;
         this.initMap();
@@ -288,7 +285,7 @@ app.component('route-view', {
         .then(data => {
           this.busInfoLocations = data.data.busInfoList;
           this.busStationLocations = data.data.stationInfoList;
-          this.$parent.currentPage = 'route-info-view';
+          this.$parent.currentModal = 'route-info-modal';
           if (this.scroll) {
             this.scroll = !this.scroll;
           }
@@ -548,26 +545,26 @@ app.component('route-view', {
       this.busMap.on('load', () => this.mapLoaded = true);
     },
     openInfoBox() {
-      this.$parent.currentPage = 'message';
+      this.$parent.currentModal = 'message';
       document.querySelector('#info-box').classList.add('shown');
     },
     requestRoute(route,color) {
       if (this.mapEnabled && !this.busMap) {
         this.initMap();
       }
-      this.$parent.currentPage = 'route-info-view';
+      this.$parent.currentModal = 'route-info-modal';
       this.busRoute = route;
       this.scroll = true;
       this.busColor = color;
       this.routeChanged();
-      bodyScrollLock.disableBodyScroll(document.querySelector("#route-view"),{allowTouchMove: el => el.id === 'bus-map' || el.id === ''})
+      bodyScrollLock.disableBodyScroll(document.querySelector("#route-modal"))
       if (this.busMap && this.mapEnabled) {
         document.querySelector("#bus-map").setAttribute("style","");
         document.querySelector(".mapboxgl-canvas").setAttribute("style","");
         this.busMap.resize();
       }
-      document.querySelector("#route-view").scrollTop = 0;
-      document.querySelector("#route-view").addEventListener("scroll", () => {
+      document.querySelector("#route-modal").scrollTop = 0;
+      document.querySelector("#route-modal").addEventListener("scroll", () => {
         if (!this.busMap && !this.mapEnabled && document.querySelector(".bus-title")) {
           var thisTop = document.querySelector(".route-navbar").offsetTop;
           if (this.mapEnabled) var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#bus-map").offsetHeight;
@@ -628,7 +625,6 @@ app.component('route-view', {
       this.routeLayerGroup = [];
     },
     returnHome() {
-      this.$parent.returnHome();
       this.mapRefreshed = false;
       this.routeCrossingBridge = [];
       this.crossBridgeTime = undefined;
@@ -667,7 +663,7 @@ app.component('route-view', {
       this.setupRoutesOnMap();
     },
     scrollToWarning() {
-      var mainRouteInfo = (this.busMap && this.mapEnabled) ? document.querySelector('.bus-info-container') : document.querySelector('.route-view');
+      var mainRouteInfo = (this.busMap && this.mapEnabled) ? document.querySelector('.bus-info-container') : document.querySelector('.route-modal');
       var suspendedParent = document.querySelectorAll('.suspended')[this.currentScrollToWarning].parentNode;
       mainRouteInfo.scroll({top: (this.busMap && this.mapEnabled) ? suspendedParent.offsetTop : suspendedParent.offsetTop + document.querySelector('.bus-title').offsetHeight, behavior: 'smooth'});
       var suspendedStations = this.busRouteData.filter(station => station.suspendState == "1");
@@ -887,6 +883,11 @@ app.component('route-view', {
     }
   },
   mounted() {
+    if (localStorage.routeMapEnabled) {
+      this.mapEnabled = localStorage.routeMapEnabled === "true";
+    } else {
+      localStorage.routeMapEnabled = "false";
+    }
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener('change',
       () => {
         this.disableMap();
@@ -906,7 +907,7 @@ app.component('route-view', {
       });
     });
   },
-  template: "#route-view-template",
+  template: "#route-modal-template",
 });
 app.component('station-block', {
   props: ['busRouteData','busRouteInfo','busColor','busRouteTraffic','arrivingBuses','index','station'],
@@ -917,9 +918,9 @@ app.component('station-block', {
   },
   template: "#station-block-template",
 });
-app.component('info-overlay-header', {
+app.component('route-modal-header', {
   props: ['busRouteData','busAvailableDirection','busRoute','busColor'],
-  template: "#info-overlay-header-template",
+  template: "#route-modal-header-template",
 });
 app.mount("#app");
 if ('serviceWorker' in navigator) {
