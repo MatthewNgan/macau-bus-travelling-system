@@ -369,9 +369,6 @@ ul {
 .main-route-info::-webkit-scrollbar {
     display: none;
 }
-/* .main-route-info .bus {
-    margin-bottom: 0 !important;
-} */
 .no-scroll {
     touch-action: none;
     overscroll-behavior: none;

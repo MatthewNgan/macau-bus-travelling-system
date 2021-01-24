@@ -1,7 +1,8 @@
 var app = Vue.createApp({
   data() {
     return {
-      appVersion: 'v1.0.3-a',
+      // appVersion: 'v1.0.3-a',
+      appVersion: 'test-1',
       bridgeCoords: {
         '01': [[[
           [113.5608566,22.2047643],
@@ -509,17 +510,13 @@ var app = Vue.createApp({
       this.scroll = true;
       this.busColor = color;
       this.routeChanged();
-      document.body.classList.add("no-scroll");
-      document.documentElement.classList.add("no-scroll");
+      bodyScrollLock.disableBodyScroll(document.querySelector("#main-route-info"),{allowTouchMove: el => el.id === 'bus-map'})
       if (this.busMap && this.mapEnabled) {
         document.querySelector("#bus-map").setAttribute("style","");
         document.querySelector(".mapboxgl-canvas").setAttribute("style","");
         this.busMap.resize();
       }
       document.querySelector("#main-route-info").scrollTop = 0;
-      for (let element of document.querySelectorAll("#app, #home, #home *")) {
-        element.classList.add("no-scroll");
-      }
       document.querySelector("#main-route-info").addEventListener("scroll", () => {
         if (!this.busMap && !this.mapEnabled && document.querySelector(".bus-title")) {
           var thisTop = document.querySelector(".route-navbar").offsetTop;
@@ -581,11 +578,7 @@ var app = Vue.createApp({
       this.routeLayerGroup = [];
     },
     returnHome() {
-      document.documentElement.classList.remove("no-scroll");
-      document.body.classList.remove("no-scroll");
-      for (let element of document.querySelectorAll("#app, #home, #home *")) {
-        element.classList.remove("no-scroll");
-      }
+      bodyScrollLock.clearAllBodyScrollLocks();
       document.querySelector(".route-navbar").classList.remove('stuck');
       document.querySelector('#info-box').classList.remove('shown');
       this.currentPage = 'home';
