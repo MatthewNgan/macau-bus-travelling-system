@@ -1,10 +1,10 @@
 var app = Vue.createApp({
   data() {
     return {
-      // corsProxy: "",
-      corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
-      // appVersion: 'v1.2',
-      appVersion: 'test-4',
+      corsProxy: "",
+      // corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
+      appVersion: 'v1.2.1',
+      // appVersion: 'test-4',
       busList: undefined,
       colorScheme: 'light',
       currentView: 'route',
@@ -193,6 +193,7 @@ app.component('route-modal', {
       busRouteChange: false,
       busChangeValid: undefined,
       currentPopup: undefined,
+      eventListenersFunc: [],
       arrivingBuses: [],
       noSuchNumberError: false,
       isScrolling: undefined,
@@ -573,7 +574,7 @@ app.component('route-modal', {
         this.busMap.resize();
       }
       document.querySelector("#route-modal").scrollTop = 0;
-      document.querySelector("#route-modal").addEventListener("scroll", () => {
+      let scrollEventFunc =  () => {
         if (!this.busMap && !this.mapEnabled && document.querySelector(".bus-title")) {
           var thisTop = document.querySelector(".route-navbar").offsetTop;
           if (this.mapEnabled) var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#bus-map").offsetHeight;
@@ -593,15 +594,9 @@ app.component('route-modal', {
             this.busMap.resize();
           }
         }, 100);
-      });
-      document.querySelector("#route-modal").addEventListener("touchend", () => {
-        document.querySelector("#route-modal").style.overflow = 'hidden';
-        let current = document.querySelector("#route-modal").scrollTop;
-        setTimeout(function() {
-          document.querySelector("#route-modal").scrollTop = current;
-          document.querySelector("#route-modal").style.overflow = '';
-        }, 5);
-      })
+      }
+      this.eventListenersFunc.push(["scroll","#route-modal",scrollEventFunc])
+      document.querySelector("#route-modal").addEventListener("scroll",scrollEventFunc);
       var dataInterval = setInterval(() => {
         this.fetchData();
         this.setupBusMarkersOnMap();
@@ -658,6 +653,10 @@ app.component('route-modal', {
       this.routesGenerated = {};
       this.currentScrollToWarning = 0;
       this.currentlyOpenedIndex = undefined;
+      for (let func of this.eventListenersFunc) {
+        document.querySelector(func[1]).removeEventListener(func[0], func[2])
+      }
+      this.eventListenersFunc = [];
       if(this.mapEnabled && this.busMap) this.resetMap();
     },
     routeChanged() {
