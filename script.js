@@ -903,9 +903,6 @@ app.component('route-modal', {
         this.enableMap();
       }
     );
-    document.querySelector('#route-modal').addEventListener('touchend', function( e ){
-      document.querySelector('#route-modal').scroll(0, document.querySelector('#route-modal').scrollY );
-    });
   },
   updated() {
     const details = document.querySelectorAll("details");
@@ -935,6 +932,10 @@ app.component('route-modal-header', {
   template: "#route-modal-header-template",
 });
 app.mount("#app");
+
+window.querySelector('#route-modal').addEventListener('touchend', function( e ){
+  window.scroll(0, window.scrollY );
+});
 
 // Service Worker setup
 let newWorker;
