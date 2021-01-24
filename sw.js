@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static#t3';
+const staticCacheName = 'site-static#t4';
 const dynamicCacheName = 'site-dynamic#12';
 const assets = [
     '/',
@@ -47,3 +47,8 @@ self.addEventListener('fetch', e => {
         })
     )
 });
+self.addEventListener('message', e => {
+    if (e.data.action == 'skipWaiting') {
+        self.skipWaiting();
+    }
+})

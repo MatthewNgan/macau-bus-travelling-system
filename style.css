@@ -28,8 +28,6 @@
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 3rem;
-}
-.modal-2 {
     z-index: 2000;
 }
 .info-box {
@@ -134,12 +132,20 @@ code.blue {
 code.orange {
     background-color: #c26c32;
 }
-.no-internet-error {
+#no-internet-error {
     display: flex;
     height: 35vh;
     width: 75vw;
     padding: 5rem;
     align-items: center;
+}
+#reload-modal {
+    display: flex;
+    height: 25vh;
+    width: 75vw;
+    padding: 2rem;
+    align-items: center;
+    justify-content: center;
 }
 details[open] summary {
     background-color: #ddd;

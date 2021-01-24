@@ -1,8 +1,8 @@
 var app = Vue.createApp({
   data() {
     return {
-      // corsProxy: "",
-      corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
+      corsProxy: "",
+      // corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
       // appVersion: 'v1.1',
       appVersion: 'test-3',
       busList: undefined,
@@ -12,6 +12,7 @@ var app = Vue.createApp({
       messages: undefined,
       noInternet: false,
       intervals: [],
+      refreshing: false,
 	  };
   },
   methods: {
@@ -73,7 +74,7 @@ var app = Vue.createApp({
         }
       })
       .catch(() => {
-        this.$parent.noInternet = true;
+        this.noInternet = true;
       })
     },
     fetchRoutes() {
@@ -83,7 +84,7 @@ var app = Vue.createApp({
         this.busList = data.data;
       })
       .catch(() => {
-        this.$parent.noInternet = true;
+        this.noInternet = true;
       });
     },
     returnHome(view) {
@@ -113,6 +114,14 @@ var app = Vue.createApp({
       var home = document.querySelector('#home');
       home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
     });
+    for (let reloadElement of document.querySelectorAll('.reload')) {
+      reloadElement.addEventListener('click', () => {
+        if (!this.refreshing) {
+          window.location.reload();
+          this.refreshing = true;
+        } else return;
+      })
+    }
     this.fetchRoutes();
     this.fetchDyMessage();
   }
@@ -923,9 +932,30 @@ app.component('route-modal-header', {
   template: "#route-modal-header-template",
 });
 app.mount("#app");
+
+// Service Worker setup
+let newWorker;
+document.querySelector('#reload-modal').addEventListener('click', () => {
+  newWorker.postMessage({action: 'skipWaiting'})
+})
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js')
-    .catch(() => {
+    .then(reg => {
+      reg.addEventListener('updatefound', () => {
+        newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          switch (newWorker.state) {
+            case 'installed':
+              if (navigator.serviceWorker.controller) {
+                document.querySelector('#reload-modal').classList.add('shown');
+              }
+              break;
+          }
+        })
+      })
+    })
+    .catch((e) => {
       console.log('ServiceWorker not registered');
+      console.log(e);
     })
 }

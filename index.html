@@ -29,7 +29,7 @@
   <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
   <link rel="stylesheet" href="/style.css">
   <script type="text/x-template" id="route-modal-template">
-    <div class="route-modal modal modal-2" id="route-modal">
+    <div class="route-modal modal" id="route-modal">
       <route-modal-header :bus-route-data="busRouteData" :bus-available-direction="busAvailableDirection" :bus-route="busRoute" :bus-color="busColor" v-if="busRouteData"></route-modal-header>
       <div id="bus-map" v-if="mapEnabled">
         <div class="loading">
@@ -187,7 +187,7 @@
     </div>
   </header>
   <div id="shadow" :class="{'shadow-shown': currentModal != undefined}" @click="returnHome(currentModal)" v-if="!noInternet"></div>
-  <div id="info-box" class="info-box modal modal-2">
+  <div id="info-box" class="info-box modal">
     <div class="header">
       <h5>溫馨提示</h5>
     </div>
@@ -210,14 +210,23 @@
     </div>
   </div>
   <route-modal :class="{'shown': currentModal == 'route-info-modal'}" v-if="!noInternet" ref="route-info-modal"></route-modal>
-  <div class="no-internet-error modal modal-2" :class="{shown: noInternet}">
+  <div id="no-internet-error" class="modal" :class="{shown: noInternet}">
     <div class="container text-center">
       <h1>
         OOPS!
       </h1>
       <p>網路連線錯誤</p>
-      <a href="/" class="btn btn-success" aria-label="Retry">重試</a>
+      <button class="btn btn-success reload" aria-label="Retry">重試</button>
     </div>
+  </div>
+</div>
+<div id="reload-modal" class="modal text-center">
+  <div class="container text-center">
+    <h1>
+      更新!
+    </h1>
+    <p>需要重新載入以安裝此更新</p>
+    <button class="btn btn-success reload" aria-label="Retry">重新載入</button>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
