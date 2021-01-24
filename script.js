@@ -594,6 +594,14 @@ app.component('route-modal', {
           }
         }, 100);
       });
+      document.querySelector("#route-modal").addEventListener("touchend", () => {
+        document.querySelector("#route-modal").style.overflow = 'hidden';
+        let current = document.querySelector("#route-modal").scrollTop;
+        setTimeout(function() {
+          document.querySelector("#route-modal").scrollTop = current;
+          document.querySelector("#route-modal").style.overflow = '';
+        }, 10);
+      })
       var dataInterval = setInterval(() => {
         this.fetchData();
         this.setupBusMarkersOnMap();
@@ -932,10 +940,6 @@ app.component('route-modal-header', {
   template: "#route-modal-header-template",
 });
 app.mount("#app");
-
-window.querySelector('#route-modal').addEventListener('touchend', function( e ){
-  window.scroll(0, window.scrollY );
-});
 
 // Service Worker setup
 let newWorker;
