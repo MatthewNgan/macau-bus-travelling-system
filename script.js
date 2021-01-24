@@ -3,8 +3,8 @@ var app = Vue.createApp({
     return {
       // corsProxy: "",
       corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
-      appVersion: 'v1.2',
-      // appVersion: 'test-5',
+      // appVersion: 'v1.2',
+      appVersion: 'test',
       busList: undefined,
       colorScheme: 'light',
       currentView: 'route',
@@ -903,6 +903,9 @@ app.component('route-modal', {
         this.enableMap();
       }
     );
+    document.querySelector('#route-modal').addEventListener('touchend', function( e ){
+      document.querySelector('#route-modal').scroll(0, document.querySelector('#route-modal').scrollY );
+    });
   },
   updated() {
     const details = document.querySelectorAll("details");
