@@ -3,8 +3,8 @@ var app = Vue.createApp({
     return {
       // corsProxy: "",
       corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
-      // appVersion: 'v1.1',
-      appVersion: 'test-5',
+      appVersion: 'v1.2',
+      // appVersion: 'test-5',
       busList: undefined,
       colorScheme: 'light',
       currentView: 'route',
