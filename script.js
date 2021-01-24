@@ -4,7 +4,7 @@ var app = Vue.createApp({
       // corsProxy: "",
       corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
       // appVersion: 'v1.2',
-      appVersion: 'test-3',
+      appVersion: 'test-4',
       busList: undefined,
       colorScheme: 'light',
       currentView: 'route',
@@ -600,7 +600,7 @@ app.component('route-modal', {
         setTimeout(function() {
           document.querySelector("#route-modal").scrollTop = current;
           document.querySelector("#route-modal").style.overflow = '';
-        }, 10);
+        }, 5);
       })
       var dataInterval = setInterval(() => {
         this.fetchData();
