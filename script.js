@@ -1,8 +1,136 @@
 var app = Vue.createApp({
   data() {
     return {
-      // appVersion: 'v1.0.3-a',
-      appVersion: 'test-1',
+      appVersion: 'v1.1',
+      // appVersion: 'test-2',
+      busList: undefined,
+      // corsProxy: "",
+      corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
+      colorScheme: 'light',
+      currentPage: 'home',
+      messages: undefined,
+      noInternet: false,
+      intervals: [],
+	  };
+  },
+  methods: {
+    calculateDistance(lon1,lat1,lon2,lat2){
+      const R = 6371e3;
+      const radlat1 = lat1 * Math.PI/180;
+      const radlat2 = lat2 * Math.PI/180;
+      const latD = (lat2-lat1) * Math.PI/180;
+      const lonD = (lon2-lon1) * Math.PI/180;
+      const a = Math.sin(latD/2) * Math.sin(latD/2) +
+                Math.cos(radlat1) * Math.cos(radlat2) *
+                Math.sin(lonD/2) * Math.sin(lonD/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const d = R * c;
+      return d;
+    },
+    calculateTime(traffic,nextStop,targetStop,loc,bus){
+      let totaldistance = 0;
+      let currentRoutes = [];
+      for (let i = 0; i < traffic[nextStop-1].routeCoordinates.split(";").length-1; i++) {
+        currentRoutes.push({
+          'x': parseFloat(traffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[0]),
+          'y': parseFloat(traffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1]),
+        });
+      }
+      let index = currentRoutes.findIndex(point => point.x == parseFloat(loc[0]) && point.y == parseFloat(loc[1]));
+      for (let i = index; i < traffic[nextStop-1].routeCoordinates.split(";").length-2; i++) {
+        if (traffic[nextStop-1].routeCoordinates.split(";")[i] && traffic[nextStop-1].routeCoordinates.split(";")[i+1]) {
+          let lon1 = traffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[0];
+          let lat1 = traffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1]
+          let lon2 = traffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[0];
+          let lat2 = traffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[1];
+          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(traffic[nextStop-1].routeTraffic);
+        }
+      }
+      totaldistance += + (bus.status == '1' ? 375 : 0)*parseFloat(traffic[nextStop-1].routeTraffic);
+      for (let route of traffic.slice(nextStop,targetStop)) {
+        for (let i = 0; i < route.routeCoordinates.split(";").length-2; i++) {
+          let lon1 = route.routeCoordinates.split(";")[i].split(",")[0]; let lat1 = route.routeCoordinates.split(";")[i].split(",")[1];
+          let lon2 = route.routeCoordinates.split(";")[i+1].split(",")[0]; let lat2 = route.routeCoordinates.split(";")[i+1].split(",")[1];
+          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(route.routeTraffic);
+        }
+        totaldistance += 375 * parseFloat(route.routeTraffic);
+      }
+      return Math.ceil(totaldistance / 12.5);
+    },
+    fetchDyMessage() {
+      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getDyMessage.html?lang=zh_tw`)
+      .then(response => response.json())
+      .then(data => {
+        this.messages = [];
+        for (let item of data.data) {
+          var startTime = Date.parse(item.startTime.replace(' ','T') + '+08:00');
+          var expireTime = Date.parse(item.expireTime.replace(' ','T') + '+08:00');
+          var now = Date.now();
+          if (startTime < now && expireTime > now) {
+            this.messages.push(item.message);
+          }
+        }
+      })
+      .catch(() => {
+        this.$parent.noInternet = true;
+      })
+    },
+    fetchRoutes() {
+      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html?lang=zh_tw`)
+      .then(response => response.json())
+      .then(data => {
+        this.busList = data.data;
+      })
+      .catch(() => {
+        this.$parent.noInternet = true;
+      });
+    },
+    returnHome() {
+      bodyScrollLock.clearAllBodyScrollLocks();
+      document.querySelector(".route-navbar").classList.remove('stuck');
+      document.querySelector('#info-box').classList.remove('shown');
+      for (let interval of this.intervals) {
+        clearInterval(interval);
+      }
+      this.currentPage = 'home';
+    },
+    requestRoute(route,color) {
+      this.$refs.routeView.requestRoute(route,color);
+    }
+  },
+  mounted() {
+    if (localStorage.mapEnabled) {
+      this.mapEnabled = localStorage.mapEnabled === "true";
+    } else {
+      localStorage.mapEnabled = "false";
+    }
+    this.colorScheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? "dark" : "light";
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        this.colorScheme = e.matches ? "dark" : "light";
+    });
+    var headerHeight = document.querySelector('header').offsetHeight;
+    var home = document.querySelector('#home');
+    home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
+    window.addEventListener('resize',() => {
+      var headerHeight = document.querySelector('header').offsetHeight;
+      var home = document.querySelector('#home');
+      home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
+    });
+    this.fetchRoutes();
+    this.fetchDyMessage();
+  }
+});
+app.component('route-view', {
+  computed: {
+    corsProxy() {
+      return this.$parent.corsProxy;
+    },
+    noInternet() {
+      return this.$parent.noInterent;
+    }
+  },
+  data() {
+    return {
       bridgeCoords: {
         '01': [[[
           [113.5608566,22.2047643],
@@ -39,11 +167,7 @@ var app = Vue.createApp({
       mapLoaded: false,
       isStuck: false,
       scroll: true,
-      noInternet: false,
-      currentPage: 'home',
-      messages: undefined,
       mainStations: ['C690','M1','M132','M134','M144','M161','M167','M170','M172','M184','M219','M222','M224','M239','M272','M50','M9','T308','T365','M16','T326','T349','C689','T343','M135','M7','T339','M10','M137','M111','M88','M800','T551','T419'],
-      busList: undefined,
       busRoute: "",
       busColor: "",
       busDirection: 0,
@@ -64,61 +188,15 @@ var app = Vue.createApp({
       busChangeValid: undefined,
       currentPopup: undefined,
       arrivingBuses: [],
-      colorScheme: 'light',
-      intervals: [],
       noSuchNumberError: false,
       isScrolling: undefined,
       routesGenerated: {},
       focusingStation: false,
       currentlyOpenedIndex: undefined,
       currentScrollToWarning: 0,
-      corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
-	  };
+    }
   },
   methods: {
-    calculateDistance(lon1,lat1,lon2,lat2){
-      const R = 6371e3;
-      const radlat1 = lat1 * Math.PI/180;
-      const radlat2 = lat2 * Math.PI/180;
-      const latD = (lat2-lat1) * Math.PI/180;
-      const lonD = (lon2-lon1) * Math.PI/180;
-      const a = Math.sin(latD/2) * Math.sin(latD/2) +
-                Math.cos(radlat1) * Math.cos(radlat2) *
-                Math.sin(lonD/2) * Math.sin(lonD/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      const d = R * c;
-      return d;
-    },
-    calculateTime(nextStop,targetStop,loc,bus){
-      let totaldistance = 0;
-      let currentRoutes = [];
-      for (let i = 0; i < this.busRouteTraffic[nextStop-1].routeCoordinates.split(";").length-1; i++) {
-        currentRoutes.push({
-          'x': parseFloat(this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[0]),
-          'y': parseFloat(this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1]),
-        });
-      }
-      let index = currentRoutes.findIndex(point => point.x == parseFloat(loc[0]) && point.y == parseFloat(loc[1]));
-      for (let i = index; i < this.busRouteTraffic[nextStop-1].routeCoordinates.split(";").length-2; i++) {
-        if (this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i] && this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1]) {
-          let lon1 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[0];
-          let lat1 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1]
-          let lon2 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[0];
-          let lat2 = this.busRouteTraffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[1];
-          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(this.busRouteTraffic[nextStop-1].routeTraffic);
-        }
-      }
-      totaldistance += + (bus.status == '1' ? 375 : 0)*parseFloat(this.busRouteTraffic[nextStop-1].routeTraffic);
-      for (let route of this.busRouteTraffic.slice(nextStop,targetStop)) {
-        for (let i = 0; i < route.routeCoordinates.split(";").length-2; i++) {
-          let lon1 = route.routeCoordinates.split(";")[i].split(",")[0]; let lat1 = route.routeCoordinates.split(";")[i].split(",")[1];
-          let lon2 = route.routeCoordinates.split(";")[i+1].split(",")[0]; let lat2 = route.routeCoordinates.split(";")[i+1].split(",")[1];
-          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(route.routeTraffic);
-        }
-        totaldistance += 375 * parseFloat(route.routeTraffic);
-      }
-      return Math.ceil(totaldistance / 12.5);
-    },
     changeDirection() {
       if (this.busDirection == 0) {
         this.busDirection = 1;
@@ -203,14 +281,14 @@ var app = Vue.createApp({
         })
         .catch(() => {
           this.busRouteInfo = undefined;
-          this.noInternet = true;
+          this.$parent.noInternet = true;
         });
         fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/location?routeName=${this.busRoute}&dir=${this.busDirection}&lang=zh-tw`)
         .then(response => response.json())
         .then(data => {
           this.busInfoLocations = data.data.busInfoList;
           this.busStationLocations = data.data.stationInfoList;
-          this.currentPage = 'info';
+          this.$parent.currentPage = 'route-info-view';
           if (this.scroll) {
             this.scroll = !this.scroll;
           }
@@ -218,29 +296,11 @@ var app = Vue.createApp({
           this.dataReady.busStationLocations = true;
         })
         .catch(() => {
-          this.noInternet = true;
+          this.$parent.noInternet = true;
         });
       } else {
         this.busRouteInfo = undefined;
       }
-    },
-    fetchDyMessage() {
-      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getDyMessage.html?lang=zh_tw`)
-      .then(response => response.json())
-      .then(data => {
-        this.messages = [];
-        for (let item of data.data) {
-          var startTime = Date.parse(item.startTime.replace(' ','T') + '+08:00');
-          var expireTime = Date.parse(item.expireTime.replace(' ','T') + '+08:00');
-          var now = Date.now();
-          if (startTime < now && expireTime > now) {
-            this.messages.push(item.message);
-          }
-        }
-      })
-      .catch(() => {
-        this.noInternet = true;
-      })
     },
     fetchRouteData() {
       if (this.busRoute != "") {
@@ -265,19 +325,9 @@ var app = Vue.createApp({
         })
         .catch(() => {
           this.busRouteData = undefined;
-          this.noInternet = true;
+          this.$parent.noInternet = true;
         });
       }
-    },
-    fetchRoutes() {
-      fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html?lang=zh_tw`)
-      .then(response => response.json())
-      .then(data => {
-        this.busList = data.data;
-      })
-      .catch(() => {
-        this.noInternet = true;
-      });
     },
     fetchTraffic(){
       if (this.busRoute != "") {
@@ -343,7 +393,7 @@ var app = Vue.createApp({
         })
         .catch(() => {
           this.busRouteTraffic = undefined;
-          this.noInternet = true;
+          this.$parent.noInternet = true;
         });
       } else {
         this.busRouteTraffic = undefined;
@@ -430,7 +480,7 @@ var app = Vue.createApp({
                 'speed': comingBus.speed,
                 'distanceToThis': i + 1,
                 'durationGet': true,
-                'duration': this.calculateTime(index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude],comingBus),
+                'duration': this.$parent.calculateTime(this.busRouteTraffic,index-i,index,[this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude],comingBus),
                 'routeTraffic': routeTraffic,
                 'location': [this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].longitude,this.busInfoLocations.filter(bus => bus.busPlate == comingBus.busPlate)[0].latitude],
                 'currentStation': index - i,
@@ -498,26 +548,26 @@ var app = Vue.createApp({
       this.busMap.on('load', () => this.mapLoaded = true);
     },
     openInfoBox() {
-      this.currentPage = 'message';
+      this.$parent.currentPage = 'message';
       document.querySelector('#info-box').classList.add('shown');
     },
     requestRoute(route,color) {
       if (this.mapEnabled && !this.busMap) {
         this.initMap();
       }
-      this.currentPage = 'info';
+      this.$parent.currentPage = 'route-info-view';
       this.busRoute = route;
       this.scroll = true;
       this.busColor = color;
       this.routeChanged();
-      bodyScrollLock.disableBodyScroll(document.querySelector("#main-route-info"),{allowTouchMove: el => el.id === 'bus-map'})
+      bodyScrollLock.disableBodyScroll(document.querySelector("#route-view"),{allowTouchMove: el => el.id === 'bus-map' || el.id === ''})
       if (this.busMap && this.mapEnabled) {
         document.querySelector("#bus-map").setAttribute("style","");
         document.querySelector(".mapboxgl-canvas").setAttribute("style","");
         this.busMap.resize();
       }
-      document.querySelector("#main-route-info").scrollTop = 0;
-      document.querySelector("#main-route-info").addEventListener("scroll", () => {
+      document.querySelector("#route-view").scrollTop = 0;
+      document.querySelector("#route-view").addEventListener("scroll", () => {
         if (!this.busMap && !this.mapEnabled && document.querySelector(".bus-title")) {
           var thisTop = document.querySelector(".route-navbar").offsetTop;
           if (this.mapEnabled) var titleHeight = document.querySelector(".bus-title").offsetHeight + document.querySelector("#bus-map").offsetHeight;
@@ -549,7 +599,7 @@ var app = Vue.createApp({
         this.fetchTraffic();
         this.setupRoutesOnMap();
       },60000);
-      this.intervals = [dataInterval, indexInterval, trafficInterval];
+      this.$parent.intervals = [dataInterval, indexInterval, trafficInterval];
     },
     resetMap() {
       this.busMap.setCenter([113.5622406,22.166422]);
@@ -578,17 +628,10 @@ var app = Vue.createApp({
       this.routeLayerGroup = [];
     },
     returnHome() {
-      bodyScrollLock.clearAllBodyScrollLocks();
-      document.querySelector(".route-navbar").classList.remove('stuck');
-      document.querySelector('#info-box').classList.remove('shown');
-      this.currentPage = 'home';
+      this.$parent.returnHome();
       this.mapRefreshed = false;
       this.routeCrossingBridge = [];
       this.crossBridgeTime = undefined;
-      if (this.mapEnabled) this.resetMap();
-      for (let interval of this.intervals) {
-        clearInterval(interval);
-      }
       this.busRoute = "";
       this.busDirection = 0;
       this.busAvailableDirection = "2";
@@ -602,6 +645,7 @@ var app = Vue.createApp({
       this.routesGenerated = {};
       this.currentScrollToWarning = 0;
       this.currentlyOpenedIndex = undefined;
+      if(this.mapEnabled && this.busMap) this.resetMap();
     },
     routeChanged() {
       if (this.busRoute.toLowerCase() != "701x") this.busRoute = this.busRoute.toUpperCase();
@@ -623,7 +667,7 @@ var app = Vue.createApp({
       this.setupRoutesOnMap();
     },
     scrollToWarning() {
-      var mainRouteInfo = (this.busMap && this.mapEnabled) ? document.querySelector('.bus-info-container') : document.querySelector('.main-route-info');
+      var mainRouteInfo = (this.busMap && this.mapEnabled) ? document.querySelector('.bus-info-container') : document.querySelector('.route-view');
       var suspendedParent = document.querySelectorAll('.suspended')[this.currentScrollToWarning].parentNode;
       mainRouteInfo.scroll({top: (this.busMap && this.mapEnabled) ? suspendedParent.offsetTop : suspendedParent.offsetTop + document.querySelector('.bus-title').offsetHeight, behavior: 'smooth'});
       var suspendedStations = this.busRouteData.filter(station => station.suspendState == "1");
@@ -794,13 +838,15 @@ var app = Vue.createApp({
     toggleIndex(index) {
       this.currentlyOpenedIndex = index;
       let details = document.querySelectorAll('details');
-      if (this.currentPopup != undefined) this.stationLayerGroup.slice().reverse()[this.currentPopup].getPopup().remove();
+      if (this.currentPopup != undefined && this.stationLayerGroup) this.stationLayerGroup.slice().reverse()[this.currentPopup].getPopup().remove();
       if (details[index] && details[index].hasAttribute("open")) {
         this.getArrivingBuses(index);
         this.focusingStation = true;
         this.focusStation(index);
-        this.stationLayerGroup.slice().reverse()[index].getPopup().addTo(this.busMap);
-        this.currentPopup = index;
+        if (this.mapEnabled && this.busMap && this.stationLayerGroup) {
+          this.stationLayerGroup.slice().reverse()[index].getPopup().addTo(this.busMap);
+          this.currentPopup = index;
+        }
       }
     },
     waitUntil(callback,a=true) {
@@ -840,6 +886,14 @@ var app = Vue.createApp({
       }, 50)
     }
   },
+  mounted() {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener('change',
+      () => {
+        this.disableMap();
+        this.enableMap();
+      }
+    );
+  },
   updated() {
     const details = document.querySelectorAll("details");
     details.forEach((targetDetail) => {
@@ -852,38 +906,8 @@ var app = Vue.createApp({
       });
     });
   },
-  mounted() {
-    if (window.location.href.includes("127.0.0.1")) {
-      this.corsProxy = "";
-    }
-    if (localStorage.mapEnabled) {
-      this.mapEnabled = localStorage.mapEnabled === "true";
-    } else {
-      localStorage.mapEnabled = "false";
-    }
-    this.colorScheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? "dark" : "light";
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        this.colorScheme = e.matches ? "dark" : "light";
-    });
-    var headerHeight = document.querySelector('header').offsetHeight;
-    var home = document.querySelector('#home');
-    home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
-    window.addEventListener('resize',() => {
-      var headerHeight = document.querySelector('header').offsetHeight;
-      var home = document.querySelector('#home');
-      home.style.paddingTop = "calc(" + headerHeight + "px + 2vw)";
-    });
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener('change',
-      () => {
-        this.disableMap();
-        this.enableMap();
-      }
-    );
-    
-    this.fetchRoutes();
-    this.fetchDyMessage();
-  }
-})
+  template: "#route-view-template",
+});
 app.component('station-block', {
   props: ['busRouteData','busRouteInfo','busColor','busRouteTraffic','arrivingBuses','index','station'],
   computed: {
@@ -892,11 +916,11 @@ app.component('station-block', {
     }
   },
   template: "#station-block-template",
-})
+});
 app.component('info-overlay-header', {
   props: ['busRouteData','busAvailableDirection','busRoute','busColor'],
   template: "#info-overlay-header-template",
-})
+});
 app.mount("#app");
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js')

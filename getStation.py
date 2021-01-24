@@ -1,4 +1,4 @@
-import requests
+import requests,json
 r = requests.get('https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html?lang=zh_tw')
 routeList = r.json()['data']['routeList']
 stationList = {}
@@ -23,4 +23,5 @@ for route in routeList:
             else:
                 stationList[sta['staCode']] = {'name': sta['staName'],'routes': [{'routeName': routeName,'direction': 1}]}
 txt = open(r"stations.json","a+",encoding="utf-8")
-txt.write(str(dict(sorted(stationList.items()))))
+txt.write(json.dumps(dict(sorted(stationList.items()))))
+print(json.dumps(dict(sorted(stationList.items()))))

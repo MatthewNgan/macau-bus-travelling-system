@@ -356,7 +356,7 @@ ul {
     opacity: 1;
     pointer-events: auto;
 }
-.main-route-info {
+.route-view {
     width: 95vw;
     height: 85vh;
     padding: 10px 0;
@@ -366,14 +366,8 @@ ul {
     scrollbar-width: none;
     -webkit-overflow-scrolling: auto;
 }
-.main-route-info::-webkit-scrollbar {
+.route-view::-webkit-scrollbar {
     display: none;
-}
-.no-scroll {
-    touch-action: none;
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: auto;
-    overflow: hidden;
 }
 .option-buttons {
     display: flex;
