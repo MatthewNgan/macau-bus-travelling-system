@@ -519,9 +519,7 @@ app.component('route-modal', {
         maxBounds: [[113.3157349,21.9111969],[113.7963867,22.4199152]],
         dragRotate: false,
         touchPitch: false,
-        touchZoomRotate: false,
       });
-      this.busMap.dragRotate.disable();
       this.busMap.touchZoomRotate.disableRotation();
       this.busMap.on('zoom', () => {
         if (this.busMap.getZoom() > 13.5) {
