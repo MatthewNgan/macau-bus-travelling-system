@@ -3,7 +3,7 @@ var app = Vue.createApp({
     return {
       // corsProxy: "",
       corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
-      appVersion: 'v1.2.1',
+      appVersion: 'v1.2.2',
       // appVersion: 'test-4',
       busList: undefined,
       colorScheme: 'light',
@@ -516,7 +516,10 @@ app.component('route-modal', {
         zoom: 11, // starting zoom
         minZoom: 10,
         maxZoom: 18.5,
-        maxBounds: [[113.3157349,21.9111969],[113.7963867,22.4199152]]
+        maxBounds: [[113.3157349,21.9111969],[113.7963867,22.4199152]],
+        dragRotate: false,
+        touchPitch: false,
+        touchZoomRotate: false,
       });
       this.busMap.dragRotate.disable();
       this.busMap.touchZoomRotate.disableRotation();
