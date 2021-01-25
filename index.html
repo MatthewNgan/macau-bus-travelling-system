@@ -136,7 +136,7 @@
     </div>
   </script>
   <script type="text/x-template" id="station-block-template">
-    <summary class="traffic" :class="{last: index == busRouteData.length-1, green: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '1',yellow: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '2',orange: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '3',red: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '4',brown: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) >= '5'}">
+    <summary class="traffic" :class="{last: index == busRouteData.length-1, green: busRouteTraffic && busRouteTraffic[index] && parseFloat(busRouteTraffic[index].routeTraffic) <= 1,yellow: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '2',orange: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '3',red: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) == '4',brown: busRouteTraffic && busRouteTraffic[index] && Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) >= '5'}">
       <img src="/images/icons/bus-stop-inList.png" class="station-dot">
       <span class="station-line"></span>
       <span class="station-name">{{station.staCode}} {{station.staName}}</span>
@@ -145,7 +145,7 @@
     <ul class="arriving-list">
       <li v-for="arrivingBus in arrivingBuses[index].slice().reverse()" v-if="arrivingBuses[index]">
         <span><code :class="busColor.toLowerCase()">{{arrivingBus.plate}}</code> 距離本站 {{arrivingBus.distanceToThis}} 站</span> 
-        <span v-if="arrivingBus.durationGet" class="time-remaining live" :class="{green: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 1,yellow: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 2,orange: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 3,red: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 4,brown: Math.ceil(parseFloat(arrivingBus.routeTraffic)) >= 5}">
+        <span v-if="arrivingBus.durationGet" class="time-remaining live" :class="{green: parseFloat(arrivingBus.routeTraffic) <= 1,yellow: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 2,orange: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 3,red: Math.ceil(parseFloat(arrivingBus.routeTraffic)) == 4,brown: Math.ceil(parseFloat(arrivingBus.routeTraffic)) >= 5}">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M3.05 3.05a7 7 0 0 0 0 9.9.5.5 0 0 1-.707.707 8 8 0 0 1 0-11.314.5.5 0 0 1 .707.707zm2.122 2.122a4 4 0 0 0 0 5.656.5.5 0 0 1-.708.708 5 5 0 0 1 0-7.072.5.5 0 0 1 .708.708zm5.656-.708a.5.5 0 0 1 .708 0 5 5 0 0 1 0 7.072.5.5 0 1 1-.708-.708 4 4 0 0 0 0-5.656.5.5 0 0 1 0-.708zm2.122-2.12a.5.5 0 0 1 .707 0 8 8 0 0 1 0 11.313.5.5 0 0 1-.707-.707 7 7 0 0 0 0-9.9.5.5 0 0 1 0-.707z"/>
             <path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>

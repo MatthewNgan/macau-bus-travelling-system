@@ -1,10 +1,10 @@
 var app = Vue.createApp({
   data() {
     return {
-      // corsProxy: "",
-      corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
-      appVersion: 'v1.2.3',
-      // appVersion: 'test',
+      corsProxy: "",
+      // corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
+      // appVersion: 'v1.2.3',
+      appVersion: 'test',
       busList: undefined,
       colorScheme: 'light',
       currentView: 'route',
@@ -45,17 +45,19 @@ var app = Vue.createApp({
           let lat1 = traffic[nextStop-1].routeCoordinates.split(";")[i].split(",")[1]
           let lon2 = traffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[0];
           let lat2 = traffic[nextStop-1].routeCoordinates.split(";")[i+1].split(",")[1];
-          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(traffic[nextStop-1].routeTraffic);
+          let k = 0.05 * Math.pow(parseFloat(traffic[nextStop-1].routeTraffic),3) + 0.95;
+          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*k;
         }
       }
-      totaldistance += + (bus.status == '1' ? 250 : 0)*parseFloat(traffic[nextStop-1].routeTraffic);
+      totaldistance += + (bus.status == '1' ? 150 : 0)*parseFloat(traffic[nextStop-1].routeTraffic);
       for (let route of traffic.slice(nextStop,targetStop)) {
         for (let i = 0; i < route.routeCoordinates.split(";").length-2; i++) {
           let lon1 = route.routeCoordinates.split(";")[i].split(",")[0]; let lat1 = route.routeCoordinates.split(";")[i].split(",")[1];
           let lon2 = route.routeCoordinates.split(";")[i+1].split(",")[0]; let lat2 = route.routeCoordinates.split(";")[i+1].split(",")[1];
-          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*parseFloat(route.routeTraffic);
+          let k = 0.05 * Math.pow(parseFloat(route.routeTraffic),3) + 0.95;
+          totaldistance += this.calculateDistance(lon1,lat1,lon2,lat2)*k;
         }
-        totaldistance += 250 * parseFloat(route.routeTraffic);
+        totaldistance += 150 * parseFloat(route.routeTraffic);
       }
       return Math.ceil(totaldistance / 12.5);
     },
@@ -394,7 +396,7 @@ app.component('route-modal', {
               let timeToCrossBridgeInSec = parseInt(this.crossBridgeTime.slice()[direction].times.filter(bridge => bridge.id == onbridge)[0].time);
               if (timeToCrossBridgeInSec > -1) {
                 let speed = (this.bridgeCoords[onbridge].slice()[1] / timeToCrossBridgeInSec * 3.6) > 52 ? 52 : this.bridgeCoords[onbridge].slice()[1] / timeToCrossBridgeInSec * 3.6;
-                let traffic = 1 / (speed / 3.6 * 60 / 750);
+                let traffic = Math.cbrt(((45/speed)-0.95)/0.05)
                 tempData[parseInt(bridgeRoute)].routeTraffic = traffic.toString();
               }
             }
@@ -761,13 +763,13 @@ app.component('route-modal', {
                 },
               });
               if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 1) var color = "#007400";
+                if (parseFloat(this.busRouteTraffic[i].routeTraffic) <= 1) var color = "#007400";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 2) var color = "#5b7c00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 3) var color = "#817f00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 4) var color = "#7e4e00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) >= 5) var color = "#7e0f00"
               } else {
-                if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 1) var color = "#3acc00";
+                if (parseFloat(this.busRouteTraffic[i].routeTraffic) <= 1) var color = "#3acc00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 2) var color = "#99c800";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 3) var color = "#d1bc00";
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 4) var color = "#d68400";
