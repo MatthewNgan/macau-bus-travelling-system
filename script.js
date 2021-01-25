@@ -3,8 +3,8 @@ var app = Vue.createApp({
     return {
       // corsProxy: "",
       corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
-      appVersion: 'v1.2.2',
-      // appVersion: 'test-4',
+      // appVersion: 'v1.2.2',
+      appVersion: 'test',
       busList: undefined,
       colorScheme: 'light',
       currentView: 'route',
@@ -88,7 +88,7 @@ var app = Vue.createApp({
       });
     },
     returnHome(view) {
-      bodyScrollLock.clearAllBodyScrollLocks();
+      // bodyScrollLock.clearAllBodyScrollLocks();
       document.querySelector(".route-navbar").classList.remove('stuck');
       document.querySelector('#info-box').classList.remove('shown');
       for (let interval of this.intervals) {
@@ -568,7 +568,7 @@ app.component('route-modal', {
       this.scroll = true;
       this.busColor = color;
       this.routeChanged();
-      bodyScrollLock.disableBodyScroll(document.querySelector("#route-modal"))
+      // bodyScrollLock.disableBodyScroll(document.querySelector("#route-modal"))
       if (this.busMap && this.mapEnabled) {
         document.querySelector("#bus-map").setAttribute("style","");
         document.querySelector(".mapboxgl-canvas").setAttribute("style","");
