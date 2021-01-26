@@ -208,7 +208,7 @@
       </div>
     </div>
   </div>
-  <div id="shadow" :class="{'shadow-shown': isModalVisible}" @click="returnHome(currentModal)"></div>
+  <div id="shadow" :class="{'shadow-shown': isModalVisible || currentModal}" @click="returnHome(currentModal)"></div>
   <route-modal :class="{'shown': currentModal == 'route-info-modal'}" v-if="!noInternet" ref="route-info-modal"></route-modal>
   <div id="no-internet-error" class="modal" :class="{shown: noInternet}">
     <div class="container text-center">
