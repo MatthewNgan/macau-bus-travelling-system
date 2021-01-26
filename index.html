@@ -186,7 +186,6 @@
       </button>
     </div>
   </header>
-  <div id="shadow" :class="{'shadow-shown': currentModal != undefined}" @click="returnHome(currentModal)" v-if="!noInternet"></div>
   <div id="info-box" class="info-box modal">
     <div class="header">
       <h5>溫馨提示</h5>
@@ -209,6 +208,7 @@
       </div>
     </div>
   </div>
+  <div id="shadow" :class="{'shadow-shown': isModalVisible}" @click="returnHome(currentModal)"></div>
   <route-modal :class="{'shown': currentModal == 'route-info-modal'}" v-if="!noInternet" ref="route-info-modal"></route-modal>
   <div id="no-internet-error" class="modal" :class="{shown: noInternet}">
     <div class="container text-center">
@@ -216,17 +216,17 @@
         OOPS!
       </h1>
       <p>網路連線錯誤</p>
-      <button class="btn btn-success reload" aria-label="Retry">重試</button>
+      <button v-if="!refreshing" class="btn btn-success reload" aria-label="Retry">重試</button><p v-else>載入中...</p>
     </div>
   </div>
-</div>
-<div id="reload-modal" class="modal text-center">
-  <div class="container text-center">
-    <h1>
-      更新!
-    </h1>
-    <p>需要重新載入以安裝此更新</p>
-    <button class="btn btn-success reload" aria-label="Retry">重新載入</button>
+  <div id="reload-modal" class="modal text-center">
+    <div class="container text-center">
+      <h1>
+        更新!
+      </h1>
+      <p>需要重新載入以安裝此更新</p>
+      <button v-if="!refreshing" class="btn btn-success reload" aria-label="Retry">重新載入</button><p v-else>載入中...</p>
+    </div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>

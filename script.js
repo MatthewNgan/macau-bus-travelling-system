@@ -3,12 +3,13 @@ var app = Vue.createApp({
     return {
       // corsProxy: "",
       corsProxy: "https://cors-anywhere.matthewngan.workers.dev/?",
-      appVersion: 'v1.2.3',
+      appVersion: 'v1.2.3.1',
       // appVersion: 'test',
       busList: undefined,
       colorScheme: 'light',
       currentView: 'route',
       currentModal: undefined,
+      isModalVisible: false,
       messages: undefined,
       noInternet: false,
       intervals: [],
@@ -89,19 +90,44 @@ var app = Vue.createApp({
     },
     returnHome(view) {
       bodyScrollLock.clearAllBodyScrollLocks();
-      document.querySelector(".route-navbar").classList.remove('stuck');
-      document.querySelector('#info-box').classList.remove('shown');
       for (let interval of this.intervals) {
         clearInterval(interval);
       }
       this.currentModal = undefined;
-      this.$refs[view].returnHome();
+      if (view && this.$refs[view] && this.$refs[view].returnHome()) this.$refs[view].returnHome();
     },
     requestRoute(route,color) {
       this.$refs['route-info-modal'].requestRoute(route,color);
     }
   },
   mounted() {
+    // Service Worker setup
+    let newWorker;
+    document.querySelector('#reload-modal').addEventListener('click', () => {
+      newWorker.postMessage({action: 'skipWaiting'})
+    })
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => {
+          reg.addEventListener('updatefound', () => {
+            newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              switch (newWorker.state) {
+                case 'installed':
+                  if (navigator.serviceWorker.controller) {
+                    setTimeout(() => {document.querySelector('#reload-modal').classList.add('shown');this.isModalVisible = true}, 1000);
+                  }
+                  break;
+              }
+            })
+          })
+        })
+        .catch((e) => {
+          console.log('ServiceWorker not registered');
+          console.log(e);
+        })
+    }
+    // Main app setup
     this.colorScheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? "dark" : "light";
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         this.colorScheme = e.matches ? "dark" : "light";
@@ -644,6 +670,8 @@ app.component('route-modal', {
       this.routeLayerGroup = [];
     },
     returnHome() {
+      document.querySelector(".route-navbar").classList.remove('stuck');
+      document.querySelector('#info-box').classList.remove('shown');
       this.mapRefreshed = false;
       this.routeCrossingBridge = [];
       this.crossBridgeTime = undefined;
@@ -948,30 +976,3 @@ app.component('route-modal-header', {
   template: "#route-modal-header-template",
 });
 app.mount("#app");
-
-// Service Worker setup
-let newWorker;
-document.querySelector('#reload-modal').addEventListener('click', () => {
-  newWorker.postMessage({action: 'skipWaiting'})
-})
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js')
-    .then(reg => {
-      reg.addEventListener('updatefound', () => {
-        newWorker = reg.installing;
-        newWorker.addEventListener('statechange', () => {
-          switch (newWorker.state) {
-            case 'installed':
-              if (navigator.serviceWorker.controller) {
-                document.querySelector('#reload-modal').classList.add('shown');
-              }
-              break;
-          }
-        })
-      })
-    })
-    .catch((e) => {
-      console.log('ServiceWorker not registered');
-      console.log(e);
-    })
-}
