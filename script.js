@@ -1,7 +1,7 @@
 var app = Vue.createApp({
   data() {
     return {
-      corsProxy: 'https://cors-anywhere.matthewngan.workers.dev/?', appVersion: 'v1.2.6',
+      corsProxy: 'https://cors-anywhere.matthewngan.workers.dev/?', appVersion: 'v1.2.7',
       // corsProxy: 'http://192.168.0.100:8010/', appVersion: 'test',
       busList: undefined,
       colorScheme: 'light',
@@ -148,6 +148,18 @@ var app = Vue.createApp({
     }
     this.fetchRoutes();
     this.fetchDyMessage();
+    PullToRefresh.init({
+      mainElement: '#home > .container',
+      distThreshold: 80,
+      distReload: 60,
+      distMax: 100,
+      instructionsPullToRefresh: '向下拉以重新載入',
+      instructionsReleaseToRefresh: '鬆開以重新載入',
+      instructionsRefreshing: '重新載入中',
+      onRefresh() {
+        window.location.reload();
+      }
+    });
   }
 });
 app.component('route-modal', {

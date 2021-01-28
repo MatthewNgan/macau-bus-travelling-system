@@ -604,4 +604,10 @@ ul {
     .map-important-station.destination {
         background-color: rgb(149, 42, 23);
     }
+    .ptr--text {
+        color: rgba(255,255,255,0.7) !important;
+    }
+    .ptr--icon {
+        color: rgba(255,255,255,0.7) !important;
+    }
 }
