@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="/style.css">
   <script type="text/x-template" id="route-modal-template">
     <div class="route-modal modal" id="route-modal">
-      <route-modal-header :bus-route-data="busRouteData" :bus-available-direction="busAvailableDirection" :bus-route="busRoute" :bus-color="busColor" v-if="busRouteData"></route-modal-header>
+      <route-modal-header :bus-route-data="busRouteData" :bus-available-direction="busAvailableDirection" :bus-route="busRoute" :bus-color="busColor"></route-modal-header>
       <div id="bus-map" v-if="mapEnabled">
         <div class="loading">
           載入中...
@@ -103,9 +103,9 @@
   <script type="text/x-template" id="route-modal-header-template">
     <div class="row ml-0 bus-title">
       <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="bus col-auto">
-        <h5>{{busRoute}}</h5>
+        <h5 :class="{'h6': busRoute.length > 2}">{{busRoute}}</h5>
       </div>
-      <div class="h4 header col" v-if="busRoute != 'MT3'">
+      <div class="h4 header col" v-if="busRoute != 'MT3' && busRouteData">
         <span class="destination">
           {{busRouteData[0].staName}}&nbsp;
         </span>
@@ -120,9 +120,14 @@
           &nbsp;{{busRouteData.slice().reverse()[0].staName}}
         </span>
       </div>
-      <div class="h4 header col" v-else>
+      <div class="h4 header col" v-else-if="busRouteData">
         <span class="destination">
           高利亞海軍上將/<br>政府綜合服務大樓
+        </span>
+      </div>
+      <div class="h4 header col" v-else>
+        <span class="destination">
+          載入中...
         </span>
       </div>
       <span v-if="busRoute.toLowerCase() == 'ap1x'" class="col-auto text-muted">機場<br>快線</span>
@@ -229,8 +234,8 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/vue@3.0.5/dist/vue.global.js"></script>
-<!-- <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js"></script> -->
+<!-- <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.js"></script> -->
+<script src="https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js"></script>
 <script src="./script.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-VG1QX7H6B3"></script>

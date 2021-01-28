@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static#r1.2.5';
+const staticCacheName = 'site-static#r1.2.6';
 const dynamicCacheName = 'site-dynamic#13';
 const assets = [
     '/',
@@ -11,9 +11,13 @@ const assets = [
     '/images/icons/orange-bus-icon.png',
     '/images/icons/bus-stop-inList.png',
     '/manifest.json',
+    '/bodyScrollLock.js',
+    'https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js',
+    'https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
-    'https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js',
+    'https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js',
+    'https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css'
 ];
 self.addEventListener('install', e => {
     // console.log('ServiceWorker has been installed');
