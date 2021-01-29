@@ -112,6 +112,9 @@ body {
 body > * {
     margin-bottom: 5px;
 }
+#home > .container {
+    padding-top: 2vw;
+}
 .bus:hover {
     filter: brightness(0.8);
 }

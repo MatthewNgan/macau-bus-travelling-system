@@ -1,5 +1,5 @@
-const staticCacheName = 'site-static#r1.2.7';
-const dynamicCacheName = 'site-dynamic#13';
+const staticCacheName = 'site-static#r1.2.8';
+const dynamicCacheName = 'site-dynamic#14';
 const assets = [
     '/',
     '/index.html',
@@ -14,6 +14,7 @@ const assets = [
     '/bodyScrollLock.js',
     'https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js',
     'https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js',
+    'https://unpkg.com/pulltorefreshjs@0.1.21/dist/index.umd.js',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js',
     'https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js',

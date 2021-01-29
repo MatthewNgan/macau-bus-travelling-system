@@ -1,7 +1,7 @@
 var app = Vue.createApp({
   data() {
     return {
-      corsProxy: 'https://cors-anywhere.matthewngan.workers.dev/?', appVersion: 'v1.2.7',
+      corsProxy: 'https://cors-anywhere.matthewngan.workers.dev/?', appVersion: 'v1.2.8',
       // corsProxy: 'http://192.168.0.100:8010/', appVersion: 'test',
       busList: undefined,
       colorScheme: 'light',
@@ -87,12 +87,14 @@ var app = Vue.createApp({
       });
     },
     returnHome(view) {
-      bodyScrollLock.clearAllBodyScrollLocks();
-      for (let interval of this.intervals) {
-        clearInterval(interval);
+      if (!this.noInternet) {
+        bodyScrollLock.clearAllBodyScrollLocks();
+        for (let interval of this.intervals) {
+          clearInterval(interval);
+        }
+        this.currentModal = undefined;
+        if (view && this.$refs[view] && this.$refs[view].returnHome()) this.$refs[view].returnHome();
       }
-      this.currentModal = undefined;
-      if (view && this.$refs[view] && this.$refs[view].returnHome()) this.$refs[view].returnHome();
     },
     requestRoute(route,color) {
       this.$refs['route-info-modal'].requestRoute(route,color);
@@ -132,11 +134,11 @@ var app = Vue.createApp({
     });
     var headerHeight = document.querySelector('header').offsetHeight;
     var home = document.querySelector('#home');
-    home.style.paddingTop = 'calc(' + headerHeight + 'px + 2vw)';
+    home.style.paddingTop =(headerHeight - 5) + 'px';
     window.addEventListener('resize',() => {
       var headerHeight = document.querySelector('header').offsetHeight;
       var home = document.querySelector('#home');
-      home.style.paddingTop = 'calc(' + headerHeight + 'px + 2vw)';
+      home.style.paddingTop = (headerHeight-5) + 'px';
     });
     for (let reloadElement of document.querySelectorAll('.reload')) {
       reloadElement.addEventListener('click', () => {
@@ -150,6 +152,7 @@ var app = Vue.createApp({
     this.fetchDyMessage();
     PullToRefresh.init({
       mainElement: '#home > .container',
+      triggerElement: '#home > .container',
       distThreshold: 80,
       distReload: 60,
       distMax: 100,
