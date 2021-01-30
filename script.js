@@ -1,7 +1,7 @@
 var app = Vue.createApp({
   data() {
     return {
-      corsProxy: 'https://cors-anywhere.matthewngan.workers.dev/?', appVersion: 'v1.2.9',
+      corsProxy: 'https://cors-anywhere.matthewngan.workers.dev/?', appVersion: 'v1.2.11',
       // corsProxy: 'http://192.168.0.100:8010/', appVersion: 'test',
       colorScheme: 'light',
       currentModal: undefined,
@@ -665,7 +665,7 @@ app.component('route-modal', {
         this.fetchTraffic();
         this.setupRoutesOnMap();
       },60000);
-      this.$root.intervals = [dataInterval, indexInterval, trafficInterval];
+      this.$parent.intervals = [dataInterval, indexInterval, trafficInterval];
     },
     resetMap() {
       this.busMap.setCenter([113.5622406,22.166422]);
