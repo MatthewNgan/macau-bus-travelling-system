@@ -1,18 +1,68 @@
 var app = Vue.createApp({
   data() {
     return {
-      corsProxy: 'https://cors-anywhere.matthewngan.workers.dev/?', appVersion: 'v1.2.8',
+      corsProxy: 'https://cors-anywhere.matthewngan.workers.dev/?', appVersion: 'v1.2.9',
       // corsProxy: 'http://192.168.0.100:8010/', appVersion: 'test',
-      busList: undefined,
       colorScheme: 'light',
-      currentView: 'route',
       currentModal: undefined,
+      currentView: 'route',
       isModalVisible: false,
-      messages: undefined,
       noInternet: false,
-      intervals: [],
       refreshing: false,
 	  };
+  },
+  mounted() {
+    // Service Worker setup
+    let newWorker;
+    document.querySelector('#reload-modal').addEventListener('click', () => {
+      newWorker.postMessage({action: 'skipWaiting'})
+    })
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => {
+          reg.addEventListener('updatefound', () => {
+            newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              switch (newWorker.state) {
+                case 'installed':
+                  if (navigator.serviceWorker.controller) {
+                    setTimeout(() => {document.querySelector('#reload-modal').classList.add('shown');this.isModalVisible = true}, 1000);
+                  }
+                  break;
+              }
+            })
+          })
+        })
+        .catch((e) => {
+          console.log('ServiceWorker not registered');
+          console.log(e);
+        })
+    }
+    // Main app setup
+    this.colorScheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        this.colorScheme = e.matches ? 'dark' : 'light';
+    });
+    for (let reloadElement of document.querySelectorAll('.reload')) {
+      reloadElement.addEventListener('click', () => {
+        if (!this.refreshing) {
+          window.location.reload();
+          this.refreshing = true;
+        } else return;
+      })
+    }
+  }
+});
+app.component('route-view', {
+  data() {
+    return {
+      busList: undefined,
+      intervals: [],
+      messages: undefined,
+    }
+  },
+  computed: {
+    corsProxy() { return this.$root.corsProxy},
   },
   methods: {
     calculateDistance(lon1,lat1,lon2,lat2){
@@ -77,6 +127,7 @@ var app = Vue.createApp({
       })
     },
     fetchRoutes() {
+      this.busList = [];
       fetch(`${this.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteAndCompanyList.html?lang=zh_tw`)
       .then(response => response.json())
       .then(data => {
@@ -86,14 +137,14 @@ var app = Vue.createApp({
         this.noInternet = true;
       });
     },
-    returnHome(view) {
+    returnHome(modal) {
       if (!this.noInternet) {
         bodyScrollLock.clearAllBodyScrollLocks();
         for (let interval of this.intervals) {
           clearInterval(interval);
         }
-        this.currentModal = undefined;
-        if (view && this.$refs[view] && this.$refs[view].returnHome()) this.$refs[view].returnHome();
+        this.$root.currentModal = undefined;
+        if (modal && this.$refs[modal] && this.$refs[modal].returnHome()) this.$refs[modal].returnHome();
       }
     },
     requestRoute(route,color) {
@@ -101,58 +152,19 @@ var app = Vue.createApp({
     }
   },
   mounted() {
-    // Service Worker setup
-    let newWorker;
-    document.querySelector('#reload-modal').addEventListener('click', () => {
-      newWorker.postMessage({action: 'skipWaiting'})
-    })
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => {
-          reg.addEventListener('updatefound', () => {
-            newWorker = reg.installing;
-            newWorker.addEventListener('statechange', () => {
-              switch (newWorker.state) {
-                case 'installed':
-                  if (navigator.serviceWorker.controller) {
-                    setTimeout(() => {document.querySelector('#reload-modal').classList.add('shown');this.isModalVisible = true}, 1000);
-                  }
-                  break;
-              }
-            })
-          })
-        })
-        .catch((e) => {
-          console.log('ServiceWorker not registered');
-          console.log(e);
-        })
-    }
-    // Main app setup
-    this.colorScheme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        this.colorScheme = e.matches ? 'dark' : 'light';
-    });
     var headerHeight = document.querySelector('header').offsetHeight;
-    var home = document.querySelector('#home');
-    home.style.paddingTop =(headerHeight - 5) + 'px';
+    var home = document.querySelector('#main-route-view');
+    home.style.paddingTop =headerHeight + 'px';
     window.addEventListener('resize',() => {
       var headerHeight = document.querySelector('header').offsetHeight;
-      var home = document.querySelector('#home');
-      home.style.paddingTop = (headerHeight-5) + 'px';
+      var home = document.querySelector('#main-route-view');
+      home.style.paddingTop = headerHeight + 'px';
     });
-    for (let reloadElement of document.querySelectorAll('.reload')) {
-      reloadElement.addEventListener('click', () => {
-        if (!this.refreshing) {
-          window.location.reload();
-          this.refreshing = true;
-        } else return;
-      })
-    }
     this.fetchRoutes();
     this.fetchDyMessage();
     PullToRefresh.init({
-      mainElement: '#home > .container',
-      triggerElement: '#home > .container',
+      mainElement: '#main-route-view > .container',
+      triggerElement: '#main-route-view > .container',
       distThreshold: 80,
       distReload: 60,
       distMax: 100,
@@ -160,11 +172,17 @@ var app = Vue.createApp({
       instructionsReleaseToRefresh: '鬆開以重新載入',
       instructionsRefreshing: '重新載入中',
       onRefresh() {
-        window.location.reload();
+        const event = new Event('reload-routes');
+        window.dispatchEvent(event);
       }
     });
-  }
-});
+    window.addEventListener('reload-routes', () => {
+      this.fetchRoutes();
+      this.fetchDyMessage();
+    })
+  },
+  template: '#route-view-template'
+})
 app.component('route-modal', {
   data() {
     return {
@@ -311,7 +329,7 @@ app.component('route-modal', {
         this.dataReady.busInfoLocations = false;
         this.dataReady.busRouteInfo = false;
         this.dataReady.busStationLocations = false;
-        fetch(`${this.$parent.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/bus?routeName=${this.busRoute}&dir=${this.busDirection}`,{signal: this.fetchController.signal})
+        fetch(`${this.$root.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/bus?routeName=${this.busRoute}&dir=${this.busDirection}`,{signal: this.fetchController.signal})
         .then(response => response.json())
         .then(data => {
           this.busRouteInfo = data.data.routeInfo;
@@ -320,15 +338,15 @@ app.component('route-modal', {
         .catch((err) => {
           if (err.name === 'TypeError') {
             this.busRouteInfo = undefined;
-            this.$parent.noInternet = true;
+            this.$root.noInternet = true;
           }
         });
-        fetch(`${this.$parent.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/location?routeName=${this.busRoute}&dir=${this.busDirection}&lang=zh-tw`,{signal: this.fetchController.signal})
+        fetch(`${this.$root.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/routestation/location?routeName=${this.busRoute}&dir=${this.busDirection}&lang=zh-tw`,{signal: this.fetchController.signal})
         .then(response => response.json())
         .then(data => {
           this.busInfoLocations = data.data.busInfoList;
           this.busStationLocations = data.data.stationInfoList;
-          this.$parent.currentModal = 'route-info-modal';
+          this.$root.currentModal = 'route-info-modal';
           if (this.scroll) {
             this.scroll = !this.scroll;
           }
@@ -336,7 +354,7 @@ app.component('route-modal', {
           this.dataReady.busStationLocations = true;
         })
         .catch((err) => {
-          if (err.name === 'TypeError') this.$parent.noInternet = true;
+          if (err.name === 'TypeError') this.$root.noInternet = true;
         });
       } else {
         this.busRouteInfo = undefined;
@@ -345,7 +363,7 @@ app.component('route-modal', {
     fetchRouteData() {
       if (this.busRoute != '') {
         fetch(
-        `${this.$parent.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteData.html?routeName=${this.busRoute}&dir=${this.busDirection}&lang=zh-tw`,{signal: this.fetchController.signal}).
+        `${this.$root.corsProxy}https://bis.dsat.gov.mo:37812/macauweb/getRouteData.html?routeName=${this.busRoute}&dir=${this.busDirection}&lang=zh-tw`,{signal: this.fetchController.signal}).
         then(response => response.json()).
         then(data => {
           this.busRouteData = data.data.routeInfo;
@@ -366,7 +384,7 @@ app.component('route-modal', {
         .catch((err) => {
           if (err.name === 'TypeError') {
             this.busRouteData = undefined;
-            this.$parent.noInternet = true;
+            this.$root.noInternet = true;
           }
         });
       }
@@ -375,13 +393,13 @@ app.component('route-modal', {
       if (this.busRoute != '') {
         this.dataReady.busRouteTraffic = false;
         this.dataReady.crossBridgeTime = false;
-        fetch(`${this.$parent.corsProxy}https://bis.dsat.gov.mo:37011/its/Bridge/getTime.html?lang=zh_tw`,{signal: this.fetchController.signal})
+        fetch(`${this.$root.corsProxy}https://bis.dsat.gov.mo:37011/its/Bridge/getTime.html?lang=zh_tw`,{signal: this.fetchController.signal})
         .then(response => response.json())
         .then(data => {
           this.crossBridgeTime = data.data.timeArray;
           this.dataReady.crossBridgeTime = true;
         })
-        let url = `${this.$parent.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${'0'.repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
+        let url = `${this.$root.corsProxy}https://bis.dsat.gov.mo:37812/ddbus/common/supermap/route/traffic?routeCode=${'0'.repeat(5-this.busRoute.length) + this.busRoute}&direction=${this.busDirection}&indexType=00&device=web`
         fetch(url,{signal: this.fetchController.signal}).then(response => response.json()).then(data => {
           this.noSuchNumberError = false;
           let tempData = data.data.slice();
@@ -436,7 +454,7 @@ app.component('route-modal', {
         .catch((err) => {
           if (err.name === 'TypeError') {
             this.busRouteTraffic = undefined;
-            this.$parent.noInternet = true;
+            this.$root.noInternet = true;
           }
         });
       } else {
@@ -593,14 +611,14 @@ app.component('route-modal', {
       this.busMap.on('load', () => this.mapLoaded = true);
     },
     openInfoBox() {
-      this.$parent.currentModal = 'message';
+      this.$root.currentModal = 'message';
       document.querySelector('#info-box').classList.add('shown');
     },
     requestRoute(route,color) {
       if (this.mapEnabled && !this.busMap) {
         this.initMap();
       }
-      this.$parent.currentModal = 'route-info-modal';
+      this.$root.currentModal = 'route-info-modal';
       this.busRoute = route;
       this.scroll = true;
       this.busColor = color;
@@ -624,12 +642,12 @@ app.component('route-modal', {
         if (this.busMap && this.mapEnabled && document.querySelector('.bus-info-container') && document.querySelector('.bus-title')) {
           document.querySelector('.bus-info-container').style.height = `calc(25vh - ${document.querySelector('.bus-title').offsetHeight}px + ${document.querySelector('.bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
           document.querySelector('#bus-map').style.height = `calc(60vh - ${document.querySelector('.bus-title').offsetTop}px)`;
+          document.querySelector('.mapboxgl-canvas').style.height = `calc(50vh - ${document.querySelector('.bus-title').offsetTop}px)`;
+          this.busMap.resize();
         }
         if (this.isScrolling) clearTimeout(this.isScrolling);
         this.isScrolling = setTimeout(() => {
           if (this.busMap && this.mapEnabled && document.querySelector('.bus-info-container') && document.querySelector('.bus-title')) {
-            document.querySelector('.mapboxgl-canvas').style.height = `calc(50vh - ${document.querySelector('.bus-title').offsetTop}px)`;
-            this.busMap.resize();
             this.focusStation();
           }
         }, 100);
@@ -647,7 +665,7 @@ app.component('route-modal', {
         this.fetchTraffic();
         this.setupRoutesOnMap();
       },60000);
-      this.$parent.intervals = [dataInterval, indexInterval, trafficInterval];
+      this.$root.intervals = [dataInterval, indexInterval, trafficInterval];
     },
     resetMap() {
       this.busMap.setCenter([113.5622406,22.166422]);

@@ -112,7 +112,7 @@ body {
 body > * {
     margin-bottom: 5px;
 }
-#home > .container {
+#main-route-view > .container {
     padding-top: 2vw;
 }
 .bus:hover {
@@ -164,19 +164,18 @@ details[open] .last .station-line {
 }
 header {
     margin-top: -1px;
-    padding: 10px 7.5px;
+    padding: 15px 7.5px;
     padding-top: 15px;
     height: auto;
-    top: -5px !important;
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     border-bottom: 1px solid #ccc;
     background-color: white;
 }
 header > * {
-    margin-left: 10px;
+    /* margin-left: 10px; */
     margin-bottom: 0;
 }
 h1 {
@@ -278,7 +277,7 @@ ul {
 .bus-title .bus {
     padding: 15px 12px !important;
 }
-.bus-title h5 {
+.bus-title .bus .h5 span, .bus-title .bus .h6 span{
     color: #111 !important;
 }
 .bus-title .h3 {
@@ -514,6 +513,7 @@ ul {
 }
 .version {
     margin-top: auto;
+    padding: 0 !important;
 }
 #app {
     width: 100%;

@@ -28,6 +28,42 @@
     <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
     <script src='https://unpkg.com/pulltorefreshjs@0.1.21/dist/index.umd.js'></script>
     <link rel="stylesheet" href="/style.css">
+    <script type="text/x-template" id="route-view-template">
+      <header class="shadow-sm fixed-top row justify-content-md-center">
+        <h1 class="col-auto">路線查詢</h1><small class="version col-auto"><code class="text-muted">{{$root.appVersion}}</code></small>
+        <div class="options">
+          <button class="info btn" id="toggleInfoBox" v-if="messages && messages.length > 0" @click="openInfoBox">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM8 5.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+      <div id="info-box" class="info-box modal">
+        <div class="header">
+          <h5>溫馨提示</h5>
+        </div>
+        <div class="info-content">
+          <ul>
+            <li v-for="message in messages">
+              {{message}}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div id="shadow" :class="{'shadow-shown': $root.isModalVisible || $root.currentModal}" @click="returnHome($root.currentModal)"></div>
+      <div id="main-route-view">
+        <div class="container">
+          <div class="row" v-if="busList">
+            <button v-for="bus in busList.routeList" :class="{blue: bus.color.toLowerCase() == 'blue', orange: bus.color.toLowerCase() == 'orange'}" class="bus col-md-1 col-2 btn" @click="requestRoute(bus.routeName,bus.color)">{{bus.routeName}}</button>
+          </div>
+          <div v-else-if="!$parent.noInternet" class="text-center loading">
+            載入中...
+          </div>
+        </div>
+      </div>
+      <route-modal :class="{'shown': $root.currentModal == 'route-info-modal' && !$parent.noInternet}" ref="route-info-modal"></route-modal>
+    </script>
     <script type="text/x-template" id="route-modal-template">
       <div class="route-modal modal" id="route-modal">
         <route-modal-header :bus-route-data="busRouteData" :bus-available-direction="busAvailableDirection" :bus-route="busRoute" :bus-color="busColor"></route-modal-header>
@@ -38,9 +74,9 @@
         </div>
         <div class="main-info-container">
           <div class="route-navbar">
-            <button @click="$parent.returnHome($parent.currentModal)" class="col-auto btn btn-secondary" aria-label="Return Button">
+            <button @click="$parent.returnHome($root.currentModal)" class="col-auto btn btn-secondary" aria-label="Return Button">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
               </svg>
             </button>
             <div class="col row route-navbar-title" v-if="busRouteData && !mapEnabled">
@@ -104,9 +140,15 @@
     <script type="text/x-template" id="route-modal-header-template">
       <div class="row ml-0 bus-title">
         <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="bus col-auto">
-          <h5 :class="{'h6': busRoute.length > 2}">{{busRoute}}</h5>
+          <div :class="busRoute.length > 2 ? 'h6' : 'h5'">
+            <span v-if="busRoute.toLowerCase() == '25ax'">25<span class="small">AX</span></span>
+            <span v-else-if="busRoute.toLowerCase() == '101x'">101<span class="small">X</span></span>
+            <span v-else-if="busRoute.toLowerCase() == '102x'">102<span class="small">X</span></span>
+            <span v-else-if="busRoute.toLowerCase() == 'ap1x'">AP1<span class="small">X</span></span>
+            <span v-else>{{busRoute}}</span>
+          </div>
         </div>
-        <div class="h4 header col" v-if="busRoute != 'MT3' && busRouteData">
+        <div class="h5 header col" v-if="busRoute != 'MT3' && busRouteData">
           <span class="destination">
             {{busRouteData[0].staName}}&nbsp;
           </span>
@@ -121,7 +163,7 @@
             &nbsp;{{busRouteData.slice().reverse()[0].staName}}
           </span>
         </div>
-        <div class="h4 header col" v-else-if="busRouteData">
+        <div class="h5 header col" v-else-if="busRouteData">
           <span class="destination">
             高利亞海軍上將/<br>政府綜合服務大樓
           </span>
@@ -179,7 +221,7 @@
   </head>
   <body>
     <div id="app">
-      <header class="shadow-sm fixed-top">
+      <!-- <header class="shadow-sm fixed-top">
         <img src="/images/icons/logo.png" class="logo" alt="Logo">
         <h1 class="display-3">巴士報站</h1><small class="version"><code class="text-muted">{{appVersion}}</code></small>
         <div class="options">
@@ -189,31 +231,8 @@
             </svg>
           </button>
         </div>
-      </header>
-      <div id="info-box" class="info-box modal">
-        <div class="header">
-          <h5>溫馨提示</h5>
-        </div>
-        <div class="info-content">
-          <ul>
-            <li v-for="message in messages">
-              {{message}}
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div id="home">
-        <div class="container">
-          <div class="row" v-if="busList">
-            <button v-for="bus in busList.routeList" :class="{blue: bus.color.toLowerCase() == 'blue', orange: bus.color.toLowerCase() == 'orange'}" class="bus col-md-1 col-2 btn" @click="requestRoute(bus.routeName,bus.color)">{{bus.routeName}}</button>
-          </div>
-          <div v-else-if="!noInternet" class="text-center loading">
-            載入中...
-          </div>
-        </div>
-      </div>
-      <div id="shadow" :class="{'shadow-shown': isModalVisible || currentModal}" @click="returnHome(currentModal)"></div>
-      <route-modal :class="{'shown': currentModal == 'route-info-modal' && !noInternet}" ref="route-info-modal"></route-modal>
+      </header> -->
+      <route-view v-if="currentView == 'route'" ref="route-view"></route-view>
       <div id="no-internet-error" class="modal" :class="{shown: noInternet}">
         <div class="container text-center">
           <h1>
