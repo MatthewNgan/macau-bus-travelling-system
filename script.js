@@ -373,13 +373,10 @@ app.component('route-modal', {
         }
       }
       this.stationLayerGroup = []
-      if (this.routeLayerGroup != []) {
-        for (let i of this.routeLayerGroup) {
-          this.busMap.removeLayer(i);
-          this.busMap.removeSource(i);
-        }
+      if (this.busMap.getLayer('route')) {
+        this.busMap.removeLayer('route');
+        this.busMap.removeSource('route');
       }
-      this.routeLayerGroup = [];
       this.fetchTraffic();
       this.fetchRouteData();
       this.fetchData();
@@ -387,7 +384,7 @@ app.component('route-modal', {
       this.setupBusMarkersOnMap();
       this.setupRoutesOnMap();
       if (this.busMap && this.mapEnabled && document.querySelector('.bus-info-container')) {
-        document.querySelector('.bus-info-container').style.height = `calc(25vh - ${document.querySelector('.bus-title').offsetHeight}px + ${document.querySelector('.bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
+        document.querySelector('.bus-info-container').style.height = `calc(2.75rem + 20px + 25vh - ${document.querySelector('.bus-title').offsetHeight}px + ${document.querySelector('.bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
       }
     },
     disableMap() {
@@ -400,7 +397,6 @@ app.component('route-modal', {
       this.mapLoaded = false;
       this.busLayerGroup = [];
       this.stationLayerGroup = [];
-      this.routeLayerGroup = [];
       document.querySelector('.bus-info-container').style.height = `unset`;
     },
     enableMap() {
@@ -412,7 +408,7 @@ app.component('route-modal', {
         this.setupBusMarkersOnMap();
         this.setupStationMarkersOnMap();
         this.setupRoutesOnMap();
-        document.querySelector('.bus-info-container').style.height = `calc(25vh - ${document.querySelector('.bus-title').offsetHeight}px + ${document.querySelector('.bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
+        document.querySelector('.bus-info-container').style.height = `calc(2.75rem + 20px + 25vh - ${document.querySelector('.bus-title').offsetHeight}px + ${document.querySelector('.bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
       }, 150);
     },
     fetchData() {
@@ -571,16 +567,17 @@ app.component('route-modal', {
             routeCoords.push(stationLoc);
             let bbox = turf.bbox(turf.lineString(routeCoords));
             this.busMap.fitBounds(bbox, {padding: 25, maxZoom: 15.5});
-            for (let i = 1; i <= this.routeLayerGroup.length; i++) {
-              if (i > index || i < closestStationIndex + 1) {
-                this.busMap.setPaintProperty(
-                  this.routeLayerGroup[i-1],
-                  'line-opacity',
-                  0.25
-                );
-              } else {
-                this.busMap.setPaintProperty(this.routeLayerGroup[i-1],'line-opacity', 1)
+            var routeSource = this.busMap.getSource('route');
+            if (routeSource) {
+              routeSource = this.busMap.getSource('route')._data;
+              for (let [i,features] of routeSource.features.slice().entries()) {
+                if (i >= index || i < closestStationIndex) {
+                  features.properties.opacity = 0.25;
+                } else {
+                  features.properties.opacity = 1;
+                }
               }
+              this.busMap.getSource('route').setData(routeSource)
             }
             for (let i = 0; i < this.stationLayerGroup.length; i++) {
               if (i > index || i < closestStationIndex) {
@@ -604,8 +601,12 @@ app.component('route-modal', {
               center: stationLoc,
               zoom: 15.5,
             });
-            for (let i = 1; i <= this.routeLayerGroup.length; i++) {
-              this.busMap.setPaintProperty(this.routeLayerGroup[i-1],'line-opacity', 1)
+            if (routeSource) {
+              routeSource = this.busMap.getSource('route')._data;
+              for (let [i,features] of routeSource.features.slice().entries()) {
+                features.properties.opacity = 1;
+              }
+              this.busMap.getSource('route').setData(routeSource);
             }
             for (let i = 0; i < this.stationLayerGroup.length; i++) {
               this.stationLayerGroup.slice().reverse()[i].getElement().style.removeProperty('opacity');
@@ -684,9 +685,7 @@ app.component('route-modal', {
           for (let busMarker of document.querySelectorAll('.bus-marker')) {
             busMarker.style.width = (this.busMap.getZoom() + 3).toString() + 'px';
           }
-          for (let routeLayer of this.routeLayerGroup) {
-            this.busMap.setPaintProperty(routeLayer,'line-width',4)
-          }
+          if (this.busMap.getLayer('route')) this.busMap.setPaintProperty('route','line-width',4)
         } else {
           for (let mapImportantStationText of document.querySelectorAll('.destination span, .origin span')) {
             mapImportantStationText.classList.toggle('shown',false);
@@ -694,9 +693,7 @@ app.component('route-modal', {
           for (let busMarker of document.querySelectorAll('.bus-marker')) {
             busMarker.style.width = '14px';
           }
-          for (let routeLayer of this.routeLayerGroup) {
-            this.busMap.setPaintProperty(routeLayer,'line-width',2)
-          }
+          if (this.busMap.getLayer('route')) this.busMap.setPaintProperty('route','line-width',2)
         }
       })
       this.busMap.on('load', () => this.mapLoaded = true);
@@ -731,7 +728,7 @@ app.component('route-modal', {
           document.querySelector('.route-navbar').classList.toggle('stuck', false);
         }
         if (this.busMap && this.mapEnabled && document.querySelector('.bus-info-container') && document.querySelector('.bus-title')) {
-          document.querySelector('.bus-info-container').style.height = `calc(25vh - ${document.querySelector('.bus-title').offsetHeight}px + ${document.querySelector('.bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
+          document.querySelector('.bus-info-container').style.height = `calc(2.75rem + 20px + 25vh - ${document.querySelector('.bus-title').offsetHeight}px + ${document.querySelector('.bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
           document.querySelector('#bus-map').style.height = `calc(60vh - ${document.querySelector('.bus-title').offsetTop}px)`;
           document.querySelector('.mapboxgl-canvas').style.height = `calc(50vh - ${document.querySelector('.bus-title').offsetTop}px)`;
           this.busMap.resize();
@@ -776,13 +773,10 @@ app.component('route-modal', {
         }
       }
       this.busLayerGroup = [];
-      if (this.routeLayerGroup != []) {
-        for (let i of this.routeLayerGroup) {
-          this.busMap.removeLayer(i);
-          this.busMap.removeSource(i);
-        }
+      if (this.busMap.getLayer('route')) {
+        this.busMap.removeLayer('route');
+        this.busMap.removeSource('route');
       }
-      this.routeLayerGroup = [];
     },
     returnHome() {
       document.querySelector('.route-navbar').classList.remove('stuck');
@@ -876,14 +870,18 @@ app.component('route-modal', {
     setupRoutesOnMap() {
       if (this.mapEnabled && this.busMap) {
         this.waitUntil(() => {
-          if (this.routeLayerGroup != []) {
-            for (let i of this.routeLayerGroup) {
-              this.busMap.removeLayer(i);
-              this.busMap.removeSource(i);
-            }
+          if (this.busMap.getLayer('route')) {
+            this.busMap.removeLayer('route');
+            this.busMap.removeSource('route');
           }
-          this.routeLayerGroup = [];
           var allCoords = [];
+          var source = {
+            'type': 'geojson',
+            'data': {
+              'type': 'FeatureCollection',
+              'features': []
+            },
+          }
           for (let i = 0; i < this.busRouteTraffic.length-1; i++) {
             if (typeof(this.busRouteTraffic[i].routeCoordinates) == 'string') {
               var routeCoordinates = [];
@@ -891,18 +889,6 @@ app.component('route-modal', {
                 routeCoordinates.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
                 allCoords.push([parseFloat(routeCoordinate.split(',')[0]),parseFloat(routeCoordinate.split(',')[1])]);
               }
-              routeCoordinates.pop();
-              this.busMap.addSource(i.toString(),{
-                'type': 'geojson',
-                'data': {
-                  'type': 'Feature',
-                  'properties': {},
-                  'geometry': {
-                    'type': 'LineString',
-                    'coordinates': routeCoordinates,
-                  },
-                },
-              });
               if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 1) var color = '#007400';
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 2) var color = '#5b7c00';
@@ -916,22 +902,34 @@ app.component('route-modal', {
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) == 4) var color = '#d68400';
                 else if (Math.ceil(parseFloat(this.busRouteTraffic[i].routeTraffic)) >= 5) var color = '#c70000'
               }
-              this.busMap.addLayer({
-                'id': i.toString(),
-                'type': 'line',
-                'source': i.toString(),
-                'layout': {
-                  'line-join': 'round',
-                  'line-cap': 'round'
+              routeCoordinates.pop();
+              source.data.features.push({
+                'type': 'Feature',
+                'properties': {
+                  'color': color
                 },
-                'paint': {
-                  'line-color': color,
-                  'line-width': this.busMap.getZoom() > 14 ? 4 : 2,
-                }
-              });
-              this.routeLayerGroup.push(i.toString());
+                'geometry': {
+                  'type': 'LineString',
+                  'coordinates': routeCoordinates,
+                },
+              })
             }
           }
+          this.busMap.addSource('route',source)
+          this.busMap.addLayer({
+            'id': 'route',
+            'type': 'line',
+            'source': 'route',
+            'layout': {
+              'line-join': 'round',
+              'line-cap': 'round',
+            },
+            'paint': {
+              'line-color': ['get','color'],
+              'line-width': this.busMap.getZoom() > 14 ? 4 : 2,
+              'line-opacity': ['get','opacity'],
+            }
+          });
           if (!this.mapRefreshed) {
             var routeLine = turf.lineString(allCoords);
             var bbox = turf.bbox(routeLine);
@@ -1037,11 +1035,16 @@ app.component('route-modal', {
       this.focusingStation = false;
       setTimeout(() => {
         if (!this.focusingStation) {
-          for (let routeLayer of this.routeLayerGroup) {
-            this.busMap.setPaintProperty(routeLayer,'line-opacity', 1)
-          }
           for (let i = 0; i < this.stationLayerGroup.length; i++) {
             this.stationLayerGroup[i].getElement().style.removeProperty('opacity');
+          }
+          var routeSource = this.busMap.getSource('route');
+          if (routeSource) {
+            routeSource = this.busMap.getSource('route')._data;
+            for (let [i,features] of routeSource.features.slice().entries()) {
+              features.properties.opacity = 1;
+            }
+            this.busMap.getSource('route').setData(routeSource);
           }
           for (let busElement of document.querySelectorAll('.bus-marker')) {
             busElement.style.removeProperty('display');
