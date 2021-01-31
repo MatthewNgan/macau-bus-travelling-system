@@ -179,8 +179,9 @@ details[open] .last .station-line {
     justify-content: center;
     align-items: center;
     border-bottom: 0.5px solid #ccc;
-    backdrop-filter: blur(30px) brightness(1.5);
-    -webkit-backdrop-filter: blur(30px) brightness(1.5);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    background-color: #ffffffee;
 }
 .view-header-top > * {
     /* margin-left: 10px; */
