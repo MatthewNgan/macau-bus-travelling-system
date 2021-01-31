@@ -115,7 +115,6 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #eaeaea
 }
 body > * {
     margin-bottom: 5px;
