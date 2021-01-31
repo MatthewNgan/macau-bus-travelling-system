@@ -5,7 +5,7 @@
     <title>澳門巴士報站</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#18703f">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="/images/icons/rounded-logo.png" type="image/png">
@@ -29,8 +29,8 @@
     <script src='https://unpkg.com/pulltorefreshjs@0.1.21/dist/index.umd.js'></script>
     <link rel="stylesheet" href="/style.css">
     <script type="text/x-template" id="route-view-template">
-      <header class="shadow-sm fixed-top row justify-content-md-center">
-        <h1 class="col-auto">路線查詢</h1><small class="version col-auto"><code class="text-muted">{{$root.appVersion}}</code></small>
+      <header class="view-header-top shadow-sm fixed-top row justify-content-md-center">
+        <h6 class="col-auto">路線查詢</h1>
         <div class="options">
           <button class="info btn" id="toggleInfoBox" v-if="messages && messages.length > 0" @click="openInfoBox">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
@@ -80,12 +80,12 @@
               </svg>
             </button>
             <div class="col row route-navbar-title" v-if="busRouteData && !mapEnabled">
-              <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="input-bus col-auto">
-                {{busRoute}}
+              <div :class="{blue: busColor.toLowerCase() == 'blue', orange: busColor.toLowerCase() == 'orange'}" class="navbar-bus col-auto">
+                <span>{{busRoute}}</span>
               </div>
               <div class="header h5 col">
                 <span class="destination">
-                  {{busRouteData[0].staName}}&nbsp;
+                  {{$root.routeMainPoints[busRoute.toUpperCase()] ? $root.routeMainPoints[busRoute.toUpperCase()][busDirection] : busRouteData[0].staName}}&nbsp;
                 </span>
                 <span class="destination">
                   <svg v-if="busAvailableDirection == '2'" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
@@ -95,7 +95,7 @@
                   <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
                   </svg>
-                  &nbsp;{{busRouteData.slice().reverse()[0].staName}}
+                  &nbsp;{{$root.routeMainPoints[busRoute.toUpperCase()] ? $root.routeMainPoints[busRoute.toUpperCase()].slice().reverse()[busDirection] : busRouteData[0].slice().reverse().staName}}
                 </span>
               </div>
             </div>
@@ -148,9 +148,9 @@
             <span v-else>{{busRoute}}</span>
           </div>
         </div>
-        <div class="h5 header col" v-if="busRoute != 'MT3' && busRouteData">
+        <div class="h5 header col" v-if="busRouteData">
           <span class="destination">
-            {{busRouteData[0].staName}}&nbsp;
+            {{$root.routeMainPoints[busRoute.toUpperCase()] ? $root.routeMainPoints[busRoute.toUpperCase()][$parent.busDirection] : busRouteData[0].staName}}&nbsp;
           </span>
           <span class="destination">
             <svg v-if="busAvailableDirection == '2'" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
@@ -160,17 +160,7 @@
             <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
               <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
             </svg>
-            &nbsp;{{busRouteData.slice().reverse()[0].staName}}
-          </span>
-        </div>
-        <div class="h5 header col" v-else-if="busRouteData">
-          <span class="destination">
-            高利亞海軍上將/<br>政府綜合服務大樓
-          </span>
-        </div>
-        <div class="h4 header col" v-else>
-          <span class="destination">
-            載入中...
+            &nbsp;{{$root.routeMainPoints[busRoute.toUpperCase()] ? $root.routeMainPoints[busRoute.toUpperCase()].slice().reverse()[$parent.busDirection] : busRouteData[0].slice().reverse().staName}}
           </span>
         </div>
         <span v-if="busRoute.toLowerCase() == 'ap1x'" class="col-auto text-muted">機場<br>快線</span>

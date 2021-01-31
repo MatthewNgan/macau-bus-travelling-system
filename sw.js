@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static#r1.2.11';
+const staticCacheName = 'site-static#r1.3';
 const dynamicCacheName = 'site-dynamic#14';
 const assets = [
     '/',
@@ -45,7 +45,7 @@ self.addEventListener('fetch', e => {
         caches.match(e.request).then(cacheRes => {
             return cacheRes || fetch(e.request).then(fetchRes => {
                 return caches.open(dynamicCacheName).then(cache => {
-                    if (e.request.url.indexOf("dsat.gov.mo") == -1 && e.request.url.indexOf("mapbox") == -1) cache.put(e.request.url, fetchRes.clone());
+                    if (e.request.url.indexOf("dsat.gov.mo") == -1 && e.request.url.indexOf("mapbox") == -1 && e.request.url.indexOf("bus.matthewngan.ga")) cache.put(e.request.url, fetchRes.clone());
                     return fetchRes;
                 })
             });
