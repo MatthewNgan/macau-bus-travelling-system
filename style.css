@@ -528,6 +528,9 @@ ul {
     border-radius: 1rem;
     font-size: .9rem;
 }
+.mapboxgl-control-container > * {
+    z-index: 10000;
+}
 .version {
     margin-top: auto;
     padding: 0 !important;
