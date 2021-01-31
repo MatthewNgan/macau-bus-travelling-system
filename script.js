@@ -1,8 +1,8 @@
 var app = Vue.createApp({
   data() {
     return {
-      corsProxy: 'https://cors-anywhere.matthewngan.workers.dev/?', appVersion: 'v1.4.1',
-      // corsProxy: 'http://192.168.0.100:8010/', appVersion: 'test',
+      corsProxy: 'https://cors-anywhere.matthewngan.workers.dev/?', appVersion: 'v1.5',
+      // corsProxy: 'http://192.168.0.100:8010/', appVersion: 'v1.5',
       colorScheme: 'light',
       currentModal: undefined,
       currentView: 'route',
@@ -101,6 +101,15 @@ var app = Vue.createApp({
         'N6': ['澳門大學','科技大學'],
       }
 	  };
+  },
+  methods: {
+    changeView(view) {
+      this.currentView = view;
+      setTimeout(() => {
+        let e = new Event('resize')
+        window.dispatchEvent(e);
+      },5)
+    }
   },
   mounted() {
     // Service Worker setup
@@ -243,30 +252,22 @@ app.component('route-view', {
     }
   },
   mounted() {
-    var headerHeight = document.querySelector('header').offsetHeight;
-    var home = document.querySelector('#main-route-view');
-    home.style.paddingTop = (headerHeight - 50) + 'px';
-    window.addEventListener('resize',() => {
-      var headerHeight = document.querySelector('header').offsetHeight;
-      var home = document.querySelector('#main-route-view');
-      home.style.paddingTop = (headerHeight - 50) + 'px';
-    });
     this.fetchRoutes();
     this.fetchDyMessage();
-    PullToRefresh.init({
-      mainElement: '#main-route-view > .container',
-      triggerElement: '#main-route-view > .container',
-      distThreshold: 80,
-      distReload: 60,
-      distMax: 100,
-      instructionsPullToRefresh: '向下拉以重新載入',
-      instructionsReleaseToRefresh: '鬆開以重新載入',
-      instructionsRefreshing: '重新載入中',
-      onRefresh() {
-        const event = new Event('reload-routes');
-        window.dispatchEvent(event);
-      }
-    });
+    // PullToRefresh.init({
+    //   mainElement: '#route-main-route-view > .container',
+    //   triggerElement: '#route-main-route-view > .container',
+    //   distThreshold: 80,
+    //   distReload: 60,
+    //   distMax: 100,
+    //   instructionsPullToRefresh: '向下拉以重新載入',
+    //   instructionsReleaseToRefresh: '鬆開以重新載入',
+    //   instructionsRefreshing: '重新載入中',
+    //   onRefresh() {
+    //     const event = new Event('reload-routes');
+    //     window.dispatchEvent(event);
+    //   }
+    // });
     window.addEventListener('reload-routes', () => {
       this.fetchRoutes();
       this.fetchDyMessage();
@@ -356,7 +357,7 @@ app.component('route-modal', {
       details.forEach(detail => {
         detail.removeAttribute('open');
       });
-      const changeDirectionText = document.querySelector('#changedirection-text');
+      const changeDirectionText = document.querySelector('#route-changedirection-text');
       changeDirectionText.disabled = true;
       this.routeCrossingBridge = [];
       this.busRouteTraffic = undefined;
@@ -383,8 +384,8 @@ app.component('route-modal', {
       this.setupStationMarkersOnMap();
       this.setupBusMarkersOnMap();
       this.setupRoutesOnMap();
-      if (this.busMap && this.mapEnabled && document.querySelector('.bus-info-container')) {
-        document.querySelector('.bus-info-container').style.height = `calc(2.75rem + 20px + 25vh - ${document.querySelector('.bus-title').offsetHeight}px + ${document.querySelector('.bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
+      if (this.busMap && this.mapEnabled && document.querySelector('.route-bus-info-container')) {
+        document.querySelector('.route-bus-info-container').style.height = `calc(2.75rem + 20px + ${document.querySelector('.route-modal').offsetHeight}px - ${document.querySelector('#route-bus-map').offsetHeight}px - ${document.querySelector('.route-bus-title').offsetHeight}px + ${document.querySelector('.route-bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
       }
     },
     disableMap() {
@@ -397,7 +398,7 @@ app.component('route-modal', {
       this.mapLoaded = false;
       this.busLayerGroup = [];
       this.stationLayerGroup = [];
-      document.querySelector('.bus-info-container').style.height = `unset`;
+      document.querySelector('.route-bus-info-container').style.height = `unset`;
     },
     enableMap() {
       this.mapEnabled = true;
@@ -408,7 +409,7 @@ app.component('route-modal', {
         this.setupBusMarkersOnMap();
         this.setupStationMarkersOnMap();
         this.setupRoutesOnMap();
-        document.querySelector('.bus-info-container').style.height = `calc(2.75rem + 20px + 25vh - ${document.querySelector('.bus-title').offsetHeight}px + ${document.querySelector('.bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
+        document.querySelector('.route-bus-info-container').style.height = `calc(2.75rem + 20px + ${document.querySelector('.route-modal').offsetHeight}px - ${document.querySelector('#route-bus-map').offsetHeight}px - ${document.querySelector('.route-bus-title').offsetHeight}px + ${document.querySelector('.route-bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
       }, 150);
     },
     fetchData() {
@@ -456,9 +457,9 @@ app.component('route-modal', {
           this.busRouteData = data.data.routeInfo;
           this.busAvailableDirection = data.data.direction;
           if (data.data.direction == '0') {
-            const changeDirectionIcon = document.querySelector('#changedirection-icon');
+            const changeDirectionIcon = document.querySelector('#route-changedirection-icon');
             if (changeDirectionIcon) changeDirectionIcon.disabled = false;
-            const changeDirectionText = document.querySelector('#changedirection-text');
+            const changeDirectionText = document.querySelector('#route-changedirection-text');
             if (changeDirectionText) changeDirectionText.disabled = false;
           }
           this.busRouteChange = (data.data.routeInfo.filter(sta => sta.suspendState == '1').length != 0);
@@ -589,7 +590,7 @@ app.component('route-modal', {
                 this.stationLayerGroup.slice().reverse()[i].getElement().style.removeProperty('opacity');
               }
             }
-            for (let busElement of document.querySelectorAll('.bus-marker')) {
+            for (let busElement of document.querySelectorAll('.route-bus-marker')) {
               if (!busElement.id.includes(this.arrivingBuses[index][0].plate)) {
                 busElement.style.setProperty('display', 'none', 'important');
               } else {
@@ -601,9 +602,10 @@ app.component('route-modal', {
               center: stationLoc,
               zoom: 15.5,
             });
+            var routeSource = this.busMap.getSource('route');
             if (routeSource) {
               routeSource = this.busMap.getSource('route')._data;
-              for (let [i,features] of routeSource.features.slice().entries()) {
+              for (let features of routeSource.features.slice()) {
                 features.properties.opacity = 1;
               }
               this.busMap.getSource('route').setData(routeSource);
@@ -611,7 +613,7 @@ app.component('route-modal', {
             for (let i = 0; i < this.stationLayerGroup.length; i++) {
               this.stationLayerGroup.slice().reverse()[i].getElement().style.removeProperty('opacity');
             }
-            for (let busElement of document.querySelectorAll('.bus-marker')) {
+            for (let busElement of document.querySelectorAll('.route-bus-marker')) {
               busElement.style.removeProperty('display');
             }
           }
@@ -657,7 +659,7 @@ app.component('route-modal', {
       }
       mapboxgl.accessToken = mapboxAccessToken;
       this.busMap = new mapboxgl.Map({
-        container: 'bus-map',
+        container: 'route-bus-map',
         style: 'mapbox://styles/' + mapStyle, // stylesheet location
         center: [113.5622406,22.166422], // starting position [lng, lat]
         zoom: 11, // starting zoom
@@ -670,11 +672,11 @@ app.component('route-modal', {
       this.busMap.touchZoomRotate.disableRotation();
       this.busMap.on('zoom', () => {
         if (this.busMap.getZoom() > 13.5) {
-          for (let mapStation of document.querySelectorAll('.map-station')) {
+          for (let mapStation of document.querySelectorAll('.route-map-station')) {
             mapStation.classList.toggle('shown',true)
           }
         } else {
-          for (let mapStation of document.querySelectorAll('.map-station')) {
+          for (let mapStation of document.querySelectorAll('.route-map-station')) {
             mapStation.classList.toggle('shown',false)
           }
         }
@@ -682,7 +684,7 @@ app.component('route-modal', {
           for (let mapImportantStationText of document.querySelectorAll('.destination span, .origin span')) {
             mapImportantStationText.classList.toggle('shown',true);
           }
-          for (let busMarker of document.querySelectorAll('.bus-marker')) {
+          for (let busMarker of document.querySelectorAll('.route-bus-marker')) {
             busMarker.style.width = (this.busMap.getZoom() + 3).toString() + 'px';
           }
           if (this.busMap.getLayer('route')) this.busMap.setPaintProperty('route','line-width',4)
@@ -690,7 +692,7 @@ app.component('route-modal', {
           for (let mapImportantStationText of document.querySelectorAll('.destination span, .origin span')) {
             mapImportantStationText.classList.toggle('shown',false);
           }
-          for (let busMarker of document.querySelectorAll('.bus-marker')) {
+          for (let busMarker of document.querySelectorAll('.route-bus-marker')) {
             busMarker.style.width = '14px';
           }
           if (this.busMap.getLayer('route')) this.busMap.setPaintProperty('route','line-width',2)
@@ -700,7 +702,7 @@ app.component('route-modal', {
     },
     openInfoBox() {
       this.$root.currentModal = 'message';
-      document.querySelector('#info-box').classList.add('shown');
+      document.querySelector('#route-info-box').classList.add('shown');
     },
     requestRoute(route,color) {
       if (this.mapEnabled && !this.busMap) {
@@ -713,29 +715,29 @@ app.component('route-modal', {
       this.routeChanged();
       bodyScrollLock.disableBodyScroll(document.querySelector('#route-modal'))
       if (this.busMap && this.mapEnabled) {
-        document.querySelector('#bus-map').setAttribute('style','');
+        document.querySelector('#route-bus-map').setAttribute('style','');
         document.querySelector('.mapboxgl-canvas').setAttribute('style','');
         this.busMap.resize();
       }
       document.querySelector('#route-modal').scrollTop = 0;
       let scrollEventFunc = () => {
-        if (!this.busMap && !this.mapEnabled && document.querySelector('.bus-title')) {
+        if (!this.busMap && !this.mapEnabled && document.querySelector('.route-bus-title')) {
           var thisTop = document.querySelector('.route-navbar').offsetTop;
-          if (this.mapEnabled) var titleHeight = document.querySelector('.bus-title').offsetHeight + document.querySelector('#bus-map').offsetHeight;
-          else var titleHeight = document.querySelector('.bus-title').offsetHeight
+          if (this.mapEnabled) var titleHeight = document.querySelector('.route-bus-title').offsetHeight + document.querySelector('#route-bus-map').offsetHeight;
+          else var titleHeight = document.querySelector('.route-bus-title').offsetHeight
           document.querySelector('.route-navbar').classList.toggle('stuck', thisTop > titleHeight);
         } else {
           document.querySelector('.route-navbar').classList.toggle('stuck', false);
         }
-        if (this.busMap && this.mapEnabled && document.querySelector('.bus-info-container') && document.querySelector('.bus-title')) {
-          document.querySelector('.bus-info-container').style.height = `calc(2.75rem + 20px + 25vh - ${document.querySelector('.bus-title').offsetHeight}px + ${document.querySelector('.bus-title').offsetTop}px - ${document.querySelector('.route-navbar').offsetHeight}px)`;
-          document.querySelector('#bus-map').style.height = `calc(60vh - ${document.querySelector('.bus-title').offsetTop}px)`;
-          document.querySelector('.mapboxgl-canvas').style.height = `calc(50vh - ${document.querySelector('.bus-title').offsetTop}px)`;
+        if (this.busMap && this.mapEnabled && document.querySelector('.route-bus-info-container') && document.querySelector('.route-bus-title')) {
+          document.querySelector('.route-bus-info-container').style.height = `calc(${document.querySelector('.route-modal').offsetHeight}px - ${document.querySelector('#route-bus-map').offsetHeight}px - ${document.querySelector('.route-bus-title').offsetHeight}px`;
+          document.querySelector('#route-bus-map').style.height = `calc(50vh - ${document.querySelector('.route-bus-title').offsetTop}px)`;
+          document.querySelector('.mapboxgl-canvas').style.height = `calc(50vh - ${document.querySelector('.route-bus-title').offsetTop}px)`;
           this.busMap.resize();
         }
         if (this.isScrolling) clearTimeout(this.isScrolling);
         this.isScrolling = setTimeout(() => {
-          if (this.busMap && this.mapEnabled && document.querySelector('.bus-info-container') && document.querySelector('.bus-title')) {
+          if (this.busMap && this.mapEnabled && document.querySelector('.route-bus-info-container') && document.querySelector('.route-bus-title')) {
             this.focusStation();
           }
         }, 66);
@@ -758,7 +760,7 @@ app.component('route-modal', {
     resetMap() {
       this.busMap.setCenter([113.5622406,22.166422]);
       this.busMap.setZoom(11);
-      document.querySelector('#bus-map').style.height = `60vh`;
+      document.querySelector('#route-bus-map').style.height = `60vh`;
       document.querySelector('.mapboxgl-canvas').style.height = `60vh`;
       this.busMap.resize();
       if (this.stationLayerGroup != []) {
@@ -780,7 +782,7 @@ app.component('route-modal', {
     },
     returnHome() {
       document.querySelector('.route-navbar').classList.remove('stuck');
-      document.querySelector('#info-box').classList.remove('shown');
+      document.querySelector('#route-info-box').classList.remove('shown');
       this.mapRefreshed = false;
       this.routeCrossingBridge = [];
       this.crossBridgeTime = undefined;
@@ -825,9 +827,9 @@ app.component('route-modal', {
       this.setupRoutesOnMap();
     },
     scrollToWarning() {
-      var mainRouteInfo = (this.busMap && this.mapEnabled) ? document.querySelector('.bus-info-container') : document.querySelector('.route-modal');
-      var suspendedParent = document.querySelectorAll('.suspended')[this.currentScrollToWarning].parentNode;
-      mainRouteInfo.scroll({top: (this.busMap && this.mapEnabled) ? suspendedParent.offsetTop : suspendedParent.offsetTop + document.querySelector('.bus-title').offsetHeight, behavior: 'smooth'});
+      var mainRouteInfo = (this.busMap && this.mapEnabled) ? document.querySelector('.route-bus-info-container') : document.querySelector('.route-modal');
+      var suspendedParent = document.querySelectorAll('.route-suspended')[this.currentScrollToWarning].parentNode;
+      mainRouteInfo.scroll({top: (this.busMap && this.mapEnabled) ? suspendedParent.offsetTop : suspendedParent.offsetTop + document.querySelector('.route-bus-title').offsetHeight, behavior: 'smooth'});
       var suspendedStations = this.busRouteData.filter(station => station.suspendState == '1');
       if (this.currentScrollToWarning == suspendedStations.length-1) this.currentScrollToWarning = 0;
       else this.currentScrollToWarning++;
@@ -845,7 +847,7 @@ app.component('route-modal', {
             var busElement = document.createElement('img');
             if (this.busColor.toLowerCase() == 'blue') busElement.src = '/images/icons/blue-bus-icon.png'
             else if (this.busColor.toLowerCase() == 'orange') busElement.src = '/images/icons/orange-bus-icon.png'
-            busElement.classList.add('bus-marker');
+            busElement.classList.add('route-bus-marker');
             busElement.id = `bus-${bus.busPlate.substring(0,2)}-${bus.busPlate.substring(2,4)}-${bus.busPlate.substring(4,6)}`;
             for (let sta of this.busRouteInfo) {
               for (let lbus of sta.busInfo) {
@@ -954,24 +956,24 @@ app.component('route-modal', {
               var stationElement = document.createElement('div');
               var stationTextElement = document.createElement('span');
               stationTextElement.innerHTML = this.busRouteData.slice().reverse()[index].staName;
-              stationElement.classList.add('map-important-station');
+              stationElement.classList.add('route-map-important-station');
               stationElement.classList.add('origin');
               stationElement.appendChild(stationTextElement);
             } else if (index === 0) {
               var stationElement = document.createElement('div');
               var stationTextElement = document.createElement('span');
               stationTextElement.innerHTML = this.busRouteData.slice().reverse()[index].staName;
-              stationElement.classList.add('map-important-station');
+              stationElement.classList.add('route-map-important-station');
               stationElement.classList.add('destination');
               stationElement.appendChild(stationTextElement);
             } else if (this.mainStations.includes(this.busRouteData.slice().reverse()[index].staCode.split('/')[0])) {
               var stationElement = document.createElement('div');
-              stationElement.classList.add('map-important-station');
+              stationElement.classList.add('route-map-important-station');
             } else {
               var stationElement = document.createElement('img');
               if (this.colorScheme == 'light') stationElement.src = '/images/icons/bus-stop-light.png';
               else stationElement.src = '/images/icons/bus-stop-dark.png'
-              stationElement.classList.add('map-station');
+              stationElement.classList.add('route-map-station');
               if (this.busMap.getZoom() <= 13.5) stationElement.classList.toggle('shown',false);
               else stationElement.classList.toggle('shown',true);
             }
@@ -984,8 +986,8 @@ app.component('route-modal', {
                 if (detail != e) detail.removeAttribute('open');
               });
               this.currentPopup = this.busStationLocations.slice().length - index - 1;
-              document.querySelectorAll('.bus-info details')[this.busStationLocations.slice().length - index - 1].open = true;
-              document.querySelector('.bus-info-container').scroll({top: (1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize) + 20)*(this.busStationLocations.slice().length - index - 1), behavior: 'smooth'});
+              document.querySelectorAll('.route-bus-info details')[this.busStationLocations.slice().length - index - 1].open = true;
+              document.querySelector('.route-bus-info-container').scroll({top: (1.5 * parseFloat(getComputedStyle(document.documentElement).fontSize) + 20)*(this.busStationLocations.slice().length - index - 1), behavior: 'smooth'});
             });
             var stationPopup = new mapboxgl.Popup({closeButton: false, offset: 8}).setText(`${this.busRouteData.slice().reverse()[index].staCode} ${this.busRouteData.slice().reverse()[index].staName}`);
             stationPopup.on('close', () => {
@@ -1046,7 +1048,7 @@ app.component('route-modal', {
             }
             this.busMap.getSource('route').setData(routeSource);
           }
-          for (let busElement of document.querySelectorAll('.bus-marker')) {
+          for (let busElement of document.querySelectorAll('.route-bus-marker')) {
             busElement.style.removeProperty('display');
           }
         }
@@ -1082,17 +1084,20 @@ app.component('route-modal', {
   },
   template: '#route-modal-template',
 });
-app.component('station-block', {
+app.component('route-station-block', {
   props: ['busRouteData','busRouteInfo','busColor','busRouteTraffic','arrivingBuses','index','station'],
   computed: {
     busImgUrl() {
       return `/images/icons/${this.busColor.toLowerCase()}-bus-icon.png`;
     }
   },
-  template: '#station-block-template',
+  template: '#route-station-block-template',
 });
 app.component('route-modal-header', {
   props: ['busRouteData','busAvailableDirection','busRoute','busColor'],
   template: '#route-modal-header-template',
 });
+app.component('about-view', {
+  template: '#about-view-template'
+})
 app.mount('#app');

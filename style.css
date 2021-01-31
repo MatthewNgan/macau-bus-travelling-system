@@ -9,17 +9,42 @@
     -ms-user-select: none;
     user-select: none;
 }
-.logo {
-    border-radius: calc((1.525rem + 3.3vw)/4);
-    height: calc(1.525rem + 3.3vw);
-    max-height: 4rem;
+#app {
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
-.options {
-    margin-left: auto;
+#app::-webkit-scrollbar {
+    display: none;
 }
-.info svg {
-    width: 1.25rem;
-    height: 1.25rem;
+.align-middle {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+body > * {
+    margin-bottom: 5px;
+}
+code {
+    color: white;
+    padding: 2px 5px;
+    border-radius: 2px;
+}
+code.blue {
+    background-color: #276299;
+}
+code.orange {
+    background-color: #c26c32;
+}
+h1 {
+    font-weight: bold !important;
 }
 .modal {
     position: fixed;
@@ -37,110 +62,8 @@
     min-height: 3rem;
     z-index: 2000;
 }
-.info-box {
-    width: 75vw;
-    height: fit-content;
-    max-height: 40vh;
-}
-.info-box > * {
-    padding: 10px;
-}
-.info-box .header {
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-}
-.info-box h5 {
-    margin-bottom: 0 !important;
-}
-.info-box ul {
-    list-style: none;
-    padding-left: 0;
-}
 .modal.shown {
     top: 0;
-}
-.arriving-list li {
-    display: flex;
-    justify-content: space-between;
-    padding-right: 1.5rem;
-}
-@keyframes breathe {
-    from, to { opacity: 1; }
-    50% { opacity: 0.25; }
-}
-@keyframes blink-green {
-    from, to { background-color:rgba(32, 117, 32, 1); }
-    50% { background-color:rgba(32, 117, 32, 0.375); }
-}
-@keyframes blink-yellow {
-    from, to { background-color:rgba(87, 134, 0, 1); }
-    50% { background-color:rgba(87, 134, 0, 0.375); }
-}
-@keyframes blink-orange {
-    from, to { background-color:rgba(161, 152, 24, 1); }
-    50% { background-color:rgba(161, 152, 24, 0.375); }
-} 
-@keyframes blink-red {
-    from, to { background-color:rgba(131, 86, 28, 1); }
-    50% { background-color:rgba(131, 86, 28, 0.375); }
-}
-@keyframes blink-brown {
-    from, to { background-color:rgba(100, 15, 0, 1); }
-    50% { background-color:rgba(100, 15, 0, 0.375); }
-}
-.time-remaining {
-    padding-left: .75rem;
-    padding-right: .75rem;
-    border-radius: .5rem;
-}
-.live {
-    transform: scale(0.9);
-    color: white;
-}
-.live.green {
-    animation: blink-green 15s linear infinite;
-}
-.live.yellow {
-    animation: blink-yellow 15s linear infinite;
-}
-.live.orange {
-    animation: blink-orange 15s linear infinite;
-}
-.live.red {
-    animation: blink-red 15s linear infinite;
-}
-.live.brown {
-    animation: blink-brown 15s linear infinite;
-}
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-body > * {
-    margin-bottom: 5px;
-}
-#main-route-view > .container {
-    padding-top: 2vw;
-}
-.bus:hover {
-    filter: brightness(0.8);
-}
-.bus-info {
-    overflow: hidden;
-}
-.bus-info ul {
-    list-style: none;
-}
-code {
-    color: white;
-    padding: 2px 5px;
-    border-radius: 2px;
-}
-code.blue {
-    background-color: #276299;
-}
-code.orange {
-    background-color: #c26c32;
 }
 #no-internet-error {
     display: flex;
@@ -157,55 +80,355 @@ code.orange {
     align-items: center;
     justify-content: center;
 }
-details[open] summary {
-    background-color: #ddd;
+.tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-details[open] summary .station-dot {
-    transform: scale3d(1.5,1.5,1);
+.tab > * {
+    margin: 2px 0;
 }
-details[open] summary .station-line {
-    height: 400px;
+.tab.active {
+    color: rgb(46, 155, 46);
+    font-weight: bold;
 }
-details[open] .last .station-line {
-    background-color: #ddd !important;
+.tabs {
+    font-size: 12px;
+    color: #aaa;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
+    background-color: #ffffffaa;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-top: 1px solid #00000022;
+    margin-left: 0 !important;
+}
+.view {
+    display: none;
+    margin-bottom: calc(constant(safe-area-inset-top) + 52px);
+    margin-bottom: calc(env(safe-area-inset-top) + 52px);
+    min-height: calc(100% - constant(safe-area-inset-top) - 52px);
+    min-height: calc(100% - env(safe-area-inset-top) - 52px);
+    position: relative;
+}
+.view.active {
+    display: block;
 }
 .view-header-top {
-    padding: 60px 7.5px 15px;
-    top: -50px;
-    min-height: 50px;
-    height: auto;
+    padding: 60px 7.5px 12.5px;
+    padding-top: calc(constant(safe-area-inset-top) + 12.5px);
+    padding-top: calc(env(safe-area-inset-top) + 12.5px);
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    border-bottom: 0.5px solid #ccc;
-    background-color: #ffffff;
+    border-bottom: 1px solid #00000022;
+    background-color: #ffffffaa;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
 }
 .view-header-top > * {
     /* margin-left: 10px; */
     margin-bottom: 0;
 }
-h1 {
-    font-weight: bold !important;
+/* Route View Style */
+@keyframes route-breathe {
+    from, to { opacity: 1; }
+    50% { opacity: 0.25; }
 }
-input {
-    border: 1px solid #ccc;
+@keyframes route-blink-green {
+    from, to { background-color:rgba(32, 117, 32, 1); }
+    50% { background-color:rgba(32, 117, 32, 0.375); }
 }
-summary {
+@keyframes route-blink-yellow {
+    from, to { background-color:rgba(87, 134, 0, 1); }
+    50% { background-color:rgba(87, 134, 0, 0.375); }
+}
+@keyframes route-blink-orange {
+    from, to { background-color:rgba(161, 152, 24, 1); }
+    50% { background-color:rgba(161, 152, 24, 0.375); }
+} 
+@keyframes route-blink-red {
+    from, to { background-color:rgba(131, 86, 28, 1); }
+    50% { background-color:rgba(131, 86, 28, 0.375); }
+}
+@keyframes route-blink-brown {
+    from, to { background-color:rgba(100, 15, 0, 1); }
+    50% { background-color:rgba(100, 15, 0, 0.375); }
+}
+.route-arriving-list li {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 1.5rem;
+}
+.route-bus {
+    font-size: 0.8rem;
+    padding-bottom: 0.8rem !important;
+    margin: 10px 0;
+    min-height: 50px;
+    min-width: 50px;
+    text-align: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.route-bus.blue {
+    background-image: url("images/icons/blue-bus.png");
+}
+.route-bus.orange {
+    background-image: url("images/icons/orange-bus.png");
+}
+.route-bus:hover {
+    filter: brightness(0.8);
+}
+.route-bus-marker {
+    width: 20px;
+    z-index: 3000;
+}
+.route-bus-marker.moving {
+    animation: route-breathe 2s linear infinite;
+}
+#route-bus-map {
+    height: 50vh;
+    width: calc(100% - 5vw);
+    position: fixed;
+}
+#route-bus-map ~ .route-main-info-container {
+    height: 70vh;
+    overflow: hidden;
+    margin-top: 50vh;
+    position: relative;
+}
+#route-bus-map ~ .route-main-info-container .route-navbar {
+    position: absolute;
+    width: 100%;
+}
+#route-bus-map ~ .route-main-info-container .route-bus-info-container {
+    padding-top: calc(2.75rem + 20px);
+    padding-bottom: 10px;
+    height: calc(35vh - 2rem - 40px);
+    overflow: auto;
+}
+.route-bus-info {
+    overflow: hidden;
+}
+.route-bus-info ul {
     list-style: none;
-    padding: 10px 15px;
-    opacity: 1;
-    transition: background-color 0.1s linear;
 }
-summary::-webkit-details-marker {
+.route-bus-info-container {
+    overflow: auto;
+    background-color: #efefef;
+    position: relative;
+    z-index: 2000;
+    scroll-behavior: smooth;
+}
+.route-bus-title {
+    padding: 0 22.5px;
+    display: flex;
+    align-items: center;
+    background-color: #efefef;
+    position: sticky;
+    top: 0;
+    z-index: 2000;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2)
+}
+.route-bus-title .route-bus {
+    padding: 15px 12px !important;
+}
+.route-bus-title .route-bus .h5 span, .route-bus-title .route-bus .h6 span{
+    color: #111 !important;
+}
+.route-bus-title .h3 {
+    font-size: calc(1.3rem + .6vw);
+}
+#route-changedirection-icon {
     display: none;
 }
-summary .station-line {
-    display: inline-block;
+#route-changedirection-text {
+    display: block;
 }
-ul {
-    margin-top: 1rem;
-    padding-left: calc(2rem + 5px);;
+.route-destination {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+.route-destination svg {
+    width: calc(1.3rem + .6vw);
+    height: calc(1.3rem + .6vw);
+}
+details[open] summary {
+    background-color: #ddd;
+}
+details[open] summary .route-station-dot {
+    transform: scale3d(1.5,1.5,1);
+}
+details[open] summary .route-station-line {
+    height: 400px;
+}
+details[open] .last .route-station-line {
+    background-color: #ddd !important;
+}
+.route-header {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 0 !important;
+    max-width: 100%;
+}
+.route-info svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+.route-info-box {
+    width: 75vw;
+    height: fit-content;
+    max-height: 40vh;
+}
+.route-info-box > * {
+    padding: 10px;
+}
+.route-info-box .route-header {
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+.route-info-box h5 {
+    margin-bottom: 0 !important;
+}
+.route-info-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+.route-left {
+    position: relative;
+    z-index: 2500;
+    margin-left: -2rem;
+}
+.route-left img {
+    position: absolute;
+    top: calc(1rem*1.5 - 20px);
+    left: calc(1rem/3);
+    width: 20px;
+}
+.route-left span {
+    margin-left: 2rem;
+}
+.route-live {
+    transform: scale(0.9);
+    color: white;
+}
+.route-live.green {
+    animation: route-blink-green 15s linear infinite;
+}
+.route-live.yellow {
+    animation: route-blink-yellow 15s linear infinite;
+}
+.route-live.orange {
+    animation: route-blink-orange 15s linear infinite;
+}
+.route-live.red {
+    animation: route-blink-red 15s linear infinite;
+}
+.route-live.brown {
+    animation: route-blink-brown 15s linear infinite;
+}
+.route-loading {
+    padding: 5rem;
+    text-align: center;
+    position: absolute;
+    width: 100%;
+}
+#route-main-route-view {
+    padding-top: calc(1.2rem + 25px + constant(safe-area-inset-top));
+    padding-top: calc(1.2rem + 25px + env(safe-area-inset-top));
+}
+#route-main-route-view > .container {
+    padding-top: 1vw;
+}
+.route-map-important-station {
+    padding: 4px 6px;
+    border-radius: 10px;
+    border: 2px solid #fff;
+    z-index: 2500;
+    color: white;
+    font-size: 14px;
+    box-shadow: 0 0 10px #00000011;
+    display: block !important;
+    min-width: 16px;
+    min-height: 16px;
+    background-color: #1c7dca;
+}
+.route-map-important-station span {
+    display: none;
+}
+.route-map-important-station span.shown {
+    display: block;
+}
+.route-map-important-station.origin {
+    z-index: 3200;
+    background-color: rgb(37, 192, 37);
+}
+.route-map-important-station.destination {
+    z-index: 3200;
+    background-color: orangered;
+}
+.route-map-station {
+    width: 18px;
+    opacity: 0;
+    transition: opacity 0.1s linear;
+    z-index: 2500;
+}
+.route-map-station.shown {
+    width: 18px;
+    opacity: 1;
+}
+.route-navbar-bus {
+    font-size: 0.75rem;
+    padding: 0;
+    padding-top: 0.6rem !important;
+    margin: 0px 0;
+    height: 2.75rem;
+    width: 2.75rem;
+    text-align: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #000;
+}
+.route-navbar-bus.blue {
+    background-image: url("images/icons/blue-bus.png");
+}
+.route-navbar-bus.orange {
+    background-image: url("images/icons/orange-bus.png");
+}
+.route-navbar-bus > * {
+    color: #000;
+}
+.route-options {
+    margin-left: auto;
+}
+.route-option-buttons {
+    display: flex;
+    flex-direction: row;
+}
+.route-option-buttons > * {
+    margin-left: 10px;
+}
+.route-modal {
+    width: calc(95vw - constant(safe-area-inset-left) - constant(safe-area-inset-right));
+    width: calc(95vw - env(safe-area-inset-left) - env(safe-area-inset-right));
+    height: calc(85vh - constant(safe-area-inset-top) - constant(safe-area-inset-bottom));
+    height: calc(85vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    padding: 0;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: auto;
+    display: block;
+}
+.route-modal::-webkit-scrollbar {
+    display: none;
 }
 .route-navbar {
     display: flex;
@@ -221,94 +444,24 @@ ul {
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
 }
-.loading {
-    padding: 5rem;
-    text-align: center;
-    position: absolute;
-    width: 100%;
-}
 .route-navbar > * {
     margin: 0 5px;
 }
-.navbar-bus {
-    font-size: 0.75rem;
-    padding: 0;
-    padding-top: 0.6rem !important;
-    margin: 0px 0;
-    height: 2.75rem;
-    width: 2.75rem;
-    text-align: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    color: #000;
-}
-.navbar-bus.blue {
-    background-image: url("images/icons/blue-bus.png");
-}
-.navbar-bus.orange {
-    background-image: url("images/icons/orange-bus.png");
-}
-.navbar-bus > * {
-    color: #000;
-}
-.bus {
-    font-size: 0.8rem;
-    padding-bottom: 0.8rem !important;
-    margin: 10px 0;
-    min-height: 50px;
-    min-width: 50px;
-    text-align: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-.bus-info-container {
-    overflow: auto;
-    background-color: #efefef;
-    position: relative;
-    z-index: 2000;
-    scroll-behavior: smooth;
-}
-.bus.blue {
-    background-image: url("images/icons/blue-bus.png");
-}
-.bus.orange {
-    background-image: url("images/icons/orange-bus.png");
-}
-.bus-title {
-    padding: 0 22.5px;
-    display: flex;
-    align-items: center;
-    background-color: #efefef;
-    position: sticky;
-    top: 0;
-    z-index: 2000;
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2)
-}
-.bus-title .bus {
-    padding: 15px 12px !important;
-}
-.bus-title .bus .h5 span, .bus-title .bus .h6 span{
-    color: #111 !important;
-}
-.bus-title .h3 {
-    font-size: calc(1.3rem + .6vw);
-}
-.route-navbar .header.h5 {
+.route-navbar .route-header.h5 {
     font-size: 1rem;
     display: none;
 }
-.route-navbar.stuck .header.h5 {
+.route-navbar.stuck #route-changedirection-icon {
+    display: block;
+}
+.route-navbar.stuck #route-changedirection-text {
+    display: none;
+}
+.route-navbar.stuck .route-header.h5 {
     display: flex;
 }
-.header {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-bottom: 0 !important;
-    max-width: 100%;
+.route-navbar.stuck .route-navbar-title {
+    opacity: 1;
 }
 .route-navbar-title {
     align-items: center;
@@ -318,54 +471,10 @@ ul {
     opacity: 0;
     overflow: hidden;
 }
-.route-navbar.stuck .route-navbar-title {
-    opacity: 1;
-}
-.align-middle {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-}
-#changedirection-icon {
-    display: none;
-}
-.route-navbar.stuck #changedirection-icon {
-    display: block;
-}
-#changedirection-text {
-    display: block;
-}
-.route-navbar.stuck #changedirection-text {
-    display: none;
-}
-.destination {
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
-}
-.destination svg {
-    width: calc(1.3rem + .6vw);
-    height: calc(1.3rem + .6vw);
-}
-.left {
-    position: relative;
-    z-index: 2500;
-    margin-left: -2rem;
-}
-.left img {
-    position: absolute;
-    top: calc(1rem*1.5 - 20px);
-    left: calc(1rem/3);
-    width: 20px;
-}
-.left span {
-    margin-left: 2rem;
-}
-#shadow {
+#route-shadow {
     width: 100%;
-    height: calc(100% + 100px);
+    height: 100%;
     position: fixed;
-    top: -100px;
     background-color:rgba(0, 0, 0, 0.3);
     z-index: 1500;
     right: 0;
@@ -373,31 +482,23 @@ ul {
     transition: opacity 0.25s linear 0s;
     pointer-events: none;
 }
-#shadow.shadow-shown {
+#route-shadow.route-shadow-shown {
     opacity: 1;
     pointer-events: auto;
 }
-.route-modal {
-    width: 95vw;
-    height: 85vh;
-    padding: 0;
-    scroll-behavior: smooth;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: auto;
-    display: block;
+summary {
+    list-style: none;
+    padding: 10px 15px;
+    opacity: 1;
+    transition: background-color 0.1s linear;
 }
-.route-modal::-webkit-scrollbar {
+summary::-webkit-details-marker {
     display: none;
 }
-.option-buttons {
-    display: flex;
-    flex-direction: row;
+summary .route-station-line {
+    display: inline-block;
 }
-.option-buttons > * {
-    margin-left: 10px;
-}
-.suspended {
+.route-suspended {
     position: absolute;
     right: 1.5rem;
     font-size: 0.8rem;
@@ -406,14 +507,19 @@ ul {
     background-color: orangered;
     color: white;
 }
-.traffic {
+.route-time-remaining {
+    padding-left: .75rem;
+    padding-right: .75rem;
+    border-radius: .5rem;
+}
+.route-traffic {
     position: relative;
 }
-.traffic .station-name {
+.route-traffic .route-station-name {
     position: relative;
     margin-left: calc(2rem - (1rem / 1.5) - 10px);
 }
-.traffic .station-dot {
+.route-traffic .route-station-dot {
     position: relative;
     z-index: 2200;
     width: calc(1rem/1.5);
@@ -421,12 +527,12 @@ ul {
     transform: scale3d(1,1,1);
     transition: transform 0.1s linear;
 }
-.traffic .station-dot circle {
+.route-traffic .route-station-dot circle {
     color: #222;
     stroke: #00000022;
     stroke-width: 2px;
 }
-.traffic .station-line {
+.route-traffic .route-station-line {
     position: absolute;
     width: 3.5px;
     height: calc(1.5rem + 20px);
@@ -436,87 +542,32 @@ ul {
     transition: background-color 0.2s linear;
     box-shadow: 0 0 1px rgba(83, 83, 83, 0.1);
 }
-.traffic.green .station-line {
+.route-traffic.green .route-station-line {
     background-color: rgb(58, 204, 0);
 }
-.traffic.yellow .station-line {
+.route-traffic.yellow .route-station-line {
     background-color: rgb(153, 200, 0);
 }
-.traffic.orange .station-line {
+.route-traffic.orange .route-station-line {
     background-color: rgb(209, 188, 0);
 }
-.traffic.red .station-line {
+.route-traffic.red .route-station-line {
     background-color: rgb(214, 132, 0);
 }
-.traffic.brown .station-line {
+.route-traffic.brown .route-station-line {
     background-color: rgb(199, 0, 0);
 }
-.traffic.last .station-line {
+.route-traffic.last .route-station-line {
     transition: background-color 0.25s ease !important;
     background-color: #efefef;
     height: calc((1.5rem + 20px)/2);
     box-shadow: none !important;
 }
-.bus-marker {
-    width: 20px;
-    z-index: 3000;
+ul {
+    margin-top: 1rem;
+    padding-left: calc(2rem + 5px);;
 }
-.bus-marker.moving {
-    animation: breathe 2s linear infinite;
-}
-#bus-map ~ .main-info-container {
-    height: 70vh;
-    overflow: hidden;
-    margin-top: 60vh;
-    position: relative;
-}
-#bus-map ~ .main-info-container .route-navbar {
-    position: absolute;
-    width: 100%;
-}
-#bus-map ~ .main-info-container .bus-info-container {
-    padding-top: calc(2.75rem + 20px);
-    padding-bottom: 10px;
-    height: calc(25vh - 2rem - 40px);
-    overflow: auto;
-}
-.map-station {
-    width: 18px;
-    opacity: 0;
-    transition: opacity 0.1s linear;
-    z-index: 2500;
-}
-.map-station.shown {
-    width: 18px;
-    opacity: 1;
-}
-.map-important-station {
-    padding: 4px 6px;
-    border-radius: 10px;
-    border: 2px solid #fff;
-    z-index: 2500;
-    color: white;
-    font-size: 14px;
-    box-shadow: 0 0 10px #00000011;
-    display: block !important;
-    min-width: 16px;
-    min-height: 16px;
-    background-color: #1c7dca;
-}
-.map-important-station span {
-    display: none;
-}
-.map-important-station span.shown {
-    display: block;
-}
-.map-important-station.origin {
-    z-index: 3200;
-    background-color: rgb(37, 192, 37);
-}
-.map-important-station.destination {
-    z-index: 3200;
-    background-color: orangered;
-}
+/* Global Mapbox Style */
 .mapboxgl-marker:hover {
     cursor: pointer;
 }
@@ -531,54 +582,109 @@ ul {
 .mapboxgl-control-container > * {
     z-index: 10000;
 }
-.version {
-    margin-top: auto;
-    padding: 0 !important;
-}
-#app {
+/* About View */
+.main-about-view {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: calc(constant(safe-area-inset-top) + 12.5px);
+    padding-top: calc(env(safe-area-inset-top) + 12.5px);
+    height: 100%;
     width: 100%;
 }
-#bus-map {
-    height: 60vh;
-    width: calc(100% - 5vw);
-    position: fixed;
+.main-about-view > * {
+    margin-bottom: 10px;
 }
+.logo {
+    border-radius: 2rem;
+    height: 8rem;
+}
+.version {
+    padding: 0 !important;
+}
+/* the darkside... */
 @media (prefers-color-scheme: dark) {
+    /* Global Style */
     * {
         color: white;
     }
     body {
         background-color: black;
     }
-    details[open] summary {
-        background-color: #333;
-    }
-    details[open] .last .station-line {
-        background-color: #333 !important;
-    }
     h1 {
         color: #eee !important;
     }
-    .view-header-top {
-        top: -50px;
-        padding-top: 65px;
-        border-bottom: 0.5px solid #55555555;
+    .ptr--text {
+        color: rgba(255,255,255,0.7) !important;
+    }
+    .ptr--icon {
+        color: rgba(255,255,255,0.7) !important;
+    }
+    .tab * {
+        color: rgb(70, 70, 70);
+    }
+    .tab.active * {
+        color: rgb(43, 219, 110);
+        font-weight: bold;
+    }
+    .tabs {
         background-color: transparent;
-        backdrop-filter: blur(30px) brightness(0.3);
-        -webkit-backdrop-filter: blur(30px) brightness(0.3);
+        backdrop-filter: blur(50px) brightness(0.2);
+        -webkit-backdrop-filter: blur(50px) brightness(0.2);
+        border-top: 1px solid #55555555;
+        background-color: #ffffff11;
     }
-    input {
-        background-color: #222;
-        border: 1px solid #444;
+    .view-header-top {
+        border-bottom: 1px solid #55555555;
+        background-color: #ffffff11;
+        backdrop-filter: blur(50px) brightness(0.1);
+        -webkit-backdrop-filter: blur(50px) brightness(0.1);
     }
-    .bus-title, .modal, .bus-info-container {
+    /* Route View Style */
+    .route-bus-title, .modal, .route-bus-info-container {
         background-color: #222;
+    }
+    details[open] summary {
+        background-color: #333;
+    }
+    details[open] .last .route-station-line {
+        background-color: #333 !important;
     }
     .route-navbar {
         background-color: #222222aa;
         backdrop-filter: blur(30px);
         -webkit-backdrop-filter: blur(30px);
     }
+    .route-traffic .station-dot circle {
+        color: white;
+    }
+    .route-traffic.green .route-station-line {
+        background-color: rgb(0, 116, 0);
+    }
+    .route-traffic.yellow .route-station-line {
+        background-color: rgb(91, 124, 0);
+    }
+    .route-traffic.orange .route-station-line {
+        background-color: rgb(129, 127, 0);
+    }
+    .route-traffic.red .route-station-line {
+        background-color: rgb(126, 78, 0);
+    }
+    .route-traffic.brown .route-station-line {
+        background-color: rgb(126, 15, 0);
+    }
+    .route-traffic.last .route-station-line {
+        background-color: #222 !important;
+    }
+    .route-map-important-station.origin {
+        background-color: rgb(14, 138, 14);
+    }
+    .route-map-important-station.destination {
+        background-color: rgb(149, 42, 23);
+    }
+    /* Globan Mapbox Style */
     .mapboxgl-popup-content {
         background-color: #444 !important;
     }
@@ -605,38 +711,5 @@ ul {
     }
     .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {
         border-top-color: #444 !important;
-    }
-    .traffic .station-dot circle {
-        color: white;
-    }
-    .traffic.green .station-line {
-        background-color: rgb(0, 116, 0);
-    }
-    .traffic.yellow .station-line {
-        background-color: rgb(91, 124, 0);
-    }
-    .traffic.orange .station-line {
-        background-color: rgb(129, 127, 0);
-    }
-    .traffic.red .station-line {
-        background-color: rgb(126, 78, 0);
-    }
-    .traffic.brown .station-line {
-        background-color: rgb(126, 15, 0);
-    }
-    .traffic.last .station-line {
-        background-color: #222 !important;
-    }
-    .map-important-station.origin {
-        background-color: rgb(14, 138, 14);
-    }
-    .map-important-station.destination {
-        background-color: rgb(149, 42, 23);
-    }
-    .ptr--text {
-        color: rgba(255,255,255,0.7) !important;
-    }
-    .ptr--icon {
-        color: rgba(255,255,255,0.7) !important;
     }
 }
