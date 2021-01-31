@@ -213,6 +213,7 @@ ul {
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
 }
 .loading {
     padding: 5rem;
@@ -564,6 +565,7 @@ ul {
     .route-navbar {
         background-color: #222222aa;
         backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
     }
     .mapboxgl-popup-content {
         background-color: #444 !important;
