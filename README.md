@@ -2,6 +2,8 @@
 
 由一名中學生用 :heart: 製作
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f53a85cd-b088-4732-a90d-31d1502490d8/deploy-status)](https://app.netlify.com/sites/agitated-swanson-fba885/deploys)
+
 連結： https://bus.matthewngan.ga/
 
 ## 功能
