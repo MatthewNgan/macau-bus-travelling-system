@@ -2,7 +2,7 @@
 
 由一名中學生用 :heart: 製作嘅巴士報站 Web App
 
-連結：https://bus.matthewngan.ga/ [![Netlify Status](https://api.netlify.com/api/v1/badges/f53a85cd-b088-4732-a90d-31d1502490d8/deploy-status)](https://app.netlify.com/sites/agitated-swanson-fba885/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f53a85cd-b088-4732-a90d-31d1502490d8/deploy-status)](https://app.netlify.com/sites/agitated-swanson-fba885/deploys) 連結：https://bus.matthewngan.ga/
 
 ## 功能
 
@@ -11,6 +11,7 @@
   - 加入「剩餘時間」，更方便用戶
 - 可下載至主畫面
   - 下載後體驗更佳
+- 隨系統自動切換亮暗主題
 
 ## 待完成/未來功能
 
@@ -26,3 +27,7 @@
 本網所有資訊皆由[澳門交通事務局](https://www.dsat.gov.mo/)及其應用程式[巴士報站](http://www.dsat.gov.mo/bus/site/busstopwaiting.aspx?lang=tc)提供，並加以計算得出。
 
 所有源始碼已放置於 docs 資料夾
+
+## 使用方法
+
+### iOS
