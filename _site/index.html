@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>澳門巴士報站</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1, viewport-fit=cover" charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#18703f">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="/images/icons/rounded-logo.png" type="image/png">
+    <script defer src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
+    <script src="/bodyScrollLock.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="apple-touch-icon" href="/images/icons/logo.png">
+    <link href="/images/splashscreens/iphone5_splash.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <link href="/images/splashscreens/iphone6_splash.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <link href="/images/splashscreens/iphoneplus_splash.png" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image">
+    <link href="/images/splashscreens/iphonex_splash.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image">
+    <link href="/images/splashscreens/iphonexr_splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <link href="/images/splashscreens/iphonexsmax_splash.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image">
+    <link href="/images/splashscreens/ipad_splash.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <link href="/images/splashscreens/ipadpro1_splash.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <link href="/images/splashscreens/ipadpro3_splash.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <link href="/images/splashscreens/ipadpro2_splash.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet'>
+    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
+    <script src='https://unpkg.com/pulltorefreshjs@0.1.21/dist/index.umd.js'></script>
+    <link rel="stylesheet" href="/style.css">
+    <script type="text/x-template" id="route-view-template">
+      <div class="view" id="route-view">
+        <header class="view-header-top route-view-header fixed-top row justify-content-md-center">
+          <h6 class="col-auto">路線查詢</h6>
+          <div class="route-options">
+            <button class="route-info btn" id="toggleInfoBox" v-if="messages && messages.length > 0" @click="openInfoBox">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM8 5.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+              </svg>
+            </button>
+          </div>
+        </header>
+        <div id="route-info-box" class="route-info-box modal">
+          <div class="route-header">
+            <h5>溫馨提示</h5>
+          </div>
+          <div class="route-info-content">
+            <ul>
+              <li v-for="message in messages">
+                {{message}}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div id="route-shadow" :class="{'route-shadow-shown': $root.isModalVisible}" @click="returnHome($root.currentModal)"></div>
+        <div id="route-main-route-view" class="view-main">
+          <div class="container">
+            <div class="row" v-if="busList">
+              <button v-for="bus in busList.routeList" :class="{blue: bus.color.toLowerCase() === 'blue', orange: bus.color.toLowerCase() === 'orange'}" class="route-bus col-md-1 col-2 btn" @click="requestRoute(bus.routeName,bus.color)">{{bus.routeName}}</button>
+            </div>
+            <div v-else class="route-loading">
+              載入中...
+            </div>
+          </div>
+        </div>
+        <route-modal :class="{'shown': $root.currentModal === 'route-info-modal' && !$parent.noInternet}" ref="route-info-modal"></route-modal>
+      </div>
+    </script>
+    <script type="text/x-template" id="route-modal-template">
+      <div class="route-modal modal" id="route-modal">
+        <route-modal-header :bus-route-data="busRouteData" :bus-available-direction="busAvailableDirection" :bus-route="busRoute" :bus-color="busColor"></route-modal-header>
+        <div id="route-bus-map" v-if="mapEnabled"></div>
+        <div class="route-main-info-container">
+          <div class="route-navbar">
+            <button @click="$parent.returnHome($root.currentModal)" class="col-auto btn" aria-label="Return Button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+              </svg>
+            </button>
+            <div class="col row route-navbar-title" v-if="busRouteData && !mapEnabled">
+              <div :class="{blue: busColor.toLowerCase() === 'blue', orange: busColor.toLowerCase() === 'orange'}" class="col-auto route-navbar-bus">
+                <span>{{busRoute}}</span>
+              </div>
+              <div class="route-header h5 col">
+                <span class="route-destination">
+                  {{$root.routeMainPoints[busRoute.toUpperCase()] ? $root.routeMainPoints[busRoute.toUpperCase()][busDirection] : busRouteData[0].staName}}&nbsp;
+                </span>
+                <span class="route-destination">
+                  <svg v-if="busAvailableDirection === '2'" xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                    <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                    <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+                  </svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                  </svg>
+                  &nbsp;{{$root.routeMainPoints[busRoute.toUpperCase()] ? $root.routeMainPoints[busRoute.toUpperCase()].slice().reverse()[busDirection] : busRouteData[0].slice().reverse().staName}}
+                </span>
+              </div>
+            </div>
+            <div class="route-option-buttons">
+              <!-- <button @click="changeDirection" type="button" v-if="busAvailableDirection === '0'" class="col-auto btn" id="route-changedirection-text" aria-label="change direction text button">
+                切換方向
+              </button> -->
+              <button @click="changeDirection" type="button" v-if="busAvailableDirection === '0'" class="col-auto btn" id="route-changedirection-icon" aria-label="change direction icon button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+              </button>
+              <button class="btn" v-if="busRouteChange" @click="scrollToWarning()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 5zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                </svg>
+              </button>
+              <button class="btn" @click="disableMap" v-if="mapEnabled">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-map-fill" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.598-.49L10.5.99 5.598.01a.5.5 0 0 0-.196 0l-5 1A.5.5 0 0 0 0 1.5v14a.5.5 0 0 0 .598.49l4.902-.98 4.902.98a.502.502 0 0 0 .196 0l5-1A.5.5 0 0 0 16 14.5V.5zM5 14.09V1.11l.5-.1.5.1v12.98l-.402-.08a.498.498 0 0 0-.196 0L5 14.09zm5 .8V1.91l.402.08a.5.5 0 0 0 .196 0L11 1.91v12.98l-.5.1-.5-.1z"/>
+                </svg>
+              </button>
+              <button class="btn" @click="enableMap" v-else>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-map" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98l4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col route-bus-info-container" v-if="busRouteData && busRouteInfo && busRouteTraffic">
+              <div class="route-bus-info">
+                <details v-for="(station,index) in busRouteData" @toggle="toggleIndex(index)">
+                  <route-station-block :bus-route-info="busRouteInfo" :bus-route-data="busRouteData" :bus-color="busColor" :bus-route-traffic="busRouteTraffic" :arriving-buses="arrivingBuses" :station="station" :index="index"></route-station-block>
+                </details>
+              </div>
+            </div>
+            <div v-else class="route-loading route-bus-info-container">載入中...</div>
+          </div>
+        </div>
+      </div>
+    </script>
+    <script type="text/x-template" id="route-modal-header-template">
+      <div class="row ml-0 route-bus-title">
+        <div :class="{blue: busColor.toLowerCase() === 'blue', orange: busColor.toLowerCase() === 'orange'}" class="route-bus col-auto">
+          <div :class="busRoute.length > 2 ? 'h6' : 'h5'">
+            <span v-if="busRoute.toLowerCase() === '25ax'">25<span class="small">AX</span></span>
+            <span v-else-if="busRoute.toLowerCase() === '101x'">101<span class="small">X</span></span>
+            <span v-else-if="busRoute.toLowerCase() === '102x'">102<span class="small">X</span></span>
+            <span v-else-if="busRoute.toLowerCase() === 'ap1x'">AP1<span class="small">X</span></span>
+            <span v-else>{{busRoute}}</span>
+          </div>
+        </div>
+        <div class="h5 route-header col" v-if="busRouteData">
+          <span class="route-destination">
+            {{$root.routeMainPoints[busRoute.toUpperCase()] ? $root.routeMainPoints[busRoute.toUpperCase()][$parent.busDirection] : busRouteData[0].staName}}&nbsp;
+          </span>
+          <span class="route-destination">
+            <svg v-if="busAvailableDirection === '2'" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+              <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+              <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+            </svg>
+            &nbsp;{{$root.routeMainPoints[busRoute.toUpperCase()] ? $root.routeMainPoints[busRoute.toUpperCase()].slice().reverse()[$parent.busDirection] : busRouteData[0].slice().reverse().staName}}
+          </span>
+        </div>
+        <div class="h5 route-header col" v-else>
+          <span class="route-destination">
+            載入中...
+          </span>
+        </div>
+        <span v-if="busRoute.toLowerCase() === 'ap1x'" class="col-auto text-muted">機場<br>快線</span>
+        <span v-else-if="busRoute.toLowerCase().includes('ap')" class="col-auto text-muted">機場<br>專線</span>
+        <span v-else-if="busRoute.toLowerCase().includes('x')" class="col-auto text-muted">快線</span>
+        <span v-else-if="busRoute.toLowerCase().includes('s')" class="col-auto text-muted">特班車</span>
+        <span v-else-if="busRoute.toLowerCase().includes('h')" class="col-auto text-muted">醫院<br>專線</span>
+        <span v-else-if="busRoute.toLowerCase().includes('mt')" class="col-auto text-muted">澳氹<br>專線</span>
+        <span v-else-if="busRoute.toLowerCase().includes('n')" class="col-auto text-muted">夜間<br>巴士</span>
+      </div>
+    </script>
+    <script type="text/x-template" id="route-station-block-template">
+      <summary class="route-traffic" v-if="busRouteTraffic && busRouteTraffic[index]" :class="{last: index === busRouteData.length-1, gray: busRouteTraffic[index].routeTraffic === '-1', green: parseFloat(busRouteTraffic[index].routeTraffic) <= 1 && parseFloat(busRouteTraffic[index].routeTraffic) > 0,yellow: Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) === 2, orange: Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) === 3,red: Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) === 4,brown: Math.ceil(parseFloat(busRouteTraffic[index].routeTraffic)) >= 5}">
+        <span class="route-station-dot" :class="{'hidden': busRouteInfo[index].busInfo.filter((bus) => bus.status === '1').length > 0}"></span>
+        <span class="route-station-line"></span>
+        <span class="route-station-name">{{station.staCode}} {{station.staName}}</span>
+        <span class="route-station-bus-icon moving" v-if="busRouteInfo[index].busInfo.filter((bus) => bus.status === '0').length > 0" :class="$parent.busColor.toLowerCase()">
+          <span v-if="busRouteInfo[index].busInfo.filter((bus) => bus.status === '0').length > 1">{{busRouteInfo[index].busInfo.filter((bus) => bus.status === '0').length}}</span>
+          <img v-else :src="$parent.busIconSrc">
+        </span>
+        <span class="route-station-bus-icon" v-if="busRouteInfo[index].busInfo.filter((bus) => bus.status === '1').length > 0" :class="$parent.busColor.toLowerCase()">
+          <span v-if="busRouteInfo[index].busInfo.filter((bus) => bus.status === '1').length > 1">{{busRouteInfo[index].busInfo.filter((bus) => bus.status === '1').length}}</span>
+          <img v-else :src="$parent.busIconSrc">
+        </span>
+        <span v-if="busRouteData[index] && busRouteData[index].suspendState === '1'" class="route-suspended">暫不停靠此站</span>
+      </summary>
+      <ul class="route-arriving-list">
+        <li v-for="arrivingBus in arrivingBuses[index].slice().reverse()" v-if="arrivingBuses[index]">
+          <span><code :class="busColor.toLowerCase()">{{arrivingBus.plate}}</code> 距離 {{arrivingBus.distanceToThis}} 站</span> 
+          <span v-if="arrivingBus.durationGet" class="route-time-remaining route-live" :class="{gray: arrivingBus.routeTraffic === '-1', green: parseFloat(arrivingBus.routeTraffic) <= 1 && parseFloat(arrivingBus.routeTraffic) > 0, yellow: Math.ceil(parseFloat(arrivingBus.routeTraffic)) === 2,orange: Math.ceil(parseFloat(arrivingBus.routeTraffic)) === 3,red: Math.ceil(parseFloat(arrivingBus.routeTraffic)) === 4,brown: Math.ceil(parseFloat(arrivingBus.routeTraffic)) >= 5}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-broadcast" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M3.05 3.05a7 7 0 0 0 0 9.9.5.5 0 0 1-.707.707 8 8 0 0 1 0-11.314.5.5 0 0 1 .707.707zm2.122 2.122a4 4 0 0 0 0 5.656.5.5 0 0 1-.708.708 5 5 0 0 1 0-7.072.5.5 0 0 1 .708.708zm5.656-.708a.5.5 0 0 1 .708 0 5 5 0 0 1 0 7.072.5.5 0 1 1-.708-.708 4 4 0 0 0 0-5.656.5.5 0 0 1 0-.708zm2.122-2.12a.5.5 0 0 1 .707 0 8 8 0 0 1 0 11.313.5.5 0 0 1-.707-.707 7 7 0 0 0 0-9.9.5.5 0 0 1 0-.707z"/>
+              <path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+            </svg> <span v-if="arrivingBus.duration > 30">{{arrivingBus.duration <= 3600 ? (Math.round((arrivingBus.duration) / 60)) + " 分鐘" : "多於 " + Math.floor((arrivingBus.duration) / 3600) + " 小時"}}</span><span v-else>即將進站</span>
+          </span>
+          <span v-else>ETA 加載中</span>
+        </li>
+        <template v-if="busRouteInfo[index]" v-for="bus in busRouteInfo[index].busInfo.filter((bus) => bus.status === '1')" :key="bus.busPlate">
+          <li>
+            <span><code :class="busColor.toLowerCase()">{{bus.busPlate.substring(0,2)}}-{{bus.busPlate.substring(2,4)}}-{{bus.busPlate.substring(4,6)}}</code></span>
+            <span v-if="index > 0" class="route-time-remaining">己進站</span><span v-else class="route-time-remaining">即將發車</span>
+          </li>
+        </template>
+        <template v-if="busRouteInfo[index]" v-for="bus in busRouteInfo[index].busInfo.filter((bus) => bus.status === '0')" :key="bus.busPlate">
+          <li class="route-left">
+            <img :src="busImgUrl">
+            <span><code :class="busColor.toLowerCase()">{{bus.busPlate.substring(0,2)}}-{{bus.busPlate.substring(2,4)}}-{{bus.busPlate.substring(4,6)}}</code></span>
+            <span class="route-time-remaining">前往下一站中</span>
+          </li>
+        </template>
+        <li v-if="busRouteInfo[index] && busRouteInfo[index].busInfo.filter((bus) => bus.status === '1').length==0 && (!arrivingBuses[index] || arrivingBuses[index].length === 0)">
+          尚未發車
+        </li>
+      </ul>
+    </script>
+    <script type="text/x-template" id="about-view-template">
+      <div class="view">
+        <div class="main-about-view">
+          <img src="/images/icons/logo.png" class="logo" alt="Logo">
+          <h1 class="display-1">巴士報站</h1><small class="version"><code class="text-muted">{{$root.appVersion}}</code></small>
+        </div>
+        </div>
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <route-view :class="{'active': currentView === 'route'}" ref="route-view"></route-view>
+      <about-view :class="{'active': currentView === 'about'}" ref="about-view"></about-view>
+      <div id="no-internet-error" class="modal" :class="{shown: noInternet}">
+        <div class="container text-center">
+          <h1>
+            OOPS!
+          </h1>
+          <p>網路連線錯誤</p>
+          <button v-if="!refreshing" class="btn reload" aria-label="Retry">重試</button><p v-else>載入中...</p>
+        </div>
+      </div>
+      <div id="reload-modal" class="modal text-center">
+        <div class="container text-center">
+          <h1>
+            更新!
+          </h1>
+          <p>需要重新載入以安裝此更新</p>
+          <button v-if="!refreshing" class="btn reload" aria-label="Retry">重新載入</button><p v-else>載入中...</p>
+        </div>
+      </div>
+      <div class="tabs row fixed-bottom">
+        <div class="col-4 tab" :class="{'active': currentView === 'route'}" @click="changeView('route')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-list-ol" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
+            <path d="M1.713 11.865v-.474H2c.217 0 .363-.137.363-.317 0-.185-.158-.31-.361-.31-.223 0-.367.152-.373.31h-.59c.016-.467.373-.787.986-.787.588-.002.954.291.957.703a.595.595 0 0 1-.492.594v.033a.615.615 0 0 1 .569.631c.003.533-.502.8-1.051.8-.656 0-1-.37-1.008-.794h.582c.008.178.186.306.422.309.254 0 .424-.145.422-.35-.002-.195-.155-.348-.414-.348h-.3zm-.004-4.699h-.604v-.035c0-.408.295-.844.958-.844.583 0 .96.326.96.756 0 .389-.257.617-.476.848l-.537.572v.03h1.054V9H1.143v-.395l.957-.99c.138-.142.293-.304.293-.508 0-.18-.147-.32-.342-.32a.33.33 0 0 0-.342.338v.041zM2.564 5h-.635V2.924h-.031l-.598.42v-.567l.629-.443h.635V5z"/>
+          </svg>
+          <div>路線</div>
+        </div>
+        <div class="col-4 tab" :class="{'active': currentView === 'about'}" @click="changeView('about')">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16" v-if="currentView !== 'about'">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16" v-else>
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+            </svg>
+          </div>
+          <div>關於</div>
+        </div>
+        <div class="col-4 tab">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+          </svg>
+          <div>開發中</div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.js"></script>
+    <!-- <script src="https://unpkg.com/vue@3.0.5/dist/vue.global.prod.js"></script> -->
+    <script src="./script.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VG1QX7H6B3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VG1QX7H6B3');
+    </script>
+  </body>
+</html>
