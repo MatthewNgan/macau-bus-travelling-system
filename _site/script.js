@@ -692,7 +692,7 @@ app.component('route-modal', {
         touchPitch: false,
       });
       this.busMap.touchZoomRotate.disableRotation();
-      this.busMap.on('zoom', () => {
+      this.busMap.on('zoomend', () => {
         if (this.busMap.getZoom() > 13.5) {
           for (let mapStation of document.querySelectorAll('.route-map-station')) {
             mapStation.classList.toggle('shown',true)
